@@ -19,7 +19,7 @@ window.frameHook = (c, t) => {
   if (RAW) { c.drawImage(drawingContext.canvas, 0, 0, W, H); return; }
   const w = W, h = H;
   const id = KIT.pixels(drawingContext.canvas);
-  const m = KIT.mask(id, KIT.hexToRgb(SK.paper), 26);
+  const m = KIT.clean(KIT.mask(id, KIT.hexToRgb(SK.paper), 26), w, h);
 
   // ---------- 1. 纸 ----------
   c.fillStyle = SK.paper; c.fillRect(0, 0, w, h);
@@ -99,8 +99,8 @@ window.frameHook = (c, t) => {
   KIT.text(c, '小镇姑娘', 72, 1052, 50, SK.cream, { track: 3, weight: 800, family: '"Microsoft YaHei","PingFang SC",sans-serif' });
   KIT.text(c, '车头依然吐着烟 · 一百二十公里', 74, 998, 22, SK.accent, { track: 2, weight: 500, family: '"Microsoft YaHei",sans-serif' });
   KIT.poly(c, [[70, 1014], [w - 70, 1014], [w - 70, 1017], [70, 1017]], '#54706C');
-  KIT.text(c, '01', w - 72, 1044, 58, SK.accent, { align: 'right', family: '"Impact","Arial Black",sans-serif' });
-  KIT.text(c, '1999 · 07 · 站台', w - 72, 1000, 21, '#8FA9A4', { align: 'right', track: 3, weight: 600, family: '"Arial Narrow",Arial,sans-serif' });
+  KIT.text(c, '01', w - 78, 1044, 54, SK.accent, { align: 'right', family: '"Impact","Arial Black",sans-serif' });
+  KIT.text(c, '1999 · 07 · 站台', w - 78, 992, 20, '#8FA9A4', { align: 'right', track: 3, weight: 600, family: '"Arial Narrow",Arial,sans-serif' });
 
   // ---------- 10. 印刷质感 ----------
   c.save(); c.strokeStyle = 'rgba(30,59,63,.5)'; c.lineWidth = 2;

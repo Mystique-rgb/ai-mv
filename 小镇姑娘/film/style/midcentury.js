@@ -6,14 +6,14 @@ const MC = {
 PAL.paper = MC.paper;
 
 function drawWorld(t) {
-  hero(520, 884, 52, { view: 'q', ...emotions(t, [[0, 'hopeful']]) });
-  heroine(1420, 742, 27, { view: 'front', ...emotions(t, [[0, 'cry']]), aL: 1.2, aR: 1.05 });
+  hero(520, 866, 52, { view: 'q', noShadow: true, ...emotions(t, [[0, 'hopeful']]) });
+  heroine(1390, 666, 33, { view: 'front', noShadow: true, ...emotions(t, [[0, 'sad', { gloom: 0, emote: null }]]), aL: 1.2, aR: 1.05 });
 }
 
 window.frameHook = (c, t) => {
   const w = W, h = H;
   const id = KIT.pixels(drawingContext.canvas);
-  const m = KIT.mask(id, KIT.hexToRgb(MC.paper), 26);
+  const m = KIT.clean(KIT.mask(id, KIT.hexToRgb(MC.paper), 26), w, h);
 
   c.fillStyle = MC.paper; c.fillRect(0, 0, w, h);
 
@@ -47,13 +47,17 @@ window.frameHook = (c, t) => {
   c.restore();
 
   // ---------- 3. 车窗：画面里的画面 ----------
-  const wx = 1060, wy = 176, ww = 720, wh = 590, rr = 46;
+  const wx = 1112, wy = 210, ww = 556, wh = 470, rr = 42;
   roundRect(c, wx, wy, ww, wh, rr); c.fillStyle = MC.glass; c.fill();
   c.save(); c.lineWidth = 14; c.strokeStyle = MC.ink; c.lineJoin = 'round'; c.stroke(); c.restore();
   // 玻璃上斜光：两条硬边浅色带
   c.save(); c.beginPath(); roundRect(c, wx, wy, ww, wh, rr); c.clip();
   KIT.poly(c, [[wx + 60, wy], [wx + 210, wy], [wx - 40, wy + wh], [wx - 190, wy + wh]], '#FFF9EC');
   c.restore();
+
+  // 地板投影（实色椭圆）
+  c.save(); c.globalAlpha = .35; c.fillStyle = MC.ink; c.beginPath();
+  c.ellipse(520, 890, 250, 30, 0, 0, Math.PI * 2); c.fill(); c.restore();
 
   // ---------- 4. 人物：垫一层错位色影 + 分色 ----------
   const rules = [
@@ -74,9 +78,9 @@ window.frameHook = (c, t) => {
 
   // ---------- 5. 窗框压住她的腿 ----------
   c.save(); c.beginPath(); roundRect(c, wx, wy, ww, wh, rr); c.clip();
-  KIT.poly(c, [[wx, 706], [wx + ww, 706], [wx + ww, 780], [wx, 780]], '#4E8F88');
+  KIT.poly(c, [[wx, 626], [wx + ww, 626], [wx + ww, 690], [wx, 690]], '#4E8F88');
   c.restore();
-  KIT.poly(c, [[wx + 348, wy], [wx + 372, wy], [wx + 372, wy + wh], [wx + 348, wy + wh]], MC.ink);
+  KIT.poly(c, [[wx + 4, wy], [wx + 16, wy], [wx + 16, wy + 470], [wx + 4, wy + 470]], MC.ink);
 
   // ---------- 6. 编号徽章 + 星 ----------
   badge(c, 176, 176, 96, '1', 'OF 9');

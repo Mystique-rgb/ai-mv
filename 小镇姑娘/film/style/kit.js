@@ -50,6 +50,23 @@ const KIT = (() => {
     return m;
   }
 
+  // 去孤立点：笔触飞白散落在纸上会被当成主体，腐蚀一遍把 <3 个邻居的像素清掉
+  function clean(m, w, h, minN = 3) {
+    const b = new Uint8Array(w * h);
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+      const i = y * w + x;
+      if (!m[i]) continue;
+      let c = 0;
+      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+        if (!dx && !dy) continue;
+        const nx = x + dx, ny = y + dy;
+        if (nx >= 0 && ny >= 0 && nx < w && ny < h && m[ny * w + nx]) c++;
+      }
+      b[i] = c >= minN ? 255 : 0;
+    }
+    return b;
+  }
+
   // 分版重印：rules 按顺序命中（判定优先级），写入时按规则的逆序叠（底版先印、细节后印）
   // rule: { h:[0,360] 色相区间 | null, l:[0,1] 明度区间, s:[0,1] 饱和, col:'#RRGGBB', off:[dx,dy] }
   function separate(id, m, rules, opt = {}) {
@@ -113,6 +130,28 @@ const KIT = (() => {
     }
     for (let i = 0; i < w * h; i++) {
       if (dil[i] && !m[i]) { const q = i * 4; od[q] = rgb[0]; od[q + 1] = rgb[1]; od[q + 2] = rgb[2]; od[q + 3] = 255; }
+    }
+    oc.putImageData(img, 0, 0);
+    return out;
+  }
+
+  // 明度分级（黑白/灰度风格用）：bands = [{max:.35, col:'#111'}, {max:.72, col:'#777'}, {col:'#F2F0EA'}]
+  function tone(id, m, bands, opt = {}) {
+    const w = id.width, h = id.height, d = id.data, n = w * h;
+    const out = newCanvas(w, h), oc = out.getContext('2d');
+    const img = oc.createImageData(w, h), od = img.data;
+    const cols = bands.map(b => hexToRgb(b.col));
+    for (let i = 0; i < n; i++) {
+      if (!m[i]) continue;
+      const p = i * 4;
+      const L = (d[p] * .299 + d[p + 1] * .587 + d[p + 2] * .114) / 255;
+      let k = bands.length - 1;
+      for (let j = 0; j < bands.length; j++) { if (bands[j].max != null && L <= bands[j].max) { k = j; break; } }
+      const rgb = cols[k], off = opt.off || [0, 0];
+      const tx = Math.round((i % w) + off[0]), ty = Math.round(Math.floor(i / w) + off[1]);
+      if (tx < 0 || ty < 0 || tx >= w || ty >= h) continue;
+      const q = (ty * w + tx) * 4;
+      od[q] = rgb[0]; od[q + 1] = rgb[1]; od[q + 2] = rgb[2]; od[q + 3] = 255;
     }
     oc.putImageData(img, 0, 0);
     return out;
@@ -184,5 +223,5 @@ const KIT = (() => {
     c.restore();
   }
 
-  return { pixels, mask, separate, outline, fill, grain, vignette, fibres, poly, text, newCanvas, hexToRgb, hsv };
+  return { pixels, mask, clean, separate, tone, outline, fill, grain, vignette, fibres, poly, text, newCanvas, hexToRgb, hsv };
 })();
