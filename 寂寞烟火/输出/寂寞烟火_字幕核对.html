@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>寂寞烟火（片段）· 字幕核对</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+    background:radial-gradient(1200px 700px at 50% -10%,#1c2434 0%,#0b0e14 55%,#07080c 100%);
+    color:#e8ecf4;min-height:100vh;display:flex;align-items:center;justify-content:center;
+    padding:24px 16px;
+  }
+  .shell{width:100%;max-width:760px}
+  .top{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:18px;padding:0 6px}
+  .title{font-size:15px;letter-spacing:.14em;color:#8fa3c0;font-weight:600}
+  .title b{color:#fff;font-weight:700;letter-spacing:.02em;font-size:17px}
+  .hint{font-size:12px;color:#5d6b82}
+
+  .stage{
+    position:relative;background:linear-gradient(180deg,#141a25 0%,#0e131c 100%);
+    border:1px solid #202a3a;border-radius:20px;padding:30px 26px 22px;
+    box-shadow:0 24px 70px -24px #000, inset 0 1px 0 #ffffff0d;
+    overflow:hidden;
+  }
+  .stage::after{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(420px 220px at 50% 42%,#3b6fd414 0%,transparent 70%);
+  }
+  .lyrics{
+    height:372px;overflow-y:auto;scrollbar-width:none;
+    mask-image:linear-gradient(180deg,transparent 0,#000 16%,#000 78%,transparent 100%);
+  }
+  .lyrics::-webkit-scrollbar{display:none}
+  .pad{height:146px}
+
+  .line{
+    padding:9px 14px;border-radius:12px;cursor:pointer;
+    font-size:23px;line-height:1.55;color:#54627a;font-weight:500;
+    transition:color .25s,transform .25s,opacity .25s;
+    text-align:center;letter-spacing:.02em;
+    position:relative;
+  }
+  .line:hover{color:#9fb2cd;background:#ffffff06}
+  .line.done{color:#3d4b60}
+  .line.active{color:#fff;transform:scale(1.06);font-weight:700;
+    text-shadow:0 0 30px #6ea8ff55}
+  .line.active .ch.filled{color:#ffd9a0}
+  .ch{transition:color .12s}
+  .ch.filled{color:#ffcf87}
+
+  .meta{
+    display:flex;justify-content:space-between;align-items:center;
+    margin-top:8px;font-size:11px;color:#48566c;padding:0 6px;
+    font-variant-numeric:tabular-nums;font-family:ui-monospace,Consolas,monospace;
+  }
+
+  .ctrl{margin-top:22px;display:flex;align-items:center;gap:14px;padding:0 4px}
+  .play{
+    width:46px;height:46px;border-radius:14px;background:linear-gradient(180deg,#2f7cf6,#1f5fd0);border:1px solid #5b9bff44;
+    color:#fff;font-size:15px;cursor:pointer;flex:none;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 8px 24px -8px #2f7cf6aa;transition:transform .12s,filter .12s;
+  }
+  .play:hover{filter:brightness(1.12)}
+  .play:active{transform:scale(.95)}
+  .bar{flex:1;position:relative;height:6px;border-radius:6px;background:#1e2836;cursor:pointer;overflow:hidden}
+  .fill{position:absolute;inset:0 auto 0 0;width:0;background:linear-gradient(90deg,#3b82f6,#7cc4ff);border-radius:6px}
+  .time{font-size:12px;color:#7c8ca3;font-variant-numeric:tabular-nums;
+    font-family:ui-monospace,Consolas,monospace;flex:none;min-width:86px;text-align:right}
+
+  .foot{margin-top:16px;padding:0 6px;font-size:11.5px;color:#4e5c72;line-height:1.7}
+  .kbd{background:#1b2431;border:1px solid #2a3648;border-radius:5px;padding:1px 5px;
+    font-family:ui-monospace,monospace;color:#8ea3bd;font-size:11px}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="top">
+    <div class="title"><b>寂寞烟火</b> &nbsp;/&nbsp; 片段 55.28s</div>
+    <div class="hint">点击任意一行可跳转</div>
+  </div>
+
+  <div class="stage">
+    <div class="lyrics" id="lyrics"><div class="pad"></div></div>
+    <div class="meta">
+      <span id="cur">--</span>
+      <span id="code">SRT 时间码</span>
+    </div>
+  </div>
+
+  <div class="ctrl">
+    <button class="play" id="play">▶</button>
+    <div class="bar" id="bar"><div class="fill" id="fill"></div></div>
+    <div class="time" id="time">0:00.00 / 0:55.28</div>
+  </div>
+
+  <div class="foot">
+    空格 播放/暂停 &nbsp;·&nbsp; <span class="kbd">←</span> <span class="kbd">→</span> 前后 2 秒 &nbsp;·&nbsp;
+    逐字高亮来自两套对齐结果的融合，行级时间已交叉验证
+  </div>
+</div>
+
+<audio id="audio" src="song.mp3" preload="auto"></audio>
+<script>
+const LINES = [{"t": "跨越过多少海洋去看你", "s": 0.0, "e": 3.34, "c": [["跨", 0.26], ["越", 0.36], ["过", 0.46], ["多", 0.56], ["少", 0.82], ["海", 1.3], ["洋", 1.62], ["去", 2.1], ["看", 2.46], ["你", 2.9]]}, {"t": "孤单的黑夜途中", "s": 3.34, "e": 5.42, "c": [["孤", 3.34], ["单", 3.62], ["的", 3.78], ["黑", 4.04], ["夜", 4.5], ["途", 4.66], ["中", 5.0]]}, {"t": "只要想着你", "s": 5.42, "e": 7.22, "c": [["只", 5.42], ["要", 5.86], ["想", 6.14], ["着", 6.48], ["你", 6.78]]}, {"t": "我就不会惶恐", "s": 7.22, "e": 10.32, "c": [["我", 7.22], ["就", 7.5], ["不", 7.78], ["会", 8.1], ["惶", 8.56], ["恐", 9.22]]}, {"t": "时光的岸上人来了又走", "s": 10.32, "e": 13.92, "c": [["时", 10.32], ["光", 10.66], ["的", 10.9], ["岸", 11.1], ["上", 11.45], ["人", 11.86], ["来", 12.66], ["了", 13.1], ["又", 13.3], ["走", 13.6]]}, {"t": "离开时你不用说我都懂", "s": 13.92, "e": 17.15, "c": [["离", 13.92], ["开", 14.24], ["时", 14.4], ["你", 14.56], ["不", 15.22], ["用", 15.41], ["说", 15.6], ["我", 16.3], ["都", 16.68], ["懂", 17.06]]}, {"t": "感谢你曾让我", "s": 17.15, "e": 19.78, "c": [["感", 17.25], ["谢", 17.55], ["你", 17.85], ["曾", 18.15], ["让", 18.45], ["我", 18.8]]}, {"t": "留在你眼中", "s": 19.78, "e": 23.3, "c": [["留", 19.78], ["在", 20.3], ["你", 20.72], ["眼", 21.48], ["中", 22.12]]}, {"t": "我曾经走过最遥远的路", "s": 24.0, "e": 28.02, "c": [["我", 24.0], ["曾", 24.84], ["经", 25.06], ["走", 25.18], ["过", 25.68], ["最", 26.04], ["遥", 26.6], ["远", 27.02], ["的", 27.22], ["路", 27.66]]}, {"t": "想要去拥抱未成真的梦", "s": 28.02, "e": 31.6, "c": [["想", 28.02], ["要", 28.34], ["去", 28.56], ["拥", 28.76], ["抱", 29.22], ["未", 29.6], ["成", 30.08], ["真", 30.36], ["的", 30.67], ["梦", 30.98]]}, {"t": "迷失的黑夜途中", "s": 31.6, "e": 33.78, "c": [["迷", 31.6], ["失", 31.92], ["的", 32.08], ["黑", 32.26], ["夜", 32.74], ["途", 32.94], ["中", 33.42]]}, {"t": "只要想起你", "s": 33.78, "e": 35.55, "c": [["只", 33.78], ["要", 34.16], ["想", 34.5], ["起", 34.7], ["你", 35.18]]}, {"t": "就点亮了星空", "s": 35.55, "e": 38.54, "c": [["就", 35.6], ["点", 35.8], ["亮", 36.3], ["了", 36.6], ["星", 37.06], ["空", 37.46]]}, {"t": "流浪的纸船忘不掉港口", "s": 38.54, "e": 42.18, "c": [["流", 38.54], ["浪", 38.96], ["的", 39.14], ["纸", 39.62], ["船", 39.88], ["忘", 40.22], ["不", 40.68], ["掉", 41.22], ["港", 41.38], ["口", 41.86]]}, {"t": "渐灭的花火割不断彩虹", "s": 42.18, "e": 45.72, "c": [["渐", 42.18], ["灭", 42.5], ["的", 42.66], ["花", 42.94], ["火", 43.36], ["割", 43.6], ["不", 44.02], ["断", 44.6], ["彩", 44.84], ["虹", 45.42]]}, {"t": "你就是我心中", "s": 45.72, "e": 48.44, "c": [["你", 45.72], ["就", 46.06], ["是", 46.24], ["我", 46.4], ["心", 46.96], ["中", 47.36]]}, {"t": "永恒的天空", "s": 48.44, "e": 52.2, "c": [["永", 48.5], ["恒", 48.98], ["的", 49.14], ["天", 50.1], ["空", 50.54]]}];
+const box = document.getElementById('lyrics');
+const audio = document.getElementById('audio');
+const fill = document.getElementById('fill');
+const timeEl = document.getElementById('time');
+const curEl = document.getElementById('cur');
+const codeEl = document.getElementById('code');
+const playBtn = document.getElementById('play');
+
+const nodes = [];
+const pad = box.querySelector('.pad');
+LINES.forEach((ln, i) => {
+  const d = document.createElement('div');
+  d.className = 'line';
+  d.dataset.i = i;
+  const spans = ln.c.map(([ch]) => {
+    const s = document.createElement('span');
+    s.className = 'ch'; s.textContent = ch;
+    d.appendChild(s); return s;
+  });
+  d.addEventListener('click', () => { audio.currentTime = ln.s + 0.001; audio.play(); });
+  box.appendChild(d);
+  nodes.push({el: d, spans, line: ln});
+});
+const tail = document.createElement('div'); tail.className = 'pad';
+box.appendChild(tail);
+
+function srt(t){
+  const m = Math.floor(t/60), s = t%60;
+  const ss = String(Math.floor(s)).padStart(2,'0');
+  const ms = String(Math.round((s%1)*1000)).padStart(3,'0');
+  return `00:${String(m).padStart(2,'0')}:${ss},${ms}`;
+}
+
+let activeIdx = -1;
+function tick(){
+  const t = audio.currentTime;
+  const dur = audio.duration || 55.28;
+  fill.style.width = (t/dur*100) + '%';
+  timeEl.textContent = `${Math.floor(t/60)}:${String(Math.floor(t%60)).padStart(2,'0')}.${String(Math.floor((t%1)*100)).padStart(2,'0')} / 0:55.28`;
+
+  let idx = -1;
+  for (let i = 0; i < LINES.length; i++){
+    if (t >= LINES[i].s && t < LINES[i].e) { idx = i; break; }
+  }
+  if (idx !== activeIdx){
+    if (activeIdx >= 0) nodes[activeIdx].el.classList.remove('active');
+    if (idx >= 0){
+      nodes[idx].el.classList.add('active');
+      // 居中滚动
+      const el = nodes[idx].el;
+      const target = el.offsetTop - box.clientHeight/2 + el.clientHeight/2;
+      box.scrollTo({top: target, behavior:'smooth'});
+    }
+    activeIdx = idx;
+  }
+  nodes.forEach((n, i) => {
+    n.el.classList.toggle('done', t >= n.line.e);
+    if (i === idx){
+      n.spans.forEach((sp, k) => {
+        sp.classList.toggle('filled', t >= n.line.c[k][1]);
+      });
+    } else {
+      n.spans.forEach(sp => sp.classList.remove('filled'));
+    }
+  });
+
+  if (idx >= 0){
+    curEl.textContent = `第 ${idx+1} 句 · ${LINES[idx].t}`;
+    codeEl.textContent = `${srt(LINES[idx].s)} → ${srt(LINES[idx].e)}`;
+  } else {
+    curEl.textContent = (t > 22.4 && t < 23.95) ? '间奏' : (t >= 52.2 ? '尾奏' : '——');
+    codeEl.textContent = 'SRT 时间码';
+  }
+  requestAnimationFrame(tick);
+}
+
+playBtn.onclick = () => audio.paused ? audio.play() : audio.pause();
+audio.onplay = () => playBtn.textContent = '❚❚';
+audio.onpause = () => playBtn.textContent = '▶';
+document.getElementById('bar').onclick = e => {
+  const r = e.currentTarget.getBoundingClientRect();
+  audio.currentTime = (e.clientX - r.left)/r.width * (audio.duration||55.28);
+};
+document.addEventListener('keydown', e => {
+  if (e.code === 'Space'){ e.preventDefault(); playBtn.onclick(); }
+  if (e.code === 'ArrowLeft'){ audio.currentTime = Math.max(0, audio.currentTime-2); }
+  if (e.code === 'ArrowRight'){ audio.currentTime = Math.min(55.28, audio.currentTime+2); }
+});
+requestAnimationFrame(tick);
+</script>
+</body>
+</html>

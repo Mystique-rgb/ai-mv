@@ -1,0 +1,32 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="utf-8">
+<style>html,body{margin:0;background:#000;overflow:hidden}canvas{display:block}</style></head>
+<body><canvas id="c" width="1920" height="1080"></canvas>
+<script src="src/pal.js"></script>
+<script src="src/fig.js"></script>
+<script type="module">
+import { Impasto, Strokes } from './engine/impasto.js';
+window.__S = Strokes;
+const glc = document.createElement('canvas'); glc.width = 1920; glc.height = 1080;
+const E = new Impasto(glc, { W: 1920, H: 1080, ss: 2 });
+const out = document.getElementById('c'), ctx = out.getContext('2d');
+const C = window.PAL.C;
+function draw() {
+  E.begin(window.PAL.MODELS['N-SHOP'].ground);
+  const S = new Strokes(4000);
+  // 背景：一整块墙
+  for (let y = 60; y < 1020; y += 26) for (let x = 40; x < 1880; x += 46)
+    S.push({ x, y, ang: -.1, len: 58, wid: 26, c: [0.22, 0.17, 0.14], c2: [0.16, 0.12, 0.1], seed: (x * 3 + y) % 900, type: 0, hgt: .6 });
+  if (!location.search.includes('nobg')) E.drawNow(S.data(), { cam: { x: 960, y: 540, zoom: 1, rot: 0 }, grey: 0 });
+  const F = new Strokes(4000);
+  window.FIG.fig(F, 0, 420, 900, 40, { expr: 'calm', armL: .15, armR: .5 });
+  window.FIG.fig(F, 0, 900, 900, 40, { expr: 'smile', armL: 1.3, armR: .2 });
+  window.FIG.fig(F, 0, 1380, 900, 40, { expr: 'hurt', armL: .2, armR: .9 });
+  window.FIG.fig(F, 0, 1720, 900, 40, { expr: 'grit', armL: 1.2, armR: 1.2, sq: .9 });
+  if (!location.search.includes('nofig')) E.drawNow(F.data(), { cam: { x: 960, y: 540, zoom: 1, rot: 0 }, grey: 0, run: 0 });
+  E.finish({ ...window.PAL.MODELS['N-SHOP'], ground: [.09, .07, .06] });
+  ctx.drawImage(glc, 0, 0);
+  window.READY = true;
+}
+document.fonts.ready.then(draw);
+window.drawAt = () => { draw(); return { shot: 'T', model: 'N-SHOP', sub: '' }; };
+</script></body></html>

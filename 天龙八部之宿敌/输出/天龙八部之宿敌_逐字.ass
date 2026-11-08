@@ -1,0 +1,67 @@
+[Script Info]
+Title: 天龙八部之宿敌 逐字
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+WrapStyle: 0
+ScaledBorderAndShadow: yes
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Default,Microsoft YaHei,72,&H00FFFFFF,&H00A5C6FF,&H00000000,&H80000000,-1,0,0,0,100,100,2,0,1,4,2,2,80,80,90,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+
+Dialogue: 0,0:00:22.30,0:00:26.27,Default,,0,0,0,,{\kf2}会{\kf78}在{\kf42}何{\kf26}处{\kf46}见{\kf46}到{\kf172}你
+Dialogue: 0,0:00:27.82,0:00:31.79,Default,,0,0,0,,{\kf2}莫{\kf26}非{\kf50}前{\kf32}尘{\kf40}已{\kf40}注{\kf14}定
+Dialogue: 0,0:00:31.90,0:00:36.97,Default,,0,0,0,,{\kf86}飞{\kf32}过{\kf46}时{\kf28}空{\kf50}的{\kf28}距{\kf126}离
+Dialogue: 0,0:00:37.12,0:00:42.04,Default,,0,0,0,,{\kf62}却{\kf46}囿{\kf30}于{\kf24}刀{\kf44}剑{\kf46}光{\kf122}影
+Dialogue: 0,0:00:42.10,0:00:46.14,Default,,0,0,0,,{\kf62}三{\kf24}月{\kf38}春{\kf32}花{\kf44}渐{\kf42}次{\kf122}醒
+Dialogue: 0,0:00:46.74,0:00:51.79,Default,,0,0,0,,{\kf86}迢{\kf26}迢{\kf36}年{\kf34}华{\kf30}谁{\kf46}老{\kf154}去
+Dialogue: 0,0:00:51.94,0:00:56.99,Default,,0,0,0,,{\kf68}是{\kf68}劫{\kf46}是{\kf63}缘{\kf73}随{\kf121}我{\kf66}心
+Dialogue: 0,0:00:57.05,0:01:00.81,Default,,0,0,0,,{\kf33}除{\kf57}了{\kf31}你{\kf42}万{\kf34}敌{\kf48}不{\kf267}侵
+Dialogue: 0,0:01:01.90,0:01:04.84,Default,,0,0,0,,{\kf94}当{\kf34}恩{\kf41}怨{\kf41}各{\kf69}一{\kf69}半
+Dialogue: 0,0:01:04.90,0:01:07.38,Default,,0,0,0,,{\kf65}我{\kf41}怎{\kf67}么{\kf71}圈{\kf54}揽
+Dialogue: 0,0:01:07.44,0:01:09.78,Default,,0,0,0,,{\kf48}看{\kf31}灯{\kf35}笼{\kf47}血{\kf69}红{\kf63}染
+Dialogue: 0,0:01:09.84,0:01:12.26,Default,,0,0,0,,{\kf61}寻{\kf53}仇{\kf66}已{\kf60}太{\kf54}晚
+Dialogue: 0,0:01:12.32,0:01:16.10,Default,,0,0,0,,{\kf51}月{\kf33}下{\kf33}门{\kf46}童{\kf188}喟{\kf122}叹
+Dialogue: 0,0:01:16.16,0:01:21.67,Default,,0,0,0,,{\kf88}昨{\kf62}夜{\kf46}太{\kf44}平{\kf56}长{\kf242}安
+Dialogue: 0,0:01:22.10,0:01:24.40,Default,,0,0,0,,{\kf51}当{\kf35}天{\kf42}上{\kf39}星{\kf58}河{\kf86}转
+Dialogue: 0,0:01:24.46,0:01:27.42,Default,,0,0,0,,{\kf76}我{\kf60}命{\kf38}已{\kf58}定{\kf44}盘
+Dialogue: 0,0:01:27.48,0:01:29.48,Default,,0,0,0,,{\kf9}待{\kf35}绝{\kf37}笔{\kf45}墨{\kf60}痕{\kf77}干
+Dialogue: 0,0:01:29.54,0:01:31.94,Default,,0,0,0,,{\kf68}宿{\kf54}敌{\kf50}已{\kf46}来{\kf32}犯
+Dialogue: 0,0:01:32.00,0:01:35.37,Default,,0,0,0,,{\kf41}我{\kf54}借{\kf33}你{\kf34}的{\kf53}孤{\kf159}单
+Dialogue: 0,0:01:36.05,0:01:41.81,Default,,0,0,0,,{\kf88}今{\kf52}生{\kf60}恐{\kf32}怕{\kf46}难{\kf220}还
+Dialogue: 0,0:02:03.50,0:02:08.64,Default,,0,0,0,,{\kf81}缠{\kf42}绕{\kf39}孤{\kf37}岛{\kf51}的{\kf225}雪{\kf103}雨
+Dialogue: 0,0:02:08.70,0:02:13.34,Default,,0,0,0,,{\kf72}飘{\kf33}飘{\kf33}洒{\kf32}洒{\kf43}谁{\kf230}来{\kf115}停
+Dialogue: 0,0:02:13.40,0:02:18.14,Default,,0,0,0,,{\kf83}摘{\kf39}取{\kf37}一{\kf33}颗{\kf31}海{\kf218}上{\kf135}星
+Dialogue: 0,0:02:18.20,0:02:22.40,Default,,0,0,0,,{\kf100}陪{\kf30}我{\kf38}终{\kf36}夜{\kf34}不{\kf26}孤{\kf122}寂
+Dialogue: 0,0:02:23.20,0:02:27.66,Default,,0,0,0,,{\kf88}灵{\kf32}柩{\kf40}长{\kf22}埋{\kf44}深{\kf58}谷{\kf96}底
+Dialogue: 0,0:02:28.50,0:02:32.48,Default,,0,0,0,,{\kf40}没{\kf40}有{\kf46}永{\kf32}远{\kf36}的{\kf46}秘{\kf114}密
+Dialogue: 0,0:02:33.20,0:02:37.32,Default,,0,0,0,,{\kf88}染{\kf22}指{\kf32}江{\kf38}湖{\kf20}结{\kf52}悲{\kf130}局
+Dialogue: 0,0:02:38.12,0:02:43.11,Default,,0,0,0,,{\kf88}无{\kf20}人{\kf38}逃{\kf30}得{\kf28}过{\kf48}宿{\kf136}命
+Dialogue: 0,0:02:43.50,0:02:46.16,Default,,0,0,0,,{\kf91}当{\kf29}恩{\kf40}怨{\kf44}各{\kf57}一{\kf75}半
+Dialogue: 0,0:02:46.22,0:02:48.78,Default,,0,0,0,,{\kf74}我{\kf46}怎{\kf68}么{\kf66}圈{\kf57}揽
+Dialogue: 0,0:02:48.84,0:02:51.16,Default,,0,0,0,,{\kf53}看{\kf34}灯{\kf32}笼{\kf43}血{\kf66}红{\kf62}染
+Dialogue: 0,0:02:51.22,0:02:53.70,Default,,0,0,0,,{\kf62}寻{\kf63}仇{\kf65}已{\kf55}太{\kf48}晚
+Dialogue: 0,0:02:53.76,0:02:57.54,Default,,0,0,0,,{\kf46}月{\kf38}下{\kf34}门{\kf46}童{\kf187}喟{\kf134}叹
+Dialogue: 0,0:02:57.60,0:03:03.44,Default,,0,0,0,,{\kf100}昨{\kf52}夜{\kf46}太{\kf42}平{\kf52}长{\kf238}安
+Dialogue: 0,0:03:03.50,0:03:06.06,Default,,0,0,0,,{\kf53}当{\kf39}天{\kf39}上{\kf41}星{\kf75}河{\kf63}转
+Dialogue: 0,0:03:06.12,0:03:08.60,Default,,0,0,0,,{\kf63}我{\kf65}命{\kf58}已{\kf60}定{\kf51}盘
+Dialogue: 0,0:03:08.66,0:03:11.02,Default,,0,0,0,,{\kf46}待{\kf33}绝{\kf37}笔{\kf46}墨{\kf69}痕{\kf73}干
+Dialogue: 0,0:03:11.08,0:03:13.50,Default,,0,0,0,,{\kf71}宿{\kf54}敌{\kf61}已{\kf54}来{\kf58}犯
+Dialogue: 0,0:03:13.56,0:03:17.44,Default,,0,0,0,,{\kf55}我{\kf32}借{\kf30}你{\kf45}的{\kf196}孤{\kf126}单
+Dialogue: 0,0:03:17.50,0:03:23.27,Default,,0,0,0,,{\kf90}今{\kf48}生{\kf64}恐{\kf36}怕{\kf44}难{\kf482}还
+Dialogue: 0,0:03:25.10,0:03:28.30,Default,,0,0,0,,{\kf126}当{\kf41}恩{\kf39}怨{\kf43}各{\kf63}一{\kf64}半
+Dialogue: 0,0:03:28.36,0:03:30.86,Default,,0,0,0,,{\kf62}我{\kf46}怎{\kf71}么{\kf69}圈{\kf63}揽
+Dialogue: 0,0:03:30.92,0:03:33.34,Default,,0,0,0,,{\kf57}看{\kf29}灯{\kf32}笼{\kf43}血{\kf76}红{\kf50}染
+Dialogue: 0,0:03:33.40,0:03:35.80,Default,,0,0,0,,{\kf50}寻{\kf67}仇{\kf66}已{\kf55}太{\kf48}晚
+Dialogue: 0,0:03:35.86,0:03:39.80,Default,,0,0,0,,{\kf58}月{\kf42}下{\kf56}门{\kf128}童{\kf82}喟{\kf140}叹
+Dialogue: 0,0:03:39.86,0:03:44.12,Default,,0,0,0,,{\kf106}昨{\kf26}夜{\kf54}太{\kf36}平{\kf54}长{\kf200}安
+Dialogue: 0,0:03:44.60,0:03:47.69,Default,,0,0,0,,{\kf154}当{\kf30}天{\kf30}上{\kf36}星{\kf34}河{\kf66}转
+Dialogue: 0,0:03:47.75,0:03:50.68,Default,,0,0,0,,{\kf116}我{\kf58}命{\kf62}已{\kf75}定{\kf57}盘
+Dialogue: 0,0:03:50.74,0:03:53.36,Default,,0,0,0,,{\kf40}待{\kf30}绝{\kf28}笔{\kf36}墨{\kf44}痕{\kf58}干
+Dialogue: 0,0:03:53.42,0:03:55.52,Default,,0,0,0,,{\kf34}宿{\kf58}敌{\kf56}已{\kf50}来{\kf58}犯
+Dialogue: 0,0:03:55.58,0:03:59.43,Default,,0,0,0,,{\kf50}我{\kf32}借{\kf26}你{\kf26}的{\kf54}孤{\kf202}单
+Dialogue: 0,0:03:59.82,0:04:03.94,Default,,0,0,0,,{\kf56}今{\kf46}生{\kf64}恐{\kf34}怕{\kf50}难{\kf204}还

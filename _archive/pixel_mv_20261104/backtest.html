@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><title>back test</title>
+<style>
+  @font-face { font-family:'XK'; src:url('assets/fonts/Xingkai.ttf'); }
+  body { margin:0; background:#14131F; display:flex; gap:20px; padding:30px; }
+  canvas { image-rendering:pixelated; background:#1B1A28; }
+</style></head>
+<body>
+<div style="color:#E8E5F2;font:12px sans-serif;">正 / 背（男 / 女）对照</div>
+<div id="row" style="display:flex;gap:14px;"></div>
+<script src="src/rig.js"></script>
+<script>
+const row = document.getElementById('row');
+const cases = [
+  ['男·正', { sex:'m' }],
+  ['男·背', { sex:'m', view:'back' }],
+  ['女·正', { sex:'f' }],
+  ['女·背', { sex:'f', view:'back' }],
+];
+for (const [lb, o] of cases) {
+  const d = document.createElement('div');
+  const cv = document.createElement('canvas');
+  cv.width = 24*6; cv.height = 50*6;
+  const c = cv.getContext('2d'); c.imageSmoothingEnabled = false;
+  figure(c, 12*6, 46*6, 6, o);
+  d.appendChild(cv);
+  const t = document.createElement('div'); t.textContent = lb;
+  t.style.cssText = 'color:#8B86B0;font:11px sans-serif;text-align:center;';
+  d.appendChild(t);
+  row.appendChild(d);
+}
+window.__ready = true;
+</script>
+</body></html>

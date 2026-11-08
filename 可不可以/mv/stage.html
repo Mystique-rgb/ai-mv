@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>pixel stage v3</title>
+<style>
+  @font-face { font-family:'KT'; src:url('assets/fonts/STKAITI.TTF') format('truetype'); font-display:block; }
+  html,body { margin:0; padding:0; background:#000; overflow:hidden; }
+  canvas { display:block; }
+</style>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<script src="src/base.js"></script>
+<script src="src/pxfont.js"></script>
+<script src="src/char.js"></script>
+<script src="src/fx.js"></script>
+<script src="src/props.js"></script>
+<script src="src/places.js"></script>
+<script src="src/scenes.js"></script>
+<script src="src/scenes2.js"></script>
+<script src="src/scenes3.js"></script>
+<script src="src/scenes4.js"></script>
+<script src="src/scenes5.js"></script>
+<script src="specs/subs.js"></script>
+<script src="specs/main.js"></script>
+<script>
+const Q = new URLSearchParams(location.search);
+const CW = 1920, CHT = 1080, PW = 480, PH = 270, SCL = 4;
+const cv = document.getElementById('cv');
+cv.width = CW; cv.height = CHT;
+const c = cv.getContext('2d');
+c.imageSmoothingEnabled = false;
+
+const [pix, pc] = mkcanvas(PW, PH);
+const [pixB, pcB] = mkcanvas(PW, PH);
+const [maskCv, maskCtx] = mkcanvas(PW, PH);
+const [ocCv, ocCtx] = mkcanvas(CW, CHT);
+ocCtx.imageSmoothingEnabled = false;
+
+const S = window.SPEC;
+if (!S) throw new Error('SPEC missing');
+
+// ---------- 时间轴 ----------
+function subAt(t) { for (const s of (S.subs || [])) if (t >= s.t0 && t < s.t1) return s; return null; }
+function cardAt(t) { for (const s of (S.cards || [])) if (t >= s.t0 && t < s.t1) return s; return null; }
+function shotAt(t) {
+  const sh = S.shots;
+  for (let i = 0; i < sh.length; i++) if (t >= sh[i].t0 && t < sh[i].t1) return [sh[i], i];
+  return [sh[sh.length - 1], sh.length - 1];
+}
+
+// ---------- 取景 ----------
+const rectOf = (z, cx, cy) => { const w = PW / z, h = PH / z; return [clamp(cx - w / 2, 0, PW - w), clamp(cy - h / 2, 0, PH - h), w, h]; };
+function camRect(shot, lt) {
+  let r;
+  if (shot.cam === false) r = [0, 0, PW, PH];
+  else if (typeof shot.cam === 'function') r = shot.cam(lt);
+  else r = rectOf(1.02 + .05 * (lt / Math.max(.5, shot.t1 - shot.t0)), 240, 138);
+  if (shot.hit != null) {
+    const p = lt - (shot.hit - shot.t0);
+    if (p >= 0 && p < .5) {
+      const k = 1 - p / .5, mag = (shot.hitMag || 10) * k * k;
+      r = [r[0] + mag * .5, r[1] + mag * .3, r[2] - mag, r[3] - mag * .6];
+    }
+  }
+  return r;
+}
+
+// ---------- 转场遮罩 ----------
+function buildMask(p, type) {
+  const img = maskCtx.createImageData(PW, PH), d = img.data;
+  if (type === 'dither') {
+    for (let y = 0; y < PH; y++) for (let x = 0; x < PW; x++) {
+      const on = BAY[y & 3][x & 3] / 16 < p;
+      const i = (y * PW + x) * 4;
+      d[i] = d[i + 1] = d[i + 2] = 255; d[i + 3] = on ? 255 : 0;
+    }
+  } else if (type === 'mosaic') {
+    const bs = 12;
+    for (let by = 0; by < PH; by += bs) for (let bx = 0; bx < PW; bx += bs) {
+      const h = hash(bx * 12.9898 + by * 78.233);
+      const on = h < p * 1.15;
+      for (let y = by; y < Math.min(PH, by + bs); y++) for (let x = bx; x < Math.min(PW, bx + bs); x++) {
+        const i = (y * PW + x) * 4; d[i] = d[i + 1] = d[i + 2] = 255; d[i + 3] = on ? 255 : 0;
+      }
+    }
+  } else if (type === 'ink') {
+    const cx = PW * .5, cy = PH * .45, R0 = p * 380;
+    for (let y = 0; y < PH; y++) for (let x = 0; x < PW; x++) {
+      const dd = Math.hypot(x - cx, (y - cy) * 1.6);
+      const edge = R0 + Math.sin(Math.atan2(y - cy, x - cx) * 7) * 14 + (hash(x * 3 + y * 7) - .5) * 10;
+      const i = (y * PW + x) * 4; d[i] = d[i + 1] = d[i + 2] = 255; d[i + 3] = dd < edge ? 255 : 0;
+    }
+  }
+  maskCtx.putImageData(img, 0, 0);
+}
+
+function blit(ctx, src, r) {
+  ctx.drawImage(src, r[0], r[1], r[2], r[3], 0, 0, CW, CHT);
+}
+
+// ---------- 字幕（v2：16-bit 像素字 PXF，白字 + 2px 黑描边 + 底部安全区） ----------
+function pTextO(ctx, s, x, y, col, sc, edge) {
+  for (const [dx, dy] of [[-1, 0], [1, 0], [0, -1], [0, 1], [-1, -1], [1, -1], [-1, 1], [1, 1]])
+    text(ctx, s, x + dx * sc, y + dy * sc, edge, sc);
+  text(ctx, s, x, y, col, sc);
+}
+function drawSub(ctx, txt, k, o) {
+  o = o || {};
+  const sc = o.sc || 3;
+  const y = o.y == null ? (CHT - 16 * sc - 34) : o.y;   // 底部安全区
+  const ga = o.ga == null ? 1 : o.ga;
+  const a = ga * (o.alpha == null ? 1 : o.alpha);
+  const total = textW(txt, sc);
+  let x = Math.round(CW / 2 - total / 2);
+  ctx.save();
+  ctx.globalAlpha = a;
+  let acc = 0;
+  for (const ch of txt) {
+    const cw = (/[\u4e00-\u9fff]/.test(ch) || ch.codePointAt(0) > 0x2000 ? 16 : 8) * sc;
+    const wts = /[\u4e00-\u9fff]/.test(ch) ? 1 : .55;
+    const on = (acc + wts * .5) <= k * 1.0;
+    pTextO(ctx, ch, x, y, on ? (o.hot || '#FFD166') : (o.cool || '#FFFFFF'), sc, '#0A0910');
+    acc += wts; x += cw;
+  }
+  ctx.restore();
+}
+
+let _plateCv = null;
+function getPlate() {
+  if (_plateCv) return _plateCv;
+  const cv2 = document.createElement('canvas'); cv2.width = 1024; cv2.height = 256;
+  const c2 = cv2.getContext('2d');
+  const g = c2.createRadialGradient(512, 128, 30, 512, 128, 512);
+  g.addColorStop(0, 'rgba(8,6,14,.9)');
+  g.addColorStop(.40, 'rgba(8,6,14,.62)');
+  g.addColorStop(.72, 'rgba(8,6,14,.18)');
+  g.addColorStop(1, 'rgba(8,6,14,0)');
+  c2.fillStyle = g; c2.fillRect(0, 0, 1024, 256);
+  _plateCv = cv2; return cv2;
+}
+
+function drawCard(ctx, card, t) {
+  const lt = t - card.t0, dur = card.t1 - card.t0;
+  const k = clamp(lt / .5, 0, 1), out = clamp((dur - lt) / .5, 0, 1);
+  const a = Math.min(k, out);
+  ctx.save();
+  ctx.globalAlpha = a;
+  const cy = card.y * 4 + 40;
+  // 细线
+  ctx.strokeStyle = card.line || 'rgba(200,180,150,.6)';
+  ctx.lineWidth = 2;
+  const lw = 150 + 60 * k;
+  ctx.beginPath(); ctx.moveTo(CW / 2 - lw, cy - 90); ctx.lineTo(CW / 2 + lw, cy - 90); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(CW / 2 - lw, cy + 110); ctx.lineTo(CW / 2 + lw, cy + 110); ctx.stroke();
+  // 主标题（像素字）
+  const sc = card.sc || 6;
+  const th = 16 * sc;
+  pTextO(ctx, card.text, CW / 2 - textW(card.text, sc) / 2, cy - th / 2,
+    card.col || '#FFF6E2', sc, card.shadow || '#0A0910');
+  // 副标题
+  if (card.sub) {
+    ctx.globalAlpha = a * .92;
+    pTextO(ctx, card.sub, CW / 2 - textW(card.sub, 2) / 2, cy + 66,
+      card.subCol || '#E8DCC0', 2, '#0A0910');
+  }
+  ctx.restore();
+}
+
+let _ct = null;
+function cardTmp() { if (!_ct) { const [cv2, tc] = mkcanvas(480, 270); _ct = { cv: cv2, tc }; } return _ct; }
+
+// ---------- 主绘制 ----------
+window.renderFrame = function (t) {
+  const [shot, idx] = shotAt(t);
+  const lt = t - shot.t0;
+
+  pc.clearRect(0, 0, PW, PH);
+  shot.draw(pc, lt, shot, t);
+  const rB = camRect(shot, lt);
+  const tr = shot.in && idx > 0 ? shot.in : null;
+  const tp = tr ? lt / tr.dur : 9;
+  c.clearRect(0, 0, CW, CHT);
+
+  if (tr && tp < 1) {
+    const prev = S.shots[idx - 1];
+    const plt = Math.max(0, prev.t1 - prev.t0 - .002);
+    pcB.clearRect(0, 0, PW, PH);
+    prev.draw(pcB, plt, prev, prev.t1 - .002);
+    const rA = camRect(prev, plt);
+    const type = tr.type, dir = tr.dir || 1;
+    const e = tp < .5 ? 4 * tp * tp * tp : 1 - Math.pow(-2 * tp + 2, 3) / 2;
+
+    if (type === 'flash') {
+      blit(c, pix, rB);
+      c.save(); c.globalAlpha = (1 - tp) * (tr.amt ?? .92); c.fillStyle = tr.col || '#FFF6E2';
+      c.fillRect(0, 0, CW, CHT); c.restore();
+    } else if (type === 'dip') {
+      const col = tr.col || '#07060C';
+      if (tp < .5) {
+        blit(c, pixB, rA);
+        c.save(); c.globalAlpha = Math.min(1, tp * 2); c.fillStyle = col; c.fillRect(0, 0, CW, CHT); c.restore();
+      } else {
+        blit(c, pix, rB);
+        c.save(); c.globalAlpha = Math.min(1, (1 - tp) * 2); c.fillStyle = col; c.fillRect(0, 0, CW, CHT); c.restore();
+      }
+    } else if (type === 'whip') {
+      const dx = Math.round((1 - e) * CW * dir);
+      c.save();
+      c.drawImage(pixB, rA[0], rA[1], rA[2], rA[3], dx - dir * CW, 0, CW, CHT);
+      c.globalAlpha = .28; c.drawImage(pix, rB[0], rB[1], rB[2], rB[3], dx - dir * 300, 0, CW, CHT);
+      c.globalAlpha = .55; c.drawImage(pix, rB[0], rB[1], rB[2], rB[3], dx - dir * 150, 0, CW, CHT);
+      c.globalAlpha = 1; c.drawImage(pix, rB[0], rB[1], rB[2], rB[3], dx, 0, CW, CHT);
+      c.restore();
+    } else if (type === 'scan') {
+      blit(c, pixB, rA);
+      const y = e * CHT;
+      c.save(); c.beginPath(); c.rect(0, 0, CW, y); c.clip(); blit(c, pix, rB); c.restore();
+      c.save(); c.globalAlpha = .5; c.fillStyle = tr.col || '#FFF6E2'; c.fillRect(0, Math.max(0, y - 6), CW, 7); c.restore();
+    } else if (type === 'glitch') {
+      blit(c, pixB, rA);
+      const n = 12, sh = CHT / n;
+      for (let s = 0; s < n; s++) {
+        if (s % 3 === 0) continue;
+        const off = Math.round(Math.sin(s * 12.9 + tp * 30) * 110 * (1 - tp));
+        c.save(); c.beginPath(); c.rect(0, Math.floor(s * sh), CW, Math.ceil(sh) + 2); c.clip();
+        c.drawImage(pix, rB[0], rB[1], rB[2], rB[3], off, 0, CW, CHT); c.restore();
+      }
+    } else if (type === 'zoom') {
+      const s = 1 + e * .9;
+      c.save(); c.globalAlpha = 1 - e; c.translate(CW / 2, CHT / 2); c.scale(s, s); c.translate(-CW / 2, -CHT / 2);
+      c.drawImage(pixB, rA[0], rA[1], rA[2], rA[3], 0, 0, CW, CHT); c.restore();
+      c.save(); c.globalAlpha = e; c.translate(CW / 2, CHT / 2); c.scale(.7 + e * .3, .7 + e * .3); c.translate(-CW / 2, -CHT / 2);
+      c.drawImage(pix, rB[0], rB[1], rB[2], rB[3], 0, 0, CW, CHT); c.restore();
+    } else if (type === 'iris') {
+      blit(c, pixB, rA);
+      const R0 = e * 1500;
+      c.save();
+      c.beginPath(); c.arc(CW / 2, CHT * .52, R0, 0, Math.PI * 2); c.clip();
+      blit(c, pix, rB); c.restore();
+    } else if (type === 'dither' || type === 'mosaic' || type === 'ink') {
+      blit(c, pixB, rA);
+      ocCtx.clearRect(0, 0, CW, CHT);
+      blit(ocCtx, pix, rB);
+      buildMask(Math.min(1, tp * 1.12), type);
+      ocCtx.globalCompositeOperation = 'destination-in';
+      ocCtx.drawImage(maskCv, 0, 0, PW, PH, 0, 0, CW, CHT);
+      ocCtx.globalCompositeOperation = 'source-over';
+      c.drawImage(ocCv, 0, 0);
+    } else blit(c, pix, rB);
+  } else blit(c, pix, rB);
+
+  // 全片提亮（screen 叠加，成本极低）
+  if (S.grade !== false) {
+    c.save();
+    c.globalCompositeOperation = 'screen';
+    c.globalAlpha = S.gradeA == null ? .10 : S.gradeA;
+    c.fillStyle = S.gradeCol || '#3A3A55';
+    c.fillRect(0, 0, CW, CHT);
+    c.restore();
+  }
+
+  // 底部字幕压暗
+  if (S.subShade !== 0) {
+    const g = c.createLinearGradient(0, CHT * .74, 0, CHT);
+    g.addColorStop(0, 'rgba(6,5,12,0)'); g.addColorStop(1, `rgba(6,5,12,${S.subShade ?? .62})`);
+    c.fillStyle = g; c.fillRect(0, CHT * .74, CW, CHT * .26);
+  }
+
+  if (shot.tint) { c.save(); c.globalAlpha = shot.tintA ?? .12; c.fillStyle = shot.tint; c.fillRect(0, 0, CW, CHT); c.restore(); }
+  if (shot.cast) { c.save(); c.globalCompositeOperation = 'screen'; c.globalAlpha = shot.castA ?? .18; c.fillStyle = shot.cast; c.fillRect(0, 0, CW, CHT); c.restore(); }
+
+  // 扫描线（1px 黑线，4px 周期）+ 暗角
+  c.save(); c.globalAlpha = .13; c.fillStyle = '#000';
+  for (let y = 0; y < CHT; y += 4) c.fillRect(0, y, CW, 1);
+  c.restore();
+  const vg = c.createRadialGradient(CW / 2, CHT / 2, CHT * .42, CW / 2, CHT / 2, CHT * 1.05);
+  vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, `rgba(4,3,10,${shot.vig ?? .5})`);
+  c.fillStyle = vg; c.fillRect(0, 0, CW, CHT);
+
+  const card = cardAt(t);
+  if (card) drawCard(c, card, t);
+
+  const sub = subAt(t);
+  if (sub) {
+    const k = clamp((t - sub.p0) / Math.max(.2, sub.p1 - sub.p0), 0, 1);
+    const fin = clamp((t - sub.t0) / .16, 0, 1), fout = clamp((sub.t1 - t) / .14, 0, 1);
+    const a = Math.min(fin, fout);
+    const dy = (1 - W.easeOut(fin)) * 10;
+    drawSub(c, sub.text, k, { alpha: a, y: CHT - 16 * 3 - 34 + dy, sc: sub.sc || 3 });
+  }
+
+  if (S.fadeIn && t < S.fadeIn) { c.save(); c.globalAlpha = 1 - t / S.fadeIn; c.fillStyle = '#07060C'; c.fillRect(0, 0, CW, CHT); c.restore(); }
+  if (S.fadeOut && t > S.duration - S.fadeOut) {
+    c.save(); c.globalAlpha = (t - (S.duration - S.fadeOut)) / S.fadeOut; c.fillStyle = S.fadeCol || '#07060C';
+    c.fillRect(0, 0, CW, CHT); c.restore();
+  }
+};
+
+(async () => {
+  await document.fonts.load('400 100px KT');
+  await document.fonts.ready;
+  window.renderFrame(0);
+  window.__ready = true;
+})();
+</script>
+</body>
+</html>

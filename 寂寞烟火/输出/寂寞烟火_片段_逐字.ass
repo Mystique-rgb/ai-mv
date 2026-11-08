@@ -1,0 +1,32 @@
+[Script Info]
+Title: 寂寞烟火（片段）逐字
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+WrapStyle: 0
+ScaledBorderAndShadow: yes
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Default,思源黑体 CN Bold,72,&H00FFFFFF,&H00A5C6FF,&H00000000,&H80000000,-1,0,0,0,100,100,2,0,1,4,2,2,80,80,90,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+
+Dialogue: 0,0:00:00.00,0:00:03.34,Default,,0,0,0,,{\kf10}跨{\kf10}越{\kf10}过{\kf26}多{\kf48}少{\kf32}海{\kf48}洋{\kf36}去{\kf44}看{\kf44}你
+Dialogue: 0,0:00:03.34,0:00:05.42,Default,,0,0,0,,{\kf28}孤{\kf16}单{\kf26}的{\kf46}黑{\kf16}夜{\kf34}途{\kf42}中
+Dialogue: 0,0:00:05.42,0:00:07.22,Default,,0,0,0,,{\kf44}只{\kf28}要{\kf34}想{\kf30}着{\kf44}你
+Dialogue: 0,0:00:07.22,0:00:10.32,Default,,0,0,0,,{\kf28}我{\kf28}就{\kf32}不{\kf46}会{\kf66}惶{\kf110}恐
+Dialogue: 0,0:00:10.32,0:00:13.92,Default,,0,0,0,,{\kf34}时{\kf24}光{\kf20}的{\kf35}岸{\kf41}上{\kf80}人{\kf44}来{\kf20}了{\kf30}又{\kf32}走
+Dialogue: 0,0:00:13.92,0:00:17.15,Default,,0,0,0,,{\kf32}离{\kf16}开{\kf16}时{\kf66}你{\kf19}不{\kf19}用{\kf70}说{\kf38}我{\kf38}都{\kf9}懂
+Dialogue: 0,0:00:17.15,0:00:19.78,Default,,0,0,0,,{\kf30}感{\kf30}谢{\kf30}你{\kf30}曾{\kf35}让{\kf98}我
+Dialogue: 0,0:00:19.78,0:00:23.30,Default,,0,0,0,,{\kf52}留{\kf42}在{\kf76}你{\kf64}眼{\kf118}中
+Dialogue: 0,0:00:24.00,0:00:28.02,Default,,0,0,0,,{\kf84}我{\kf22}曾{\kf12}经{\kf50}走{\kf36}过{\kf56}最{\kf42}遥{\kf20}远{\kf44}的{\kf36}路
+Dialogue: 0,0:00:28.02,0:00:31.60,Default,,0,0,0,,{\kf32}想{\kf22}要{\kf20}去{\kf46}拥{\kf38}抱{\kf48}未{\kf28}成{\kf31}真{\kf31}的{\kf62}梦
+Dialogue: 0,0:00:31.60,0:00:33.78,Default,,0,0,0,,{\kf32}迷{\kf16}失{\kf18}的{\kf48}黑{\kf20}夜{\kf48}途{\kf36}中
+Dialogue: 0,0:00:33.78,0:00:35.55,Default,,0,0,0,,{\kf38}只{\kf34}要{\kf20}想{\kf48}起{\kf37}你
+Dialogue: 0,0:00:35.55,0:00:38.54,Default,,0,0,0,,{\kf20}就{\kf50}点{\kf30}亮{\kf46}了{\kf40}星{\kf108}空
+Dialogue: 0,0:00:38.54,0:00:42.18,Default,,0,0,0,,{\kf42}流{\kf18}浪{\kf48}的{\kf26}纸{\kf34}船{\kf46}忘{\kf54}不{\kf16}掉{\kf48}港{\kf32}口
+Dialogue: 0,0:00:42.18,0:00:45.72,Default,,0,0,0,,{\kf32}渐{\kf16}灭{\kf28}的{\kf42}花{\kf24}火{\kf42}割{\kf58}不{\kf24}断{\kf58}彩{\kf30}虹
+Dialogue: 0,0:00:45.72,0:00:48.44,Default,,0,0,0,,{\kf34}你{\kf18}就{\kf16}是{\kf56}我{\kf40}心{\kf108}中
+Dialogue: 0,0:00:48.44,0:00:52.20,Default,,0,0,0,,{\kf48}永{\kf16}恒{\kf96}的{\kf44}天{\kf166}空

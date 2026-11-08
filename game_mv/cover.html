@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>最美的期待 · 封面</title>
+<style>
+  @font-face { font-family: "PiaoyiKai"; src: url("assets/fonts/Xingkai.ttf") format("truetype"); font-weight: normal; font-style: normal; font-display: block; }
+  @font-face { font-family: "PiaoyiKaiFallback"; src: url("assets/fonts/Kaiti.ttf") format("truetype"); font-weight: normal; font-style: normal; font-display: block; }
+  html, body { margin: 0; background: #17141b; }
+  #out { display: block; }
+  .p5Canvas { display: none !important; }
+</style>
+<script>
+  // 画布尺寸由 ?w=&h= 决定；core.js 读 window.STAGE_W / STAGE_H
+  const Q = new URLSearchParams(location.search);
+  window.STAGE_W = +(Q.get('w') || 1080);
+  window.STAGE_H = +(Q.get('h') || 1440);
+  document.title = '封面 ' + window.STAGE_W + '×' + window.STAGE_H;
+</script>
+<script src="node_modules/p5/lib/p5.min.js"></script>
+</head>
+<body>
+<canvas id="out" width="1080" height="1440"></canvas>
+<script>
+  // 必须在 core.js 之前把输出画布定好尺寸，否则 composite 会把 1920×1080 缩进默认 300×150
+  const OC = document.getElementById('out');
+  OC.width = window.STAGE_W; OC.height = window.STAGE_H;
+</script>
+<script src="src/config.js"></script>
+<script src="src/core.js"></script>
+<script src="src/clawd.js"></script>
+<script src="src/timeline.js"></script>
+<script src="src/gs.js"></script>
+<script src="src/cover_scene.js"></script>
+</body>
+</html>

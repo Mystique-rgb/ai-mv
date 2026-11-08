@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>风格试验 · 50s 扁平卡通</title>
+<style>
+  html, body { margin: 0; background: #14110e; }
+  .p5Canvas { display: none !important; }
+  @font-face { font-family: "PiaoyiKai"; src: url("assets/fonts/Xingkai.ttf") format("truetype"); font-display: block; }
+</style>
+<script src="node_modules/p5/lib/p5.min.js"></script>
+<script src="node_modules/p5.brush/dist/p5.brush.js"></script>
+</head>
+<body>
+<canvas id="out" width="1920" height="1080"></canvas>
+<script src="src/config.js"></script>
+<script>PROJECT.w = 1920; PROJECT.h = 1080; PROJECT.duration = 32; PROJECT.bpm = 96; PROJECT.offset = 0;</script>
+<script src="src/core.js"></script>
+<script src="src/clawd.js"></script>
+<script src="src/wardrobe.js"></script>
+<script src="style/kit.js"></script>
+<script src="style/midcentury.js"></script>
+<script>
+window.EXTRA_FONTS = [
+  ['76px "Microsoft YaHei"', '小镇·一九九九'],
+  ['54px "Microsoft YaHei"', '小镇姑娘车头依然吐着烟'],
+];
+</script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><title>clip</title></head>
+<body style="margin:0;background:#000;">
+<canvas id="cv" width="320" height="180"></canvas>
+<script src="src/rig.js"></script>
+<script src="src/scene.js"></script>
+<script src="src/events.js"></script>
+<script src="src/testclip.js"></script>
+<script>
+const cv = document.getElementById('cv');
+const c = cv.getContext('2d');
+c.imageSmoothingEnabled = false;
+window.renderFrame = function(t) {
+  c.clearRect(0, 0, 320, 180);
+  drawTestClip(c, t);
+};
+window.renderFrame(0);
+window.__ready = true;
+</script>
+</body>
+</html>

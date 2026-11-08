@@ -1,0 +1,12 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="fonts/local.css">
+<style>
+html,body{margin:0;background:#000;overflow:hidden}
+#stage{position:relative;width:1920px;height:1080px}
+canvas{display:block;position:absolute;left:0;top:0}
+#sub{position:absolute;left:0;width:1920px;bottom:92px;text-align:center;font-family:'NSSC',serif;font-weight:500;font-size:54px;letter-spacing:.14em;color:#f3e6cf;text-shadow:0 2px 14px rgba(8,14,30,.85),0 0 3px rgba(8,14,30,.9);white-space:nowrap}
+#title{position:absolute;left:0;width:1920px;top:120px;text-align:center;font-family:'NSSC',serif;font-weight:500;color:#f3e6cf;text-shadow:0 3px 22px rgba(8,14,30,.8)}
+#title .big{font-size:128px;letter-spacing:.3em;padding-left:.3em}
+#title .small{font-size:34px;letter-spacing:.5em;margin-top:18px;padding-left:.5em;opacity:.85}
+</style></head>
+<body><div id="stage"><canvas id="c"></canvas><div id="title"><div class="big"></div><div class="small"></div></div><div id="sub"></div></div>
+<script type="module" src="main.js"></script></body></html>

@@ -1,0 +1,30 @@
+﻿[Script Info]
+Title: 别怕变老 · 11月7日 50s
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+WrapStyle: 2
+ScaledBorderAndShadow: yes
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: MV,Microsoft YaHei,64,&H00FFFFFF,&H00C8A83C,&H00101010,&H80000000,0,0,0,0,100,100,2,0,1,3,1,2,80,80,96,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:00.16,0:00:02.85,MV,,0,0,0,,{\k269}让我的爱人勇敢别怕变老
+Dialogue: 0,0:00:02.88,0:00:04.53,MV,,0,0,0,,{\k165}对面的女孩看过来
+Dialogue: 0,0:00:04.56,0:00:06.45,MV,,0,0,0,,{\k189}看着我别再盯着镜子
+Dialogue: 0,0:00:06.48,0:00:08.61,MV,,0,0,0,,{\k213}盯着自己手机摄像头
+Dialogue: 0,0:00:08.64,0:00:12.21,MV,,0,0,0,,{\k357}我总说可能问题源于你的视力太好
+Dialogue: 0,0:00:12.24,0:00:16.29,MV,,0,0,0,,{\k405}总说你正在衰老害怕我会被拐跑baby
+Dialogue: 0,0:00:16.32,0:00:19.09,MV,,0,0,0,,{\k277}我从没忘记爱慕你的初衷
+Dialogue: 0,0:00:19.12,0:00:22.37,MV,,0,0,0,,{\k325}迷恋你的特别尽管我们都很普通
+Dialogue: 0,0:00:22.40,0:00:25.57,MV,,0,0,0,,{\k317}光阴的故事说实话没经历也不懂
+Dialogue: 0,0:00:25.60,0:00:29.86,MV,,0,0,0,,{\k426}也只能珍惜眼前为了不\N成为它的附庸babe
+Dialogue: 0,0:00:29.92,0:00:33.09,MV,,0,0,0,,{\k317}岁月划过指尖一切像梦境实现
+Dialogue: 0,0:00:33.12,0:00:36.29,MV,,0,0,0,,{\k317}就算被苦痛肆虐那也是很久之前
+Dialogue: 0,0:00:36.32,0:00:39.73,MV,,0,0,0,,{\k341}我们现在拥有所有就像埋下了火种
+Dialogue: 0,0:00:39.76,0:00:43.25,MV,,0,0,0,,{\k349}现在我为你歌颂就只管牵着我走
+Dialogue: 0,0:00:43.28,0:00:47.17,MV,,0,0,0,,{\k389}Baby我仰慕你的自然你的优雅
+Dialogue: 0,0:00:47.20,0:00:50.02,MV,,0,0,0,,{\k282}Baby我会大声向你表白虽然肉麻

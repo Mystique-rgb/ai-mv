@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>像素事件库</title>
+<style>
+  :root { --bg:#14131F; --panel:#1B1A28; --line:#2E2C42; --text:#E8E5F2; --dim:#8B86B0; --gold:#FFD166; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:13px/1.6 "Microsoft YaHei",system-ui,sans-serif; padding:40px 48px 70px; }
+  h1 { font-size:22px; font-weight:600; margin:0 0 4px; letter-spacing:.06em; }
+  .sub { color:var(--dim); font-size:12px; margin-bottom:32px; }
+  h2 { font-size:13px; font-weight:600; letter-spacing:.16em; color:var(--gold); margin:38px 0 14px; padding-bottom:8px; border-bottom:1px solid var(--line); }
+  h2 span { color:var(--dim); font-weight:400; letter-spacing:0; margin-left:10px; }
+  .grid { display:grid; grid-template-columns:repeat(4, 1fr); gap:12px; }
+  .card { background:var(--panel); border:1px solid var(--line); padding:8px; }
+  .card canvas { display:block; width:100%; image-rendering:pixelated; background:#0F0E1A; }
+  .cap { margin-top:6px; font-size:10px; color:var(--dim); display:flex; justify-content:space-between; }
+  .cap b { color:var(--text); font-weight:500; font-size:11px; }
+  .cap .tag { font-family:ui-monospace,monospace; font-size:9px; color:#5A5878; }
+</style>
+</head>
+<body>
+
+<h1>像素事件库 · v1</h1>
+<div class="sub">40 个可复用动作片段 · 每张卡 = 该事件在时间 t=0.45s 的定格帧 · 四大类轮换</div>
+
+<div id="root"></div>
+
+<script src="src/rig.js"></script>
+<script src="src/scene.js"></script>
+<script src="src/events.js"></script>
+<script>
+const $ = s => document.querySelector(s);
+const root = $('#root');
+
+// 每个事件的展示上下文（场景 + 坐标）
+const CTX = {
+  walk: { s:'street', x:120, y:158 }, run: { s:'street', x:120, y:158 },
+  sit: { s:'room', x:150, y:150 }, crouch: { s:'emptyroom', x:150, y:154 },
+  lookup: { s:'rooftop', x:160, y:152 }, lookdown: { s:'rooftop', x:160, y:152 },
+  turn: { s:'street', x:160, y:158 }, wave: { s:'street', x:160, y:158 },
+  hug: { s:'sea', x:180, y:148 }, wipe: { s:'lamp', x:160, y:156 },
+  farewell: { s:'street', x:200, y:158 }, faint: { s:'emptyroom', x:160, y:154 },
+  heart: { s:'street', x:180, y:158 }, teardrop: { s:'lamp', x:160, y:156 },
+  letter: { s:'room', x:150, y:150 }, phone: { s:'room', x:150, y:150 },
+  firework: { s:'rooftop', x:160, y:152 }, plane: { s:'sea', x:160, y:148 },
+  lampon: { s:'emptyroom', x:160, y:154 }, shadow: { s:'street', x:160, y:158 },
+  rain: { s:'street', x:0, y:0 }, snow: { s:'snow', x:0, y:0 },
+};
+
+function renderCard(name, t = .45) {
+  const ev = EVENTS[name];
+  const d = document.createElement('div'); d.className = 'card';
+  const cv = document.createElement('canvas'); cv.width = 320; cv.height = 180;
+  const c = cv.getContext('2d'); c.imageSmoothingEnabled = false;
+
+  // 场景底
+  const ctx = CTX[name] || { s:'emptyroom', x:160, y:154 };
+  const sc = SCENES[ctx.s];
+  if (sc) sc.draw(c, t);
+  else { c.fillStyle = PAL.night; c.fillRect(0, 0, 320, 180); }
+
+  // 事件
+  const o = { sx: ctx.x, sy: ctx.y, S: 2, sex: 'm', dur: ev.dur };
+  if (ev.cat === 'face') o.sex = (name.endsWith('cry') || name.endsWith('shy') || name.endsWith('tear')) ? 'f' : 'm';
+  if (name === 'hug') o.mx = ctx.x;
+  if (name === 'farewell') o.dist = 30;
+  ev.run(c, t, o);
+
+  if (sc && sc.fg) sc.fg(c, t);
+
+  d.appendChild(cv);
+  const cap = document.createElement('div'); cap.className = 'cap';
+  cap.innerHTML = `<b>${name}</b><span class="tag">${ev.cat}</span>`;
+  d.appendChild(cap);
+  return d;
+}
+
+// 按类别分组
+const cats = [['body', '动作/身'], ['face', '表情/表'], ['prop', '道具/墨'], ['cam', '镜头/镜']];
+for (const [cat, label] of cats) {
+  const names = EVENT_LIST.filter(n => EVENTS[n].cat === cat);
+  const h = document.createElement('h2');
+  h.innerHTML = `${label} <span>${names.length} 个</span>`;
+  root.appendChild(h);
+  const g = document.createElement('div'); g.className = 'grid';
+  for (const n of names) g.appendChild(renderCard(n));
+  root.appendChild(g);
+}
+
+// cam 类单独演示（用一张纯色底）
+window.__ready = true;
+</script>
+</body>
+</html>

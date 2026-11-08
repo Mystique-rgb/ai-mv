@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  html,body{margin:0;padding:0;background:#000;overflow:hidden}
+  canvas{width:1920px;height:1080px;image-rendering:pixelated;image-rendering:crisp-edges;display:block}
+</style>
+</head>
+<body>
+<canvas id="cv" width="320" height="180"></canvas>
+<script src="../src/rig.js"></script>
+<script>
+// ============================================================
+//  代码渲染人物主角图 —— 金边雨夜（人物资产库 v1 基因）
+//  逻辑画布 320x180，整图 x6 = 1920x1080
+//  人物走 src/rig.js 的 figure()，与 MV 成片同一套骨架
+// ============================================================
+window.__T = 2.0;                 // 固定时间，避免眨眼相位落在闭合帧
+
+const C = document.getElementById('cv');
+const ctx = C.getContext('2d');
+ctx.imageSmoothingEnabled = false;
+
+const W = 320, H = 180, HOR = 124;   // 地平线
+
+// ---- 固定种子伪随机（保证每次渲染完全一致） ----
+let _s = 20261105;
+function rnd(){ _s = (_s * 1103515245 + 12345) & 0x7fffffff; return _s / 0x7fffffff; }
+
+// ---------- 1. 夜空：硬边分带，不用渐变 ----------
+const SKY = ['#14151A','#17181F','#1A1B20','#1E2029','#232631','#272B38','#2A2F3F'];
+for (let i = 0; i < SKY.length; i++) {
+  const y0 = Math.round(HOR * i / SKY.length);
+  const y1 = Math.round(HOR * (i + 1) / SKY.length);
+  ctx.fillStyle = SKY[i];
+  ctx.fillRect(0, y0, W, y1 - y0);
+}
+
+// 星点：只在高处稀疏几颗
+for (let i = 0; i < 26; i++) {
+  const x = Math.floor(rnd() * W), y = Math.floor(rnd() * 70);
+  ctx.fillStyle = rnd() > .5 ? '#8E97AD' : '#5E6880';
+  ctx.fillRect(x, y, 1, 1);
+}
+
+// ---------- 2. 远景建筑剪影 ----------
+const far = [
+  [0,  74, 34, 52], [30, 86, 22, 40], [54, 68, 30, 58], [86, 92, 26, 34],
+  [110, 78, 36, 48], [158, 88, 20, 38], [180, 62, 28, 64], [210, 90, 30, 36],
+  [240, 80, 24, 46], [286, 70, 34, 56]
+];
+for (const [x, y, w, h] of far) {
+  ctx.fillStyle = '#22252F';
+  ctx.fillRect(x, y, w, HOR - y + 2);
+  ctx.fillStyle = '#1B1E27';           // 受光背面压暗
+  ctx.fillRect(x + w - 3, y, 3, HOR - y + 2);
+}
+// 零星亮窗（暖金 / 冷蓝，只留很低密度）
+for (const [x, y, w, h] of far) {
+  for (let wy = y + 6; wy < HOR - 6; wy += 9) {
+    for (let wx = x + 4; wx < x + w - 5; wx += 8) {
+      if (rnd() > .78) {
+        ctx.fillStyle = rnd() > .45 ? '#C9A05E' : '#6A7590';
+        ctx.fillRect(wx, wy, 3, 3);
+      }
+    }
+  }
+}
+
+// ---------- 3. 地面：人行道 + 湿路 ----------
+ctx.fillStyle = '#2A3040'; ctx.fillRect(0, HOR, W, 10);        // 人行道
+ctx.fillStyle = '#22283A'; ctx.fillRect(0, HOR + 10, W, 12);   // 路缘暗带
+ctx.fillStyle = '#1B2130'; ctx.fillRect(0, HOR + 22, W, H - HOR - 22); // 路面
+// 路面接缝（水平线，不透视）
+ctx.fillStyle = '#242B3D';
+for (let x = 0; x < W; x += 46) ctx.fillRect(x, HOR + 22, 1, H - HOR - 22);
+
+// ---------- 4. 路灯（右上方光源） ----------
+const LX = 262, LY = 38;
+ctx.fillStyle = '#171A22'; ctx.fillRect(LX - 1, LY + 4, 4, HOR + 24 - LY);  // 灯柱
+ctx.fillStyle = '#101319'; ctx.fillRect(LX + 2, LY + 4, 1, HOR + 24 - LY);  // 柱子暗侧
+ctx.fillStyle = '#1E222C'; ctx.fillRect(LX - 5, LY + 2, 11, 3);             // 灯臂
+// 灯头灯罩
+ctx.fillStyle = '#2A2436'; ctx.fillRect(LX - 6, LY - 2, 13, 5);
+ctx.fillStyle = '#FFE3A8'; ctx.fillRect(LX - 4, LY + 1, 9, 2);
+ctx.fillStyle = '#DAB461'; ctx.fillRect(LX - 5, LY - 2, 11, 2);
+
+// 光晕：同心硬边方框，逐层降 alpha（像素风不用 radial gradient）
+const halos = [[26, .07], [18, .09], [11, .13], [6, .18]];
+for (const [r, a] of halos) {
+  ctx.globalAlpha = a;
+  ctx.fillStyle = '#DAB461';
+  ctx.fillRect(LX - r, LY - r + 1, r * 2, r * 2);
+}
+ctx.globalAlpha = 1;
+
+// 光锥：从灯头向地面铺开的阶梯梯形（每 6px 一档加宽）
+ctx.globalAlpha = .10;
+ctx.fillStyle = '#DAB461';
+for (let i = 0; i < 16; i++) {
+  const y = LY + 5 + i * 7;
+  const hw = 4 + i * 2;
+  ctx.fillRect(LX - hw, y, hw * 2, 7);
+}
+ctx.globalAlpha = 1;
+
+// 灯光在湿路面的金色反光条（竖条，随距离变窄）
+ctx.fillStyle = '#C79A52';
+ctx.globalAlpha = .55;
+ctx.fillRect(LX - 6, HOR + 12, 3, 30);
+ctx.fillRect(LX + 1, HOR + 12, 2, 24);
+ctx.globalAlpha = .32;
+ctx.fillRect(LX - 11, HOR + 16, 2, 20);
+ctx.fillRect(LX + 6, HOR + 16, 2, 16);
+ctx.globalAlpha = 1;
+
+// ---------- 5. 背景雨丝（人物之后还有一层前景雨） ----------
+function rain(count, alphaMin, alphaMax, y0, y1) {
+  for (let i = 0; i < count; i++) {
+    const x = Math.floor(rnd() * W);
+    const y = Math.floor(y0 + rnd() * (y1 - y0));
+    const len = 3 + Math.floor(rnd() * 5);
+    ctx.globalAlpha = alphaMin + rnd() * (alphaMax - alphaMin);
+    ctx.fillStyle = rnd() > .7 ? '#6E82A0' : '#4A5A74';
+    ctx.fillRect(x, y, 1, len);
+  }
+  ctx.globalAlpha = 1;
+}
+rain(140, .25, .5, 0, H);
+
+// ---------- 6. 人物：先金边剪影（右移 1px），再正常本体 ----------
+const PX = 132, PY = 158, PS = 3.4;   // 中心 x / 脚底 y / 放大
+const GOLD_COL = {
+  hair: '#DAB461', hairDk: '#CFA54F', skin: '#DAB461', skinDk: '#CFA54F',
+  coat: '#DAB461', coatDk: '#CFA54F', inner: '#DAB461', pants: '#DAB461', shoe: '#CFA54F'
+};
+// 金边层
+ctx.save();
+figure(ctx, PX + 1, PY - 1, PS, {
+  sex: 'm', pose: 'stand', eyes: 'normal', mouth: 'flat',
+  blink: false, rim: false, col: GOLD_COL
+});
+ctx.restore();
+// 本体
+figure(ctx, PX, PY, PS, {
+  sex: 'm', pose: 'stand', eyes: 'normal', mouth: 'flat', blink: false
+});
+
+// ---------- 7. 接地：影子 + 金边水洼 ----------
+ctx.globalAlpha = .45; ctx.fillStyle = '#0D1017';
+ctx.fillRect(PX - 22, PY - 2, 44, 4);       // 脚下暗影
+ctx.fillRect(PX - 15, PY - 3, 30, 1);
+ctx.globalAlpha = 1;
+// 金色水洼反射（横向压扁的碎金）
+ctx.globalAlpha = .55; ctx.fillStyle = '#DAB461';
+ctx.fillRect(PX - 18, PY + 2, 12, 1);
+ctx.fillRect(PX + 4, PY + 2, 10, 1);
+ctx.fillRect(PX - 9, PY + 5, 20, 1);
+ctx.globalAlpha = .3;
+ctx.fillRect(PX - 26, PY + 7, 14, 1);
+ctx.fillRect(PX + 12, PY + 7, 12, 1);
+ctx.globalAlpha = 1;
+
+// ---------- 8. 前景雨：压在最上层，制造景深 ----------
+rain(60, .18, .38, 40, H);
+
+// 四边暗角（硬边，不做渐变）
+ctx.globalAlpha = .30; ctx.fillStyle = '#0C0D12';
+ctx.fillRect(0, 0, W, 6); ctx.fillRect(0, H - 10, W, 10);
+ctx.fillRect(0, 0, 8, H); ctx.fillRect(W - 8, 0, 8, H);
+ctx.globalAlpha = 1;
+
+window.__ready = true;
+</script>
+</body>
+</html>

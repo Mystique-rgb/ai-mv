@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>小镇姑娘 · 字幕校对台</title>
+<style>
+  :root{
+    --bg:#f6f5f2; --panel:#ffffff; --line:#e3e0da; --ink:#23211e; --dim:#8b857c;
+    --accent:#c2543f; --accent-soft:#f7e9e5; --mono:"SFMono-Regular",Consolas,monospace;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;}
+  header{padding:18px 22px 12px;border-bottom:1px solid var(--line);background:var(--panel);}
+  h1{margin:0 0 3px;font-size:16px;font-weight:600;letter-spacing:.3px;}
+  .sub{font-size:12px;color:var(--dim);font-family:var(--mono);}
+  .bar{display:flex;align-items:center;gap:10px;padding:12px 22px;background:var(--panel);
+    border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5;flex-wrap:wrap;}
+  button{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:6px;
+    padding:6px 11px;font-size:13px;cursor:pointer;font-family:inherit;}
+  button:hover{border-color:var(--accent);color:var(--accent);}
+  button.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+  #prog{flex:1;min-width:180px;height:26px;cursor:pointer;}
+  .clock{font-family:var(--mono);font-size:12px;color:var(--dim);min-width:96px;text-align:right;}
+  main{display:grid;grid-template-columns:1fr 300px;gap:0;align-items:start;}
+  ol{list-style:none;margin:0;padding:10px 14px 60px;}
+  li{display:grid;grid-template-columns:52px 1fr 108px;gap:12px;align-items:baseline;
+    padding:9px 10px;border-radius:7px;border:1px solid transparent;cursor:pointer;}
+  li:hover{background:#fbfaf8;border-color:var(--line);}
+  li.cur{background:var(--accent-soft);border-color:#e6c3b9;}
+  li.sel{outline:2px solid var(--accent);outline-offset:-2px;}
+  .idx{font-family:var(--mono);font-size:11px;color:var(--dim);}
+  .txt{font-size:15px;line-height:1.5;}
+  .meta{font-family:var(--mono);font-size:11px;color:var(--dim);text-align:right;}
+  aside{position:sticky;top:57px;padding:14px 18px;border-left:1px solid var(--line);
+    background:var(--panel);min-height:calc(100vh - 57px);}
+  aside h2{font-size:12px;margin:0 0 10px;color:var(--dim);font-weight:600;letter-spacing:1px;}
+  .row{display:flex;align-items:center;justify-content:space-between;margin:9px 0;font-size:12px;}
+  .row b{font-family:var(--mono);font-weight:500;color:var(--accent);}
+  input[type=range]{width:100%;}
+  .hint{font-size:11px;line-height:1.7;color:var(--dim);margin-top:14px;
+    border-top:1px dashed var(--line);padding-top:12px;}
+  kbd{font-family:var(--mono);background:#f1efeb;border:1px solid var(--line);
+    border-radius:3px;padding:0 3px;font-size:10px;}
+  .warn{font-size:11px;color:#9a6b23;background:#fdf6e7;border:1px solid #efe0c2;
+    border-radius:6px;padding:8px 10px;margin-top:12px;line-height:1.6;}
+</style>
+</head>
+<body>
+<header>
+  <h1>小镇姑娘 · 字幕校对台</h1>
+  <div class="sub">11月8日(1).MP3 · 32.0s · 9 句 · whisper 词级对齐 + 人工校字</div>
+</header>
+
+<div class="bar">
+  <button id="play">▶ 播放</button>
+  <canvas id="prog" width="600" height="26"></canvas>
+  <span class="clock" id="clock">0.00 / 32.00</span>
+  <button id="loop">单句循环</button>
+  <button id="export">导出修正版</button>
+</div>
+
+<main>
+  <ol id="list"></ol>
+  <aside>
+    <h2>微调</h2>
+    <div class="row"><span>全局偏移</span><b id="vOff">0 ms</b></div>
+    <input type="range" id="off" min="-500" max="500" step="10" value="0">
+    <div class="row"><span>当前句</span><b id="vCur">—</b></div>
+    <div class="row"><span>句起点</span><b id="vStart">—</b></div>
+    <div class="row"><span>句终点</span><b id="vEnd">—</b></div>
+    <div class="row"><span>时长</span><b id="vDur">—</b></div>
+    <div class="hint">
+      <b>操作</b><br>
+      <kbd>空格</kbd> 播放/暂停　<kbd>↑</kbd><kbd>↓</kbd> 切换句<br>
+      <kbd>[</kbd> <kbd>]</kbd> 起点 −/＋0.05s　<kbd>,</kbd> <kbd>.</kbd> 终点 −/＋0.05s<br>
+      点句＝跳过去播；<kbd>shift</kbd>+点击＝只定位不播
+    </div>
+    <div class="warn">
+      ASR 原样：走过玻璃窗 / 真的大尽力 / 欢欣。已订正为：透过玻璃窗 / 成了大经理 / 欢心。<br>
+      订正处请按听感复核，改完点「导出修正版」。
+    </div>
+  </aside>
+</main>
+
+<audio id="au" src="11月8日(1).mp3" preload="auto"></audio>
+<script>
+const DUR = 32.0;
+const LINES = [{"index": 1, "start": 2.12, "end": 5.86, "text": "还记得一年前站在火车站"}, {"index": 2, "start": 6.18, "end": 8.68, "text": "看着自己的悲剧演完"}, {"index": 3, "start": 9.02, "end": 12.26, "text": "透过玻璃窗看见你的泪满面"}, {"index": 4, "start": 12.44, "end": 15.1, "text": "那车头依然吐着烟"}, {"index": 5, "start": 15.34, "end": 18.38, "text": "听说现在的你成了大经理"}, {"index": 6, "start": 18.6, "end": 21.18, "text": "前途好比闪亮的星星"}, {"index": 7, "start": 21.32, "end": 24.74, "text": "我只希望这所有能够让你欢心"}, {"index": 8, "start": 24.9, "end": 26.72, "text": "我才能放心走"}, {"index": 9, "start": 26.78, "end": 31.07, "text": "不明白 不明白 为什么"}];
+
+let data = LINES.map(o => ({...o}));
+let offMs = 0, cur = -1, sel = 0, looping = false, stopAt = null;
+
+const au = document.getElementById('au');
+const cv = document.getElementById('prog'), cx = cv.getContext('2d');
+const list = document.getElementById('list');
+
+const fmt = t => `${t.toFixed(2)}`;
+const mmss = t => {
+  const m = Math.floor(t/60), s = t - m*60;
+  return `${String(m).padStart(2,'0')}:${s.toFixed(2).padStart(5,'0')}`;
+};
+
+function render(){
+  list.innerHTML = '';
+  data.forEach((d,i)=>{
+    const li = document.createElement('li');
+    li.dataset.i = i;
+    if(i===cur) li.classList.add('cur');
+    if(i===sel) li.classList.add('sel');
+    li.innerHTML = `<span class="idx">${String(d.index).padStart(2,'0')}</span>
+      <span class="txt">${d.text}</span>
+      <span class="meta">${d.start.toFixed(2)}–${d.end.toFixed(2)}<br>${(d.end-d.start).toFixed(2)}s</span>`;
+    li.onclick = e => {
+      sel = i; cur = i;
+      const t = Math.max(0, d.start - 0.25);
+      au.currentTime = t;
+      stopAt = e.shiftKey ? null : d.end + 0.15;
+      if(!e.shiftKey) au.play();
+      render(); paint(); info();
+    };
+    list.appendChild(li);
+  });
+}
+
+function paint(){
+  const w = cv.width, h = cv.height;
+  cx.clearRect(0,0,w,h);
+  cx.fillStyle = '#efede8'; cx.fillRect(0,h/2-3,w,6);
+  // 句子块
+  data.forEach((d,i)=>{
+    const x = d.start/DUR*w, ww = Math.max(2,(d.end-d.start)/DUR*w);
+    cx.fillStyle = i===cur ? '#c2543f' : '#c9c4ba';
+    cx.fillRect(x, h/2-7, ww, 14);
+  });
+  const px = au.currentTime/DUR*w;
+  cx.fillStyle = '#23211e'; cx.fillRect(px,2,2,h-4);
+}
+
+function info(){
+  const d = data[sel];
+  document.getElementById('vCur').textContent = d ? `#${String(d.index).padStart(2,'0')} ${d.text}` : '—';
+  document.getElementById('vStart').textContent = d ? fmt(d.start) : '—';
+  document.getElementById('vEnd').textContent = d ? fmt(d.end) : '—';
+  document.getElementById('vDur').textContent = d ? (d.end-d.start).toFixed(2)+'s' : '—';
+}
+
+let raf;
+function tick(){
+  const t = au.currentTime;
+  document.getElementById('clock').textContent = `${t.toFixed(2)} / ${DUR.toFixed(2)}`;
+  let c = -1;
+  for(let i=0;i<data.length;i++) if(t >= data[i].start-0.05 && t < data[i].end+0.05) c = i;
+  if(c !== cur){ cur = c; render(); }
+  if(stopAt!==null && t >= stopAt){
+    if(looping){ au.currentTime = Math.max(0, data[sel].start-0.25); }
+    else { au.pause(); stopAt = null; document.getElementById('play').textContent='▶ 播放'; }
+  }
+  paint();
+  raf = requestAnimationFrame(tick);
+}
+
+document.getElementById('play').onclick = () => {
+  if(au.paused){ au.play(); stopAt = null; document.getElementById('play').textContent='❚❚ 暂停'; }
+  else { au.pause(); document.getElementById('play').textContent='▶ 播放'; }
+};
+document.getElementById('loop').onclick = e => {
+  looping = !looping; e.target.classList.toggle('on', looping);
+};
+cv.onclick = e => {
+  const r = cv.getBoundingClientRect();
+  au.currentTime = Math.max(0, Math.min(DUR, (e.clientX-r.left)/r.width*DUR));
+  paint();
+};
+document.getElementById('off').oninput = e => {
+  offMs = +e.target.value;
+  document.getElementById('vOff').textContent = (offMs>0?'+':'')+offMs+' ms';
+};
+
+document.addEventListener('keydown', e => {
+  if(e.code === 'Space'){ e.preventDefault(); document.getElementById('play').click(); return; }
+  const d = data[sel]; if(!d) return;
+  if(e.key === 'ArrowDown'){ sel = Math.min(data.length-1, sel+1); cur = sel;
+    au.currentTime = Math.max(0, data[sel].start-0.25); render(); info(); e.preventDefault(); }
+  if(e.key === 'ArrowUp'){ sel = Math.max(0, sel-1); cur = sel;
+    au.currentTime = Math.max(0, data[sel].start-0.25); render(); info(); e.preventDefault(); }
+  const step = e.shiftKey ? 0.01 : 0.05;
+  if(e.key === '[' ){ d.start = +(d.start-step).toFixed(2); }
+  if(e.key === ']' ){ d.start = +(d.start+step).toFixed(2); }
+  if(e.key === ',' ){ d.end   = +(d.end-step).toFixed(2); }
+  if(e.key === '.' ){ d.end   = +(d.end+step).toFixed(2); }
+  if('[] ,.'.includes(e.key)){ render(); info(); paint(); e.preventDefault(); }
+});
+
+document.getElementById('export').onclick = () => {
+  const o = offMs/1000;
+  const st = t => {
+    const v = Math.max(0, t+o);
+    const h = Math.floor(v/3600), m = Math.floor(v%3600/60), s = Math.floor(v%60);
+    const ms = Math.round((v-Math.floor(v))*1000);
+    return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')},${String(ms).padStart(3,'0')}`;
+  };
+  let srt = '';
+  data.forEach((d,i)=>{
+    srt += `${i+1}\n${st(d.start-0.10)} --> ${st(d.end+0.22)}\n${d.text}\n\n`;
+  });
+  const blob = new Blob([srt], {type:'text/plain;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = '小镇姑娘-修正版.srt';
+  a.click();
+};
+
+render(); info(); paint(); tick();
+</script>
+</body>
+</html>

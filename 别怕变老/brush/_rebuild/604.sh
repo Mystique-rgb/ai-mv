@@ -1,0 +1,1 @@
+cd "D:/ai音乐mv/别怕变老/brush" && sed -i 's/INK\.ochre/PAL.ochre/g' src/scenes/mv.js && grep -c "PAL.ochre" src/scenes/mv.js && timeout 600 node render.mjs --sheet=0.5,2.2,4.9,7.2,11.8,14.9,17.9,21.9,24.5,27.9,31.5,34.9,38.6,41.5,45.5,49.7 --cols=4 --w=460 --out=out/check/sheet1.jpg 2>&1 | tail -8

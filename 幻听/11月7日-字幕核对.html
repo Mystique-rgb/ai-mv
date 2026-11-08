@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>幻听 · 字幕音频核对</title>
+<style>
+  :root{
+    --bg:#fbfaf8; --card:#ffffff; --line:#e8e4dd; --ink:#1d1c1a; --sub:#7d7973;
+    --accent:#a8322a; --accent-soft:#f3e3e0; --mark:#c9bda9;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Segoe UI","Microsoft YaHei",-apple-system,sans-serif;}
+  .wrap{max-width:1000px;margin:0 auto;padding:36px 24px 80px}
+  h1{font-size:22px;margin:0 0 6px;letter-spacing:.5px}
+  .meta{font-size:13px;color:var(--sub);line-height:1.7}
+  .meta b{color:var(--ink);font-weight:600}
+  .player{margin-top:26px;background:var(--card);border:1px solid var(--line);
+    border-radius:14px;padding:18px 20px 14px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .now{min-height:64px;display:flex;align-items:center;gap:14px;margin-bottom:14px}
+  .badge{flex:0 0 auto;font-size:11px;padding:3px 8px;border-radius:999px;
+    background:var(--accent-soft);color:var(--accent);font-weight:600;letter-spacing:.5px}
+  .badge.idle{background:#eeeae3;color:var(--sub)}
+  .lyric{font-size:26px;font-weight:600;letter-spacing:1px;line-height:1.3}
+  .lyric small{font-size:13px;font-weight:400;color:var(--sub);margin-left:10px;letter-spacing:0}
+  canvas{width:100%;height:96px;display:block;cursor:pointer;border-radius:8px}
+  .bar{position:relative;height:6px;background:#efebe4;border-radius:99px;margin-top:12px;cursor:pointer}
+  .bar>i{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--accent);border-radius:99px}
+  .bar>b{position:absolute;top:-3px;bottom:-3px;width:1px;background:var(--mark);opacity:.9}
+  .ctrl{display:flex;align-items:center;gap:14px;margin-top:12px;font-size:13px;color:var(--sub)}
+  button{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:9px;
+    padding:7px 14px;font-size:13px;cursor:pointer;font-family:inherit;transition:.15s}
+  button:hover{border-color:var(--accent);color:var(--accent)}
+  button.playing{background:var(--accent);border-color:var(--accent);color:#fff}
+  .time{font-variant-numeric:tabular-nums}
+  table{width:100%;border-collapse:collapse;margin-top:30px;background:var(--card);
+    border:1px solid var(--line);border-radius:14px;overflow:hidden;font-size:13.5px}
+  th,td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--line)}
+  th{font-size:11.5px;letter-spacing:1px;color:var(--sub);font-weight:600;
+    text-transform:uppercase;background:#f7f5f1}
+  tr:last-child td{border-bottom:none}
+  tr.on{background:#fdf6f4}
+  td.t{font-size:15px;font-weight:600;letter-spacing:.5px}
+  td.num{font-variant-numeric:tabular-nums;color:var(--sub)}
+  .seg{border:none;background:#f3f0ea;padding:5px 10px;font-size:12px;border-radius:7px}
+  .seg:hover{background:var(--accent);color:#fff;border:none}
+  .note{margin-top:22px;font-size:12.5px;color:var(--sub);line-height:1.85;
+    border-left:2px solid var(--line);padding-left:14px}
+  .note b{color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>幻听 · 许嵩 &nbsp;30.6s 片段 · 字幕音频核对</h1>
+  <div class="meta">
+    源文件 <b>11月7日.MP3</b>　|　44.1kHz / 立体声 / 128kbps　|　
+    <b>7</b> 条字幕　|　对齐方式：分段回译 + 20ms RMS 包络定位
+  </div>
+
+  <div class="player">
+    <div class="now">
+      <span class="badge idle" id="badge">待播放</span>
+      <div class="lyric" id="lyric">按播放，逐句核对字幕与声音是否对齐</div>
+    </div>
+    <canvas id="wave" width="1800" height="192"></canvas>
+    <div class="bar" id="bar"><i id="prog"></i></div>
+    <div class="ctrl">
+      <button id="play">▶ 播放全曲</button>
+      <button id="loop">单句循环：关</button>
+      <span class="time"><span id="cur">0.00</span> / 30.64 s</span>
+      <span style="margin-left:auto">空格 播放/暂停　← → 前后 0.5s</span>
+    </div>
+  </div>
+
+  <table>
+    <thead><tr>
+      <th style="width:52px">#</th><th style="width:96px">段落</th>
+      <th style="width:76px">起始</th><th style="width:76px">结束</th>
+      <th style="width:64px">时长</th><th style="width:56px">字/秒</th>
+      <th>字幕</th><th style="width:88px">试听</th>
+    </tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+
+  <div class="note">
+    <b>边界依据</b>：先把整曲按能量谷切成候选片，再逐片单独回译，确认每片只含一句歌词；
+    <b>所有句首尾都落在 20ms 包络的静音谷底</b>，误差约 ±0.15s。<br>
+    <b>已知偏差风险</b>：① 句内逗号处没有真实停顿（如「如今一个人听歌／总是会觉得失落」），
+    故未强行切分；② 「你有多爱我」尾字拖长，结束点按人声衰减保守取 12.95s。<br>
+    <b>若用于 MV 分镜</b>：以 JSON 里的 start/end 为唯一时间源，不要用 SRT 的四舍五入值。
+  </div>
+</div>
+
+<script>
+const SEGS = [{"index": 1, "tag": "A1", "start": 0.7, "end": 4.6, "duration": 3.9, "text": "如今一个人听歌 总是会觉得失落", "chars": 14, "style": "A段·主歌", "audio_clip": "segments/11月7日-L01.mp3"}, {"index": 2, "tag": "A2", "start": 5.36, "end": 8.35, "duration": 2.99, "text": "幻听你在我的耳边 轻轻诉说", "chars": 12, "style": "A段·主歌", "audio_clip": "segments/11月7日-L02.mp3"}, {"index": 3, "tag": "A3", "start": 8.92, "end": 10.28, "duration": 1.36, "text": "夜色多温柔", "chars": 5, "style": "A段·主歌", "audio_clip": "segments/11月7日-L03.mp3"}, {"index": 4, "tag": "A4", "start": 11.12, "end": 12.92, "duration": 1.8, "text": "你有多爱我", "chars": 5, "style": "A段·主歌", "audio_clip": "segments/11月7日-L04.mp3"}, {"index": 5, "tag": "B1", "start": 15.68, "end": 19.58, "duration": 3.9, "text": "如今一个人听歌 总是会觉得难过", "chars": 14, "style": "B段·副歌", "audio_clip": "segments/11月7日-L05.mp3"}, {"index": 6, "tag": "B2", "start": 20.34, "end": 23.45, "duration": 3.11, "text": "爱已不在这里 我却还没走脱", "chars": 12, "style": "B段·副歌", "audio_clip": "segments/11月7日-L06.mp3"}, {"index": 7, "tag": "B3", "start": 23.92, "end": 26.85, "duration": 2.93, "text": "列表里的歌 随过往流动", "chars": 10, "style": "B段·副歌", "audio_clip": "segments/11月7日-L07.mp3"}];
+const PEAKS = [0.018, 0.85, 0.801, 0.807, 0.697, 0.722, 0.718, 0.696, 0.75, 0.63, 0.597, 0.679, 0.592, 0.558, 0.566, 0.426, 0.383, 0.491, 0.512, 0.421, 0.303, 0.29, 0.267, 0.36, 0.312, 0.294, 0.26, 0.292, 0.854, 0.86, 0.789, 0.843, 0.779, 0.775, 0.824, 0.761, 0.625, 0.78, 0.828, 0.775, 0.776, 0.768, 0.796, 0.804, 0.742, 0.772, 0.553, 0.379, 0.362, 0.403, 0.421, 0.377, 0.355, 0.266, 0.184, 0.722, 0.768, 0.752, 0.768, 0.832, 0.751, 0.787, 0.761, 0.748, 0.748, 0.651, 0.51, 0.38, 0.373, 0.39, 0.47, 0.466, 0.431, 0.428, 0.852, 0.804, 0.783, 0.75, 0.736, 0.777, 0.797, 0.807, 0.581, 0.707, 0.531, 0.555, 0.468, 0.477, 0.439, 0.565, 0.36, 0.515, 0.855, 0.756, 0.779, 0.794, 0.788, 0.764, 0.757, 0.666, 0.605, 0.577, 0.837, 0.709, 0.633, 0.6, 0.559, 0.495, 0.457, 0.541, 0.668, 0.869, 0.853, 0.87, 0.88, 0.791, 0.812, 0.783, 0.708, 0.62, 0.649, 0.614, 0.657, 0.61, 0.607, 0.456, 0.397, 0.446, 0.722, 0.774, 0.8, 0.825, 0.79, 0.796, 0.783, 0.734, 0.661, 0.591, 0.612, 0.514, 0.438, 0.382, 0.297, 0.479, 0.4, 0.419, 0.26, 0.786, 0.844, 0.831, 0.787, 0.847, 0.824, 0.855, 0.839, 0.842, 0.657, 0.776, 0.746, 0.659, 0.615, 0.684, 0.525, 0.624, 0.472, 0.691, 0.903, 0.829, 0.826, 0.79, 0.822, 0.765, 0.748, 0.752, 0.63, 0.691, 0.748, 0.698, 0.635, 0.596, 0.424, 0.469, 0.503, 0.362, 0.817, 0.847, 0.789, 0.841, 0.763, 0.788, 0.81, 0.744, 0.629, 0.683, 0.537, 0.38, 0.268, 0.202, 0.143, 0.145, 0.149, 0.158, 0.802, 0.786, 0.769, 0.776, 0.788, 0.825, 0.836, 0.743, 0.613, 0.799, 0.571, 0.526, 0.324, 0.277, 0.225, 0.293, 0.282, 0.293, 0.314, 0.825, 0.749, 0.849, 0.794, 0.819, 0.821, 0.798, 0.784, 0.742, 0.713, 0.563, 0.467, 0.314, 0.278, 0.236, 0.205, 0.181, 0.536, 0.742, 0.75, 0.822, 0.768, 0.796, 0.823, 0.794, 0.709, 0.578, 0.501, 0.626, 0.739, 0.871, 0.676, 0.521, 0.512, 0.554, 0.449, 0.419, 0.88, 0.872, 0.826, 0.884, 0.843, 0.847, 0.865, 0.762, 0.674, 0.665, 0.618, 0.66, 0.591, 0.594, 0.499, 0.49, 0.467, 0.703, 0.779, 0.808, 0.809, 0.84, 0.818, 0.82, 0.778, 0.775, 0.51, 0.67, 0.424, 0.419, 0.317, 0.235, 0.203, 0.294, 0.341, 0.352, 0.708, 0.854, 0.886, 0.868, 0.817, 0.868, 0.881, 0.787, 0.776, 0.693, 0.7, 0.615, 0.532, 0.502, 0.515, 0.439, 0.341, 0.381, 0.731, 0.774, 0.782, 0.849, 0.849, 0.81, 0.804, 0.759, 0.782, 0.598, 0.735, 0.575, 0.738, 0.578, 0.638, 0.608, 0.439, 0.379, 0.358, 0.861, 0.815, 0.789, 0.729, 0.695, 0.641, 0.701, 0.665, 0.59, 0.621, 0.536, 0.304, 0.255, 0.156, 0.15, 0.107, 0.096, 0.243, 0.773, 0.823, 0.782, 0.812, 0.801, 0.805, 0.783, 0.735, 0.745, 0.699, 0.704, 0.441, 0.418, 0.382, 0.414, 0.446, 0.328, 0.278, 0.35, 0.822, 0.876, 0.862, 0.851, 0.851, 0.826, 0.764, 0.789, 0.832, 0.742, 0.554, 0.533, 0.484, 0.427, 0.418, 0.426, 0.434, 0.509, 0.829, 0.849, 0.884, 0.851, 0.847, 0.797, 0.767, 0.807, 0.727, 0.658, 0.828, 0.648, 0.642, 0.507, 0.509, 0.567, 0.582, 0.484, 0.546, 0.766, 0.788, 0.784, 0.807, 0.821, 0.757, 0.815, 0.751, 0.594, 0.734, 0.62, 0.579, 0.527, 0.574, 0.55, 0.471, 0.415, 0.849, 0.856, 0.772, 0.87, 0.812, 0.742, 0.776, 0.774, 0.649, 0.647, 0.618, 0.407, 0.37, 0.244, 0.258, 0.208, 0.256, 0.272, 0.228, 0.71, 0.88, 0.84, 0.777, 0.811, 0.822, 0.866, 0.817, 0.781, 0.75, 0.722, 0.71, 0.641, 0.632, 0.694, 0.658, 0.604, 0.475, 0.766, 0.882, 0.884, 0.833, 0.806, 0.782, 0.803, 0.77, 0.725, 0.555, 0.689, 0.752, 0.79, 0.758, 0.741, 0.706, 0.671, 0.559, 0.72, 0.771, 0.925, 0.85, 0.858, 0.857, 0.848, 0.907, 0.824, 0.744, 0.745, 0.846, 0.434, 0.427, 0.498, 0.422, 0.43, 0.475, 0.492, 0.726, 0.749, 0.794, 0.791, 0.784, 0.793, 0.803, 0.795, 0.717, 0.745, 0.621, 0.495, 0.481, 0.352, 0.397, 0.425, 0.419, 0.392, 0.423, 0.861, 0.872, 0.789, 0.809, 0.812, 0.824, 0.823, 0.779, 0.815, 0.811, 0.589, 0.461, 0.398, 0.407, 0.407, 0.339, 0.347, 0.324, 0.783, 0.847, 0.855, 0.849, 0.808, 0.815, 0.804, 0.785, 0.687, 0.575, 0.815, 0.746, 0.794, 0.758, 0.605, 0.573, 0.637, 0.614, 0.56, 0.876, 0.863, 0.859, 0.864, 0.836, 0.868, 0.862, 0.746, 0.605, 0.726, 0.636, 0.709, 0.67, 0.609, 0.59, 0.543, 0.567, 0.678, 0.89, 0.785, 0.792, 0.78, 0.797, 0.792, 0.695, 0.699, 0.545, 0.485, 0.427, 0.305, 0.182, 0.154, 0.148, 0.134, 0.131, 0.17, 0.683, 0.904, 0.826, 0.832, 0.888, 0.86, 0.862, 0.752, 0.629, 0.462, 0.714, 0.794, 0.631, 0.56, 0.484, 0.464, 0.463, 0.461, 0.83, 0.817, 0.855, 0.882, 0.825, 0.779, 0.722, 0.692, 0.625, 0.511, 0.75, 0.721, 0.677, 0.541, 0.472, 0.46, 0.418, 0.492, 0.351, 0.763, 0.849, 0.881, 0.84, 0.835, 0.787, 0.774, 0.804, 0.734, 0.584, 0.623, 0.485, 0.466, 0.346, 0.271, 0.288, 0.148, 0.116, 0.69, 0.77, 0.781, 0.741, 0.76, 0.618, 0.636, 0.546, 0.446, 0.423, 0.887, 0.868, 0.82, 0.802, 0.815, 0.838, 0.818, 0.726, 0.743, 0.796, 0.842, 0.796, 0.792, 0.789, 0.795, 0.78, 0.802, 0.738, 0.824, 0.536, 0.468, 0.42, 0.427, 0.425, 0.397, 0.414, 0.346, 0.691, 0.836, 0.843, 0.836, 0.802, 0.747, 0.756, 0.727, 0.671, 0.544, 0.77, 0.698, 0.662, 0.581, 0.648, 0.639, 0.538, 0.564, 0.389, 0.83, 0.826, 0.841, 0.821, 0.826, 0.781, 0.864, 0.728, 0.55, 0.67, 0.694, 0.678, 0.57, 0.525, 0.545, 0.474, 0.378, 0.71, 0.869, 0.787, 0.835, 0.787, 0.752, 0.737, 0.722, 0.736, 0.642, 0.568, 0.758, 0.481, 0.34, 0.42, 0.458, 0.392, 0.515, 0.272, 0.405, 0.875, 0.854, 0.831, 0.868, 0.833, 0.874, 0.798, 0.793, 0.742, 0.692, 0.699, 0.68, 0.611, 0.526, 0.566, 0.467, 0.513, 0.841, 0.875, 0.85, 0.851, 0.793, 0.823, 0.809, 0.769, 0.704, 0.682, 0.69, 0.74, 0.695, 0.679, 0.682, 0.638, 0.613, 0.634, 0.658, 0.729, 0.841, 0.84, 0.85, 0.799, 0.84, 0.821, 0.768, 0.769, 0.594, 0.59, 0.395, 0.276, 0.259, 0.256, 0.24, 0.19, 0.177, 0.686, 0.894, 0.817, 0.806, 0.769, 0.792, 0.815, 0.809, 0.657, 0.816, 0.73, 0.617, 0.511, 0.316, 0.273, 0.28, 0.245, 0.245, 0.292, 0.727, 0.763, 0.79, 0.769, 0.768, 0.812, 0.827, 0.776, 0.652, 0.683, 0.518, 0.491, 0.292, 0.375, 0.328, 0.266, 0.268, 0.233, 0.735, 0.825, 0.86, 0.82, 0.783, 0.763, 0.764, 0.684, 0.666, 0.487, 0.706, 0.762, 0.675, 0.66, 0.593, 0.485, 0.435, 0.509, 0.6, 0.873, 0.871, 0.853, 0.839, 0.805, 0.774, 0.718, 0.773, 0.714, 0.732, 0.619, 0.799, 0.538, 0.556, 0.52, 0.502, 0.521, 0.599, 0.851, 0.812, 0.841, 0.838, 0.807, 0.775, 0.752, 0.716, 0.722, 0.631, 0.739, 0.565, 0.455, 0.284, 0.318, 0.316, 0.35, 0.375, 0.28, 0.834, 0.825, 0.775, 0.808, 0.862, 0.814, 0.792, 0.783, 0.754, 0.754, 0.742, 0.68, 0.512, 0.553, 0.581, 0.42, 0.369, 0.801, 0.864, 0.86, 0.907, 0.819, 0.812, 0.796, 0.699, 0.725, 0.613, 0.781, 0.734, 0.623, 0.638, 0.534, 0.498, 0.54, 0.473, 0.406, 0.658, 0.847, 0.793, 0.818, 0.836, 0.823, 0.826, 0.691, 0.597, 0.448, 0.606, 0.317, 0.234, 0.242, 0.177, 0.159, 0.114, 0.144, 0.69, 0.918, 0.806, 0.803, 0.783, 0.787, 0.832, 0.763, 0.743, 0.638, 0.65, 0.467, 0.491, 0.405, 0.288, 0.335, 0.378, 0.364, 0.321, 0.819, 0.899, 0.862, 0.874, 0.808, 0.749, 0.819, 0.765, 0.67, 0.589, 0.598, 0.367, 0.272, 0.196, 0.24, 0.212, 0.158, 0.134, 0.679, 0.884, 0.829, 0.857, 0.787, 0.804, 0.707, 0.66, 0.546, 0.43, 0.735, 0.63, 0.542, 0.575, 0.552, 0.467, 0.6, 0.567, 0.434, 0.782, 0.864, 0.824, 0.861, 0.826, 0.82, 0.735, 0.73, 0.584, 0.679, 0.664, 0.63, 0.371, 0.4, 0.328, 0.334, 0.36, 0.65, 0.806, 0.881, 0.805, 0.837, 0.837, 0.808, 0.702, 0.651, 0.6, 0.533, 0.421, 0.315, 0.245, 0.291, 0.255, 0.26, 0.363, 0.24, 0.109, 0.86, 0.903, 0.828, 0.859, 0.849, 0.844, 0.871, 0.861, 0.76, 0.744, 0.679, 0.698, 0.634, 0.622, 0.514, 0.427, 0.325, 0.466, 0.863, 0.678, 0.767, 0.814, 0.76, 0.766, 0.756, 0.791, 0.805, 0.739, 0.693, 0.735, 0.723, 0.818, 0.638, 0.71, 0.664, 0.558, 0.696, 0.872, 0.822, 0.873, 0.851, 0.867, 0.827, 0.795, 0.77, 0.702, 0.646, 0.431, 0.277, 0.282, 0.248, 0.295, 0.237, 0.293, 0.736, 0.842, 0.739, 0.753, 0.792, 0.764, 0.822, 0.767, 0.797, 0.801, 0.646, 0.536, 0.459, 0.38, 0.387, 0.47, 0.449, 0.389, 0.349, 0.813, 0.879, 0.826, 0.784, 0.783, 0.809, 0.809, 0.793, 0.757, 0.791, 0.883, 0.531, 0.32, 0.255, 0.309, 0.312, 0.335, 0.398, 0.741, 0.819, 0.585, 0.537, 0.565, 0.29, 0.339, 0.329, 0.294, 0.312, 0.75, 0.698, 0.601, 0.706, 0.592, 0.44, 0.422, 0.433, 0.39, 0.49, 0.459, 0.357, 0.356, 0.311, 0.337, 0.295, 0.228, 0.268, 0.787, 0.778, 0.739, 0.738, 0.781, 0.694, 0.706, 0.681, 0.638, 0.665, 0.622, 0.52, 0.465, 0.409, 0.328, 0.339, 0.269, 0.237, 0.256, 0.544, 0.539, 0.575, 0.532, 0.492, 0.501, 0.454, 0.418, 0.383, 0.487, 0.426, 0.402, 0.393, 0.353, 0.327, 0.306, 0.29, 0.243, 0.215, 0.229, 0.179, 0.173, 0.118, 0.101, 0.087, 0.062, 0.099, 0.113, 0.061, 0.048, 0.029, 0.013];
+const DUR = 30.642;
+const audio = new Audio("11月7日.MP3");
+audio.preload = "auto";
+
+const cv = document.getElementById("wave"), ctx = cv.getContext("2d");
+const prog = document.getElementById("prog"), bar = document.getElementById("bar");
+const cur = document.getElementById("cur"), lyric = document.getElementById("lyric");
+const badge = document.getElementById("badge"), rowsEl = document.getElementById("rows");
+const btn = document.getElementById("play"), btnLoop = document.getElementById("loop");
+
+// ---- 波形 ----
+function drawWave(t) {
+  const w = cv.width, h = cv.height, mid = h/2;
+  ctx.clearRect(0,0,w,h);
+  // 段落底色
+  const spans = [[0.70,12.92,"#faf7f2"],[15.68,26.85,"#fdf6f4"]];
+  spans.forEach(([a,b,c])=>{ ctx.fillStyle=c; ctx.fillRect(a/DUR*w,0,(b-a)/DUR*w,h); });
+  // 句分隔线
+  ctx.strokeStyle = "#ddd6c9"; ctx.lineWidth = 1;
+  SEGS.forEach(s=>{ const x = s.start/DUR*w; ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,h); ctx.stroke(); });
+  // 波形
+  const n = PEAKS.length, bw = w/n;
+  for (let i=0;i<n;i++){
+    const p = PEAKS[i], x = i*bw;
+    const played = x <= t/DUR*w;
+    ctx.fillStyle = played ? "#a8322a" : "#cfc7b8";
+    const hh = Math.max(1.5, p*mid*1.55);
+    ctx.fillRect(x, mid-hh, Math.max(bw-0.6,0.6), hh*2);
+  }
+  // 播放头
+  if (t>0){ ctx.fillStyle = "#1d1c1a"; ctx.fillRect(t/DUR*w-1, 0, 2, h); }
+}
+drawWave(0);
+
+// ---- 表格 ----
+SEGS.forEach(s=>{
+  const tr = document.createElement("tr");
+  tr.dataset.i = s.index;
+  tr.innerHTML = `<td class="num">${s.index}</td>
+    <td class="num">${s.style}</td>
+    <td class="num">${s.start.toFixed(2)}s</td>
+    <td class="num">${s.end.toFixed(2)}s</td>
+    <td class="num">${s.duration.toFixed(2)}s</td>
+    <td class="num">${(s.chars/s.duration).toFixed(2)}</td>
+    <td class="t">${s.text}</td>
+    <td><button class="seg" data-i="${s.index}">试听</button></td>`;
+  rowsEl.appendChild(tr);
+});
+// 进度条刻度
+SEGS.forEach(s=>{
+  const b = document.createElement("b");
+  b.style.left = (s.start/DUR*100)+"%";
+  bar.appendChild(b);
+});
+
+// ---- 单句试听 ----
+const segAudio = new Audio();
+let segPlaying = -1;
+rowsEl.addEventListener("click", e=>{
+  const b = e.target.closest("button.seg"); if(!b) return;
+  const i = +b.dataset.i, s = SEGS[i-1];
+  if (segPlaying === i){ segAudio.pause(); resetSeg(); return; }
+  audio.pause(); btn.textContent="▶ 播放全曲"; btn.classList.remove("playing");
+  resetSeg();
+  segAudio.src = s.audio_clip;
+  segAudio.play().catch(()=>{});
+  segPlaying = i; b.classList.add("playing"); b.textContent = "■ 停止";
+  document.querySelectorAll("tr").forEach(tr=>tr.classList.toggle("on", +tr.dataset.i===i));
+});
+function resetSeg(){
+  document.querySelectorAll("button.seg").forEach(b=>{b.classList.remove("playing"); b.textContent="试听";});
+  segPlaying = -1;
+}
+segAudio.addEventListener("ended", ()=>{ resetSeg(); document.querySelectorAll("tr").forEach(tr=>tr.classList.remove("on")); });
+
+// ---- 全曲播放 ----
+let loopSeg = null;
+btn.onclick = ()=>{ if (audio.paused){ audio.play(); } else { audio.pause(); } };
+audio.addEventListener("play", ()=>{ btn.textContent="❚❚ 暂停"; btn.classList.add("playing"); });
+audio.addEventListener("pause", ()=>{ btn.textContent="▶ 播放全曲"; btn.classList.remove("playing"); });
+
+function activeCue(t){
+  for (let i=0;i<SEGS.length;i++) if (t>=SEGS[i].start && t<SEGS[i].end) return i;
+  return -1;
+}
+function render(){
+  const t = audio.currentTime;
+  cur.textContent = t.toFixed(2);
+  prog.style.width = (t/DUR*100)+"%";
+  drawWave(t);
+  const i = activeCue(t);
+  document.querySelectorAll("tr").forEach(tr=>tr.classList.toggle("on", +tr.dataset.i===i+1 && i>=0));
+  if (i>=0){
+    const s = SEGS[i];
+    badge.className="badge"; badge.textContent = s.style.split("·")[0];
+    lyric.innerHTML = s.text + `<small>${s.start.toFixed(2)}–${s.end.toFixed(2)}s</small>`;
+  } else {
+    badge.className="badge idle"; badge.textContent="间奏";
+    lyric.innerHTML = `<span style="color:#9a948c;font-size:18px">— 无字幕 —</span>`;
+  }
+  requestAnimationFrame(render);
+}
+requestAnimationFrame(render);
+
+bar.onclick = e=>{ const r=bar.getBoundingClientRect(); audio.currentTime = (e.clientX-r.left)/r.width*DUR; };
+cv.onclick  = e=>{ const r=cv.getBoundingClientRect(); audio.currentTime = (e.clientX-r.left)/r.width*DUR; };
+
+btnLoop.onclick = ()=>{
+  const t = audio.currentTime, i = activeCue(t);
+  if (loopSeg===null && i>=0){ loopSeg=i; audio.currentTime=SEGS[i].start;
+    btnLoop.textContent="单句循环：第"+(i+1)+"句"; btnLoop.classList.add("playing"); }
+  else { loopSeg=null; btnLoop.textContent="单句循环：关"; btnLoop.classList.remove("playing"); }
+};
+audio.addEventListener("timeupdate", ()=>{
+  if (loopSeg!==null && audio.currentTime >= SEGS[loopSeg].end){ audio.currentTime = SEGS[loopSeg].start; }
+});
+
+document.addEventListener("keydown", e=>{
+  if (e.code==="Space"){ e.preventDefault(); btn.click(); }
+  if (e.code==="ArrowRight"){ audio.currentTime=Math.min(DUR,audio.currentTime+0.5); }
+  if (e.code==="ArrowLeft"){ audio.currentTime=Math.max(0,audio.currentTime-0.5); }
+});
+</script>
+</body>
+</html>

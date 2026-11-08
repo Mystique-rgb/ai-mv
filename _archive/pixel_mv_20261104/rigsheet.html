@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>像素人物资产库</title>
+<style>
+  :root {
+    --bg: #14131F; --panel: #1B1A28; --line: #2E2C42;
+    --text: #E8E5F2; --dim: #8B86B0; --rose: #E8556D; --gold: #FFD166;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 13px/1.6 "Microsoft YaHei", system-ui, sans-serif;
+    padding: 40px 48px 80px;
+  }
+  h1 { font-size: 22px; font-weight: 600; margin: 0 0 4px; letter-spacing: .06em; }
+  .sub { color: var(--dim); font-size: 12px; margin-bottom: 34px; }
+  h2 {
+    font-size: 13px; font-weight: 600; letter-spacing: .16em; color: var(--gold);
+    margin: 42px 0 14px; padding-bottom: 8px; border-bottom: 1px solid var(--line);
+  }
+  h2 span { color: var(--dim); font-weight: 400; letter-spacing: 0; margin-left: 10px; }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .cell {
+    background: var(--panel); border: 1px solid var(--line);
+    padding: 8px 6px 6px; display: flex; flex-direction: column;
+    align-items: center; gap: 3px;
+  }
+  .cell canvas { display: block; image-rendering: pixelated; }
+  .cell .lb { font-size: 10px; color: var(--dim); letter-spacing: .04em; }
+  .cell .lb b { color: var(--text); font-weight: 500; }
+  .cell.wide { padding-bottom: 10px; }
+  .sw { width: 96px; }
+  .sw .chip { width: 100%; height: 34px; }
+  .sw .nm { font-size: 10px; color: var(--dim); }
+  .sw .hx { font-size: 9px; color: #5A5878; font-family: ui-monospace, monospace; }
+
+  /* 手机尺寸测试 */
+  .phonewrap { display: flex; gap: 26px; align-items: flex-start; margin-top: 6px; }
+  .phone {
+    border: 1px solid var(--line); background: #000; padding: 0;
+  }
+  .phone canvas { display: block; image-rendering: pixelated; }
+  .pnote { font-size: 11px; color: var(--dim); max-width: 300px; }
+  .pnote b { color: var(--text); }
+</style>
+</head>
+<body>
+
+<h1>像素人物资产库 · v1</h1>
+<div class="sub">人形情侣 · 全彩 16 色 · 夜景偏蓝紫 — 骨架数据化，换角色只改 CHARS 表</div>
+
+<h2>色板 <span>16 色 · 夜景偏移，只有一个暖黄</span></h2>
+<div class="row" id="pal"></div>
+
+<h2>角色识别 <span>男女 × 正/背/侧 × 姿态</span></h2>
+<div class="row" id="idents"></div>
+
+<h2>表情表 <span>16 情绪 × 男/女，48px 高度下的可读性</span></h2>
+<div class="row" id="expr"></div>
+
+<h2>眼型 <span>12 种 · 每只 3×3 以内</span></h2>
+<div class="row" id="eyes"></div>
+
+<h2>嘴型 <span>10 种</span></h2>
+<div class="row" id="mouths"></div>
+
+<h2>情绪符号 <span>10 种 · 像素下 1 个符号顶 5 个表情</span></h2>
+<div class="row" id="emotes"></div>
+
+<h2>手机小屏实测 <span>整帧 320×180 → 缩到信息流缩略图宽度</span></h2>
+<div class="phonewrap" id="phone"></div>
+
+<script src="src/rig.js"></script>
+<script>
+const $ = s => document.querySelector(s);
+
+// ---------- 画一格角色 ----------
+const CW = 24, CH = 52;      // 逻辑像素画布
+function cell(container, label, opt, S = 4, sub) {
+  const d = document.createElement('div');
+  d.className = 'cell';
+  const cv = document.createElement('canvas');
+  cv.width = CW * S; cv.height = CH * S;
+  const c = cv.getContext('2d');
+  c.imageSmoothingEnabled = false;
+  figure(c, Math.round(CW / 2) * S, (CH - 4) * S, S, opt);   // footY 为设备像素
+  d.appendChild(cv);
+  const lb = document.createElement('div');
+  lb.className = 'lb';
+  lb.innerHTML = sub ? `<b>${label}</b><br>${sub}` : label;
+  d.appendChild(lb);
+  container.appendChild(d);
+  return d;
+}
+
+// ---------- 色板 ----------
+const PALROLE = {
+  ink: '描边/瞳孔', night: '头发/鞋', navy: '阴影', slate: '男外套',
+  dusk: '暮紫', haze: '雾紫', pale: '女外套', paper: '暖白',
+  skin: '男肤色', skinDk: '肤暗部', rose: '情绪重音', blush: '腮红/唇',
+  peach: '女肤色', teal: '雨/霓虹', mint: '雨丝/泪', gold: '唯一暖色',
+};
+for (const [k, hex] of Object.entries(PAL)) {
+  const d = document.createElement('div');
+  d.className = 'cell sw';
+  d.innerHTML = `<div class="chip" style="background:${hex}"></div>
+    <div class="nm">${PALROLE[k] || k}</div><div class="hx">${hex}</div>`;
+  $('#pal').appendChild(d);
+}
+
+// ---------- 角色识别 ----------
+const IDENT = [
+  ['男主·正', { sex: 'm' }],
+  ['女主·正', { sex: 'f' }],
+  ['男主·背', { sex: 'm', view: 'back' }],
+  ['女主·背', { sex: 'f', view: 'back' }],
+  ['男·走', { sex: 'm', pose: 'walk', walk: 1.1, aL: .2, aR: 1.4 }],
+  ['女·走', { sex: 'f', pose: 'walk', walk: 1.1, aL: 1.3, aR: .1 }],
+  ['男·坐', { sex: 'm', pose: 'sit' }],
+  ['女·坐', { sex: 'f', pose: 'sit' }],
+  ['男·蹲', { sex: 'm', pose: 'crouch', eyes: 'narrow', mouth: 'flat' }],
+  ['女·蹲', { sex: 'f', pose: 'crouch', eyes: 'closed', mouth: 'frown' }],
+];
+for (const [lb, o] of IDENT) cell($('#idents'), lb, o);
+
+// ---------- 表情表 ----------
+const EXPR = [
+  ['平静',    { eyes: 'normal', mouth: 'flat' }],
+  ['微笑',    { eyes: 'happy',  mouth: 'smile' }],
+  ['难过',    { eyes: 'narrow', mouth: 'frown', lookY: .4 }],
+  ['发呆',    { eyes: 'dot',    mouth: 'tiny', lookY: .2 }],
+  ['惊讶',    { eyes: 'wide',   mouth: 'o', emote: 'spark' }],
+  ['生气',    { eyes: 'glare',  mouth: 'grit', emote: 'anger' }],
+  ['害羞',    { eyes: 'up',     mouth: 'tiny', blush: 1 }],
+  ['闭眼',    { eyes: 'closed', mouth: 'flat' }],
+  ['哭',      { eyes: 'cry',    mouth: 'open', tear: 1 }],
+  ['泪光',    { eyes: 'teary',  mouth: 'wobble', tear: .4 }],
+  ['睡',      { eyes: 'asleep', mouth: 'tiny', emote: 'zzz' }],
+  ['无奈',    { eyes: 'narrow', mouth: 'side', lookX: .6 }],
+  ['期待',    { eyes: 'wide',   mouth: 'smile', lookY: -.4 }],
+  ['茫然',    { eyes: 'dot',    mouth: 'wobble', emote: 'dots' }],
+  ['委屈',    { eyes: 'teary',  mouth: 'frown', emote: 'sweat', blush: .5 }],
+  ['X_X',     { eyes: 'xeye',   mouth: 'flat' }],
+];
+for (const [lb, o] of EXPR) {
+  cell($('#expr'), lb, { ...o, sex: 'm' }, 3, '男');
+  cell($('#expr'), lb, { ...o, sex: 'f' }, 3, '女');
+}
+
+// ---------- 眼型 ----------
+for (const k of Object.keys(EYES)) {
+  if (k === 'cry') continue;
+  cell($('#eyes'), k, { eyes: k, mouth: 'none', sex: 'm' }, 4);
+}
+
+// ---------- 嘴型 ----------
+for (const k of Object.keys(MOUTHS)) {
+  cell($('#mouths'), k, { mouth: k, eyes: 'narrow', sex: 'm' }, 4);
+}
+
+// ---------- 符号 ----------
+for (const k of Object.keys(EMOTES)) {
+  cell($('#emotes'), k, { emote: k, eyes: 'dot', mouth: 'tiny', sex: 'f' }, 4);
+}
+
+// ---------- 手机尺寸 ----------
+// 320×180 整帧，夜色背景 + 两个人，缩放到 (a) 抖音信息流 116px 宽 (b) 1:1 原尺寸对照
+function frame(c, W, H) {
+  c.fillStyle = PAL.night; c.fillRect(0, 0, W, H);
+  // 远处一层紫墙
+  c.fillStyle = PAL.navy; c.fillRect(0, 96, W, H - 96);
+  // 一排楼（纯色块）
+  for (let i = 0; i < 8; i++) {
+    const bw = 26 + (i * 13) % 22, bh = 30 + (i * 29) % 52;
+    c.fillStyle = i % 3 ? PAL.navy : '#23213A';
+    c.fillRect(10 + i * 40, 96 - bh, bw, bh);
+    if (i % 4 === 1) { c.fillStyle = PAL.gold; c.fillRect(10 + i * 40 + 8, 96 - bh + 8, 3, 4); }
+  }
+  // 雨
+  c.fillStyle = PAL.haze;
+  for (let i = 0; i < 40; i++) {
+    const x = (i * 37) % W, y = (i * 53) % H;
+    c.fillRect(x, y, 1, 3);
+  }
+  // 地面
+  c.fillStyle = PAL.ink; c.fillRect(0, 150, W, H - 150);
+  c.fillStyle = PAL.dusk; c.fillRect(0, 150, W, 1);
+  // 人
+  figure(c, 136, 160, 2, { sex: 'm', eyes: 'narrow', mouth: 'frown', pose: 'walk', walk: 1.2, aL: .1, aR: .1 });
+  figure(c, 186, 160, 2, { sex: 'f', eyes: 'cry', mouth: 'open', pose: 'walk', walk: 1.2, tear: .8, aL: 1.2, aR: 1.1 });
+
+  // 字幕（32px 逻辑 → 相当于 320 宽画布上的大字）
+  c.fillStyle = PAL.paper;
+  c.font = '13px "Microsoft YaHei", sans-serif';
+  c.textAlign = 'center';
+  c.fillText('我们的爱总有时差', W / 2, 172);
+}
+
+const PH = [
+  [320, 180, 1, '原始：320×180 内部分辨率'],
+  [116, 65, .36, '抖音信息流缩略图宽度（约 116px）'],
+];
+for (const [w, h, s, note] of PH) {
+  const wrap = document.createElement('div');
+  const p = document.createElement('div'); p.className = 'phone';
+  const cv = document.createElement('canvas');
+  if (s < 1) {
+    // 先按原始尺寸画，再用 CSS 缩到目标宽度（等价于真实缩放）
+    cv.width = 320; cv.height = 180;
+    cv.style.width = w + 'px'; cv.style.height = h + 'px';
+  } else {
+    cv.width = 320; cv.height = 180;
+  }
+  const c = cv.getContext('2d');
+  c.imageSmoothingEnabled = false;
+  frame(c, 320, 180);
+  p.appendChild(cv);
+  const n = document.createElement('div'); n.className = 'pnote'; n.innerHTML = note;
+  wrap.appendChild(p); wrap.appendChild(n);
+  $('#phone').appendChild(wrap);
+}
+
+window.__ready = true;
+</script>
+</body>
+</html>

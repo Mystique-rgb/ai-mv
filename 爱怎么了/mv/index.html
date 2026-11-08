@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<title>爱怎么了 · 纸雕灯影</title>
+<style>
+  /* 飘逸楷体：华文行楷（flowing 行楷）为主，华文楷体兜底 */
+  @font-face { font-family: Xingkai; src: url(fonts/STXINGKA.TTF); }
+  @font-face { font-family: Kaiti;  src: url(fonts/STKAITI.TTF); }
+  html, body { margin: 0; background: #000; overflow: hidden; }
+  #c { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; display: block; }
+
+  /* —— 字幕：纸上的字 —— */
+  #subs { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; pointer-events: none; }
+  .line {
+    position: absolute; left: 0; width: 1080px; text-align: center; white-space: nowrap;
+    font-family: Xingkai, Kaiti; font-size: 76px; line-height: 1.28; letter-spacing: .055em;
+    will-change: opacity; opacity: 0;
+  }
+  .line span { display: inline-block; white-space: pre; }
+  .line span.c {
+    color: #f2dfc4;
+    text-shadow: 0 0 1px rgba(0,0,0,.95), 0 3px 9px rgba(0,0,0,.9), 0 0 30px rgba(0,0,0,.55);
+    transition: color .16s linear;
+  }
+  .line span.c.lit {
+    color: #ffe6b4;
+    text-shadow: 0 0 1px rgba(0,0,0,.9), 0 3px 9px rgba(0,0,0,.85),
+                 0 0 16px rgba(255,196,116,.75), 0 0 40px rgba(255,168,88,.4);
+  }
+  .line span.sp { color: transparent; text-shadow: none; }
+</style>
+<script type="importmap">{ "imports": { "three": "/node_modules/three/build/three.module.js", "three/addons/": "/node_modules/three/examples/jsm/" } }</script>
+</head><body>
+<canvas id="c"></canvas>
+<div id="subs"></div>
+<script type="module" src="src/main.js"></script>
+</body></html>

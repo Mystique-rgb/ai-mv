@@ -1,0 +1,88 @@
+{
+  "source": "11月7日.MP3",
+  "song": "幻听 · 许嵩",
+  "duration": 30.642,
+  "sample_rate": 44100,
+  "channels": 2,
+  "method": "AudioTranscribe 分段回译 + ffmpeg 20ms RMS 包络谷值定位（非人工逐帧听感校准）",
+  "cue_count": 7,
+  "segments": [
+    {
+      "index": 1,
+      "tag": "A1",
+      "start": 0.7,
+      "end": 4.6,
+      "duration": 3.9,
+      "text": "如今一个人听歌 总是会觉得失落",
+      "chars": 14,
+      "style": "A段·主歌",
+      "audio_clip": "segments/11月7日-L01.mp3"
+    },
+    {
+      "index": 2,
+      "tag": "A2",
+      "start": 5.36,
+      "end": 8.35,
+      "duration": 2.99,
+      "text": "幻听你在我的耳边 轻轻诉说",
+      "chars": 12,
+      "style": "A段·主歌",
+      "audio_clip": "segments/11月7日-L02.mp3"
+    },
+    {
+      "index": 3,
+      "tag": "A3",
+      "start": 8.92,
+      "end": 10.28,
+      "duration": 1.36,
+      "text": "夜色多温柔",
+      "chars": 5,
+      "style": "A段·主歌",
+      "audio_clip": "segments/11月7日-L03.mp3"
+    },
+    {
+      "index": 4,
+      "tag": "A4",
+      "start": 11.12,
+      "end": 12.92,
+      "duration": 1.8,
+      "text": "你有多爱我",
+      "chars": 5,
+      "style": "A段·主歌",
+      "audio_clip": "segments/11月7日-L04.mp3"
+    },
+    {
+      "index": 5,
+      "tag": "B1",
+      "start": 15.68,
+      "end": 19.58,
+      "duration": 3.9,
+      "text": "如今一个人听歌 总是会觉得难过",
+      "chars": 14,
+      "style": "B段·副歌",
+      "audio_clip": "segments/11月7日-L05.mp3"
+    },
+    {
+      "index": 6,
+      "tag": "B2",
+      "start": 20.34,
+      "end": 23.45,
+      "duration": 3.11,
+      "text": "爱已不在这里 我却还没走脱",
+      "chars": 12,
+      "style": "B段·副歌",
+      "audio_clip": "segments/11月7日-L06.mp3"
+    },
+    {
+      "index": 7,
+      "tag": "B3",
+      "start": 23.92,
+      "end": 26.85,
+      "duration": 2.93,
+      "text": "列表里的歌 随过往流动",
+      "chars": 10,
+      "style": "B段·副歌",
+      "audio_clip": "segments/11月7日-L07.mp3"
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>爱怎么了 · 纸雕灯影 MV</title>
+<style>
+  @font-face { font-family: 'Xingkai'; src: url('fonts/STXINGKA.TTF') format('truetype'); font-weight: 400; }
+  html, body { margin: 0; background: #14111a; color: #eee; font: 13px system-ui, sans-serif; }
+  main { padding: 12px; display: grid; gap: 8px; justify-items: center; }
+  #out { width: min(100%, 980px); aspect-ratio: 16 / 9; height: auto; background: #07060b; }
+  .p5Canvas { display: none !important; }
+  .bar { display: flex; gap: 10px; align-items: center; width: min(100%, 980px); }
+  #scrub { flex: 1; }
+  #tt { font-variant-numeric: tabular-nums; min-width: 150px; font-size: 11px; }
+</style>
+<script>window.EXTRA_FONTS = [['74px Xingkai', '收拾了行李整理着包裹我们的爱怎么了从形影不离到轻易的割舍或者说细数过往想到又迷惘你曾是我心中唯一信仰但怎么离去世界恍惚间还是回起珍贵的点点滴滴再没什么意义爱随风而消散雨里找个理由却骗不过自己到结局只是可惜不太够时间去拥抱']];</script>
+<script src="node_modules/p5/lib/p5.min.js"></script>
+<script src="node_modules/p5.brush/dist/p5.brush.js"></script>
+</head>
+<body>
+<main>
+  <canvas id="out" width="1920" height="1080"></canvas>
+  <div class="bar"><input id="scrub" type="range" min="0" max="55.667" step="0.0417" value="0"><span id="tt">loading…</span></div>
+</main>
+<!-- engine -->
+<script src="src/config.js"></script>
+<script src="src/core.js"></script>
+<script src="src/clawd.js"></script>
+<script src="src/timeline.js"></script>
+<!-- data: 逐字时间戳 / 纸雕灯箱的布景与道具 / 卡点与转场工具 -->
+<script src="src/lyrics.js"></script>
+<script src="src/pl.js"></script>
+<script src="src/stage2.js"></script>
+<script src="src/subs.js"></script>
+<!-- the video -->
+<script src="src/scenes/song_a.js"></script>
+<script src="src/scenes/song_b.js"></script>
+<script>
+  const q = new URLSearchParams(location.search).get('loop'); if (q && LOOPS[q]) window.LOOP = LOOPS[q];
+</script>
+</body>
+</html>

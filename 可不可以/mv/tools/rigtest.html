@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>rig test</title>
+<style>
+@font-face{font-family:'KT';src:url('../assets/fonts/STKAITI.TTF') format('truetype');font-display:block}
+html,body{margin:0;background:#06070c;overflow:hidden}
+canvas{display:block;width:1920px;height:1080px;image-rendering:pixelated}
+</style></head>
+<body><canvas id="a" width="480" height="270"></canvas>
+<script src="../src/base.js"></script>
+<script src="../src/pxfont.js"></script>
+<script src="../src/char.js"></script>
+<script>
+window.__ready=false;
+const c=document.getElementById('a').getContext('2d');
+c.imageSmoothingEnabled=false;
+window.draw=function(){
+  vgrad(c,0,0,480,270,['#0B1020','#141B33','#1E2A4A','#2E4472'],90);
+  R(c,0,150,480,120,'#101528');
+  dith(c,0,150,480,3,'#2E4472',.5);
+  const B=[[70,'stand','open','flat'],[140,'walk','sad','frown'],[210,'run','open','open'],[280,'sit','cry','frown'],[350,'crouch','lost','flat'],[420,'stand','happy','smile']];
+  for(const [x,pose,eyes,mouth] of B){
+    R(c,x-12,150,24,2,'#0A0910');
+    CH.draw(c,'m',x,150,{pose,ph:.3,eyes,mouth,tear:pose==='sit'?1:0,aR:pose==='stand'&&x>400?60:undefined});
+  }
+  const G=[[70,'stand','happy','smile',1],[140,'walk','open','smile',1],[210,'stand','open','flat',-1],[280,'sit','sad','pout',1],[350,'stand','shock','open',1],[420,'crouch','happy','smile',-1]];
+  for(const [x,pose,eyes,mouth,dir] of G){
+    R(c,x-12,270,24,2,'#0A0910');
+    CH.draw(c,'f',x,270,{pose,ph:.72,eyes,mouth,dir,blush:1,view:x===210?'back':'front'});
+  }
+  textC(c,'小豪 / 小琪',240,8,'#F4EEDC',1,'#0A0910');
+};
+draw();window.__ready=true;
+</script></body></html>

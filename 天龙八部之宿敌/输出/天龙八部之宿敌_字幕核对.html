@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>天龙八部之宿敌 · 字幕核对</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+    background:radial-gradient(1200px 700px at 50% -10%,#231c2e 0%,#120e18 55%,#0a070e 100%);
+    color:#e8ecf4;min-height:100vh;display:flex;align-items:center;justify-content:center;
+    padding:24px 16px;
+  }
+  .shell{width:100%;max-width:760px}
+  .top{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:18px;padding:0 6px}
+  .title{font-size:15px;letter-spacing:.14em;color:#a08fc0;font-weight:600}
+  .title b{color:#fff;font-weight:700;letter-spacing:.02em;font-size:17px}
+  .hint{font-size:12px;color:#6b5d82}
+
+  .stage{
+    position:relative;background:linear-gradient(180deg,#1a1425 0%,#130e1c 100%);
+    border:1px solid #2a2038;border-radius:20px;padding:30px 26px 22px;
+    box-shadow:0 24px 70px -24px #000, inset 0 1px 0 #ffffff0d;
+    overflow:hidden;
+  }
+  .stage::after{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(420px 220px at 50% 42%,#8a5fd414 0%,transparent 70%);
+  }
+  .lyrics{
+    height:372px;overflow-y:auto;scrollbar-width:none;
+    mask-image:linear-gradient(180deg,transparent 0,#000 16%,#000 78%,transparent 100%);
+  }
+  .lyrics::-webkit-scrollbar{display:none}
+  .pad{height:146px}
+
+  .line{
+    padding:9px 14px;border-radius:12px;cursor:pointer;
+    font-size:23px;line-height:1.55;color:#5d5470;font-weight:500;
+    transition:color .25s,transform .25s,opacity .25s;
+    text-align:center;letter-spacing:.02em;
+    position:relative;
+  }
+  .line:hover{color:#b0a2cd;background:#ffffff06}
+  .line.done{color:#483d5c}
+  .line.active{color:#fff;transform:scale(1.06);font-weight:700;
+    text-shadow:0 0 30px #a86eff55}
+  .line.active .ch.filled{color:#ffd9a0}
+  .ch{transition:color .12s}
+  .ch.filled{color:#ffcf87}
+
+  .meta{
+    display:flex;justify-content:space-between;align-items:center;
+    margin-top:8px;font-size:11px;color:#544a68;padding:0 6px;
+    font-variant-numeric:tabular-nums;font-family:ui-monospace,Consolas,monospace;
+  }
+
+  .ctrl{margin-top:22px;display:flex;align-items:center;gap:14px;padding:0 4px}
+  .play{
+    width:46px;height:46px;border-radius:14px;background:linear-gradient(180deg,#8a4ff0,#6a35c8);border:1px solid #b28aff44;
+    color:#fff;font-size:15px;cursor:pointer;flex:none;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 8px 24px -8px #8a4ff0aa;transition:transform .12s,filter .12s;
+  }
+  .play:hover{filter:brightness(1.12)}
+  .play:active{transform:scale(.95)}
+  .bar{flex:1;position:relative;height:6px;border-radius:6px;background:#241c32;cursor:pointer;overflow:hidden}
+  .fill{position:absolute;inset:0 auto 0 0;width:0;background:linear-gradient(90deg,#8a4ff0,#d09aff);border-radius:6px}
+  .time{font-size:12px;color:#8d7fa3;font-variant-numeric:tabular-nums;
+    font-family:ui-monospace,Consolas,monospace;flex:none;min-width:86px;text-align:right}
+
+  .foot{margin-top:16px;padding:0 6px;font-size:11.5px;color:#5c5270;line-height:1.7}
+  .kbd{background:#221b30;border:1px solid #342848;border-radius:5px;padding:1px 5px;
+    font-family:ui-monospace,monospace;color:#a394bd;font-size:11px}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="top">
+    <div class="title"><b>天龙八部之宿敌</b> &nbsp;/&nbsp; 许嵩 263.34s · 52 行</div>
+    <div class="hint">点击任意一行可跳转</div>
+  </div>
+
+  <div class="stage">
+    <div class="lyrics" id="lyrics"><div class="pad"></div></div>
+    <div class="meta">
+      <span id="cur">--</span>
+      <span id="code">SRT 时间码</span>
+    </div>
+  </div>
+
+  <div class="ctrl">
+    <button class="play" id="play">▶</button>
+    <div class="bar" id="bar"><div class="fill" id="fill"></div></div>
+    <div class="time" id="time">0:00.00 / 4:23.34</div>
+  </div>
+
+  <div class="foot">
+    空格 播放/暂停 &nbsp;·&nbsp; <span class="kbd">←</span> <span class="kbd">→</span> 前后 2 秒 &nbsp;·&nbsp;
+    逐字点亮来自 faster-whisper medium 词级对齐 + 人声能量校验
+  </div>
+</div>
+
+<audio id="audio" src="song.mp3" preload="auto"></audio>
+<script>
+const LINES = [{"t": "会在何处见到你", "s": 22.3, "e": 26.27, "c": [["会", 22.42], ["在", 22.44], ["何", 23.22], ["处", 23.64], ["见", 23.9], ["到", 24.36], ["你", 24.82]]}, {"t": "莫非前尘已注定", "s": 27.82, "e": 31.79, "c": [["莫", 27.94], ["非", 27.96], ["前", 28.22], ["尘", 28.72], ["已", 29.04], ["注", 29.44], ["定", 29.84]]}, {"t": "飞过时空的距离", "s": 31.9, "e": 36.97, "c": [["飞", 32.02], ["过", 32.88], ["时", 33.2], ["空", 33.66], ["的", 33.94], ["距", 34.44], ["离", 34.72]]}, {"t": "却囿于刀剑光影", "s": 37.12, "e": 42.04, "c": [["却", 37.24], ["囿", 37.86], ["于", 38.32], ["刀", 38.62], ["剑", 38.86], ["光", 39.3], ["影", 39.76]]}, {"t": "三月春花渐次醒", "s": 42.1, "e": 46.14, "c": [["三", 42.22], ["月", 42.84], ["春", 43.08], ["花", 43.46], ["渐", 43.78], ["次", 44.22], ["醒", 44.64]]}, {"t": "迢迢年华谁老去", "s": 46.74, "e": 51.79, "c": [["迢", 46.86], ["迢", 47.72], ["年", 47.98], ["华", 48.34], ["谁", 48.68], ["老", 48.98], ["去", 49.44]]}, {"t": "是劫是缘随我心", "s": 51.94, "e": 56.99, "c": [["是", 52.06], ["劫", 52.736], ["是", 53.411], ["缘", 53.871], ["随", 54.5], ["我", 55.229], ["心", 56.437]]}, {"t": "除了你万敌不侵", "s": 57.05, "e": 60.81, "c": [["除", 56.86], ["了", 57.186], ["你", 57.757], ["万", 58.063], ["敌", 58.486], ["不", 58.826], ["侵", 59.311]]}, {"t": "当恩怨各一半", "s": 61.9, "e": 64.84, "c": [["当", 61.98], ["恩", 62.923], ["怨", 63.267], ["各", 63.68], ["一", 64.093], ["半", 64.787]]}, {"t": "我怎么圈揽", "s": 64.9, "e": 67.38, "c": [["我", 64.9], ["怎", 65.548], ["么", 65.956], ["圈", 66.628], ["揽", 67.34]]}, {"t": "看灯笼血红染", "s": 67.44, "e": 69.78, "c": [["看", 67.44], ["灯", 67.923], ["笼", 68.233], ["血", 68.58], ["红", 69.047], ["染", 69.733]]}, {"t": "寻仇已太晚", "s": 69.84, "e": 72.26, "c": [["寻", 69.84], ["仇", 70.448], ["已", 70.976], ["太", 71.636], ["晚", 72.236]]}, {"t": "月下门童喟叹", "s": 72.32, "e": 76.1, "c": [["月", 72.32], ["下", 72.827], ["门", 73.153], ["童", 73.48], ["喟", 73.94], ["叹", 75.817]]}, {"t": "昨夜太平长安", "s": 76.16, "e": 81.67, "c": [["昨", 76.16], ["夜", 77.04], ["太", 77.66], ["平", 78.12], ["长", 78.56], ["安", 79.12]]}, {"t": "当天上星河转", "s": 82.1, "e": 84.4, "c": [["当", 82.12], ["天", 82.627], ["上", 82.973], ["星", 83.39], ["河", 83.78], ["转", 84.363]]}, {"t": "我命已定盘", "s": 84.46, "e": 87.42, "c": [["我", 84.46], ["命", 85.22], ["已", 85.82], ["定", 86.2], ["盘", 86.78]]}, {"t": "待绝笔墨痕干", "s": 87.48, "e": 89.48, "c": [["待", 87.6], ["绝", 87.687], ["笔", 88.033], ["墨", 88.4], ["痕", 88.847], ["干", 89.45]]}, {"t": "宿敌已来犯", "s": 89.54, "e": 91.94, "c": [["宿", 89.54], ["敌", 90.22], ["已", 90.76], ["来", 91.26], ["犯", 91.72]]}, {"t": "我借你的孤单", "s": 92.0, "e": 95.37, "c": [["我", 91.72], ["借", 92.13], ["你", 92.673], ["的", 93.005], ["孤", 93.343], ["单", 93.873]]}, {"t": "今生恐怕难还", "s": 96.05, "e": 101.81, "c": [["今", 96.08], ["生", 96.96], ["恐", 97.48], ["怕", 98.08], ["难", 98.4], ["还", 98.86]]}, {"t": "缠绕孤岛的雪雨", "s": 123.5, "e": 128.64, "c": [["缠", 123.62], ["绕", 124.429], ["孤", 124.846], ["岛", 125.237], ["的", 125.603], ["雪", 126.114], ["雨", 128.366]]}, {"t": "飘飘洒洒谁来停", "s": 128.7, "e": 133.34, "c": [["飘", 128.72], ["飘", 129.437], ["洒", 129.763], ["洒", 130.089], ["谁", 130.409], ["来", 130.837], ["停", 133.134]]}, {"t": "摘取一颗海上星", "s": 133.4, "e": 138.14, "c": [["摘", 133.5], ["取", 134.326], ["一", 134.714], ["颗", 135.086], ["海", 135.417], ["上", 135.723], ["星", 137.906]]}, {"t": "陪我终夜不孤寂", "s": 138.2, "e": 142.4, "c": [["陪", 138.26], ["我", 139.26], ["终", 139.56], ["夜", 139.94], ["不", 140.3], ["孤", 140.64], ["寂", 140.9]]}, {"t": "灵柩长埋深谷底", "s": 143.2, "e": 147.66, "c": [["灵", 143.32], ["柩", 144.2], ["长", 144.52], ["埋", 144.92], ["深", 145.14], ["谷", 145.58], ["底", 146.16]]}, {"t": "没有永远的秘密", "s": 148.5, "e": 152.48, "c": [["没", 148.58], ["有", 148.98], ["永", 149.38], ["远", 149.84], ["的", 150.16], ["秘", 150.52], ["密", 150.98]]}, {"t": "染指江湖结悲局", "s": 153.2, "e": 157.32, "c": [["染", 153.3], ["指", 154.18], ["江", 154.4], ["湖", 154.72], ["结", 155.1], ["悲", 155.3], ["局", 155.82]]}, {"t": "无人逃得过宿命", "s": 158.12, "e": 163.11, "c": [["无", 158.24], ["人", 159.12], ["逃", 159.32], ["得", 159.7], ["过", 160.0], ["宿", 160.28], ["命", 160.76]]}, {"t": "当恩怨各一半", "s": 163.5, "e": 166.16, "c": [["当", 163.52], ["恩", 164.433], ["怨", 164.72], ["各", 165.12], ["一", 165.56], ["半", 166.133]]}, {"t": "我怎么圈揽", "s": 166.22, "e": 168.78, "c": [["我", 166.22], ["怎", 166.956], ["么", 167.412], ["圈", 168.096], ["揽", 168.752]]}, {"t": "看灯笼血红染", "s": 168.84, "e": 171.16, "c": [["看", 168.84], ["灯", 169.367], ["笼", 169.707], ["血", 170.03], ["红", 170.46], ["染", 171.12]]}, {"t": "寻仇已太晚", "s": 171.22, "e": 173.7, "c": [["寻", 171.22], ["仇", 171.844], ["已", 172.476], ["太", 173.124], ["晚", 173.676]]}, {"t": "月下门童喟叹", "s": 173.76, "e": 177.54, "c": [["月", 173.76], ["下", 174.217], ["门", 174.593], ["童", 174.93], ["喟", 175.387], ["叹", 177.257]]}, {"t": "昨夜太平长安", "s": 177.6, "e": 183.44, "c": [["昨", 177.6], ["夜", 178.6], ["太", 179.12], ["平", 179.58], ["长", 180.0], ["安", 180.52]]}, {"t": "当天上星河转", "s": 183.5, "e": 186.06, "c": [["当", 183.53], ["天", 184.057], ["上", 184.447], ["星", 184.84], ["河", 185.247], ["转", 185.993]]}, {"t": "我命已定盘", "s": 186.12, "e": 188.6, "c": [["我", 186.12], ["命", 186.748], ["已", 187.396], ["定", 187.972], ["盘", 188.572]]}, {"t": "待绝笔墨痕干", "s": 188.66, "e": 191.02, "c": [["待", 188.66], ["绝", 189.123], ["笔", 189.453], ["墨", 189.82], ["痕", 190.28], ["干", 190.973]]}, {"t": "宿敌已来犯", "s": 191.08, "e": 193.5, "c": [["宿", 191.08], ["敌", 191.788], ["已", 192.324], ["来", 192.936], ["犯", 193.48]]}, {"t": "我借你的孤单", "s": 193.56, "e": 197.44, "c": [["我", 193.56], ["借", 194.107], ["你", 194.427], ["的", 194.73], ["孤", 195.18], ["单", 197.14]]}, {"t": "今生恐怕难还", "s": 197.5, "e": 203.27, "c": [["今", 197.5], ["生", 198.4], ["恐", 198.88], ["怕", 199.52], ["难", 199.88], ["还", 200.32]]}, {"t": "当恩怨各一半", "s": 205.1, "e": 208.3, "c": [["当", 205.14], ["恩", 206.4], ["怨", 206.807], ["各", 207.2], ["一", 207.633], ["半", 208.26]]}, {"t": "我怎么圈揽", "s": 208.36, "e": 210.86, "c": [["我", 208.36], ["怎", 208.976], ["么", 209.432], ["圈", 210.14], ["揽", 210.828]]}, {"t": "看灯笼血红染", "s": 210.92, "e": 213.34, "c": [["看", 210.92], ["灯", 211.493], ["笼", 211.78], ["血", 212.1], ["红", 212.527], ["染", 213.283]]}, {"t": "寻仇已太晚", "s": 213.4, "e": 215.8, "c": [["寻", 213.4], ["仇", 213.9], ["已", 214.572], ["太", 215.232], ["晚", 215.784]]}, {"t": "月下门童喟叹", "s": 215.86, "e": 219.8, "c": [["月", 215.86], ["下", 216.44], ["门", 216.86], ["童", 217.42], ["喟", 218.7], ["叹", 219.52]]}, {"t": "昨夜太平长安", "s": 219.86, "e": 224.12, "c": [["昨", 219.86], ["夜", 220.92], ["太", 221.18], ["平", 221.72], ["长", 222.08], ["安", 222.62]]}, {"t": "当天上星河转", "s": 224.6, "e": 227.69, "c": [["当", 224.62], ["天", 226.16], ["上", 226.46], ["星", 226.76], ["河", 227.12], ["转", 227.46]]}, {"t": "我命已定盘", "s": 227.75, "e": 230.68, "c": [["我", 227.46], ["命", 228.62], ["已", 229.2], ["定", 229.824], ["盘", 230.572]]}, {"t": "待绝笔墨痕干", "s": 230.74, "e": 233.36, "c": [["待", 230.74], ["绝", 231.14], ["笔", 231.44], ["墨", 231.72], ["痕", 232.08], ["干", 232.52]]}, {"t": "宿敌已来犯", "s": 233.42, "e": 235.52, "c": [["宿", 233.54], ["敌", 233.876], ["已", 234.46], ["来", 235.024], ["犯", 235.52]]}, {"t": "我借你的孤单", "s": 235.58, "e": 239.43, "c": [["我", 235.6], ["借", 236.1], ["你", 236.42], ["的", 236.68], ["孤", 236.94], ["单", 237.48]]}, {"t": "今生恐怕难还", "s": 239.82, "e": 243.94, "c": [["今", 239.94], ["生", 240.5], ["恐", 240.96], ["怕", 241.6], ["难", 241.94], ["还", 242.44]]}];
+const DUR = 263.34;
+const box = document.getElementById('lyrics');
+const audio = document.getElementById('audio');
+const fill = document.getElementById('fill');
+const timeEl = document.getElementById('time');
+const curEl = document.getElementById('cur');
+const codeEl = document.getElementById('code');
+const playBtn = document.getElementById('play');
+
+const nodes = [];
+LINES.forEach((ln, i) => {
+  const d = document.createElement('div');
+  d.className = 'line';
+  d.dataset.i = i;
+  const spans = ln.c.map(([ch]) => {
+    const s = document.createElement('span');
+    s.className = 'ch'; s.textContent = ch;
+    d.appendChild(s); return s;
+  });
+  d.addEventListener('click', () => { audio.currentTime = ln.s + 0.001; audio.play(); });
+  box.appendChild(d);
+  nodes.push({el: d, spans, line: ln});
+});
+const tail = document.createElement('div'); tail.className = 'pad';
+box.appendChild(tail);
+
+function srt(t){
+  const m = Math.floor(t/60), s = t%60;
+  const ss = String(Math.floor(s)).padStart(2,'0');
+  const ms = String(Math.round((s%1)*1000)).padStart(3,'0');
+  return `${String(m).padStart(2,'0')}:${ss},${ms}`;
+}
+
+let activeIdx = -1;
+function tick(){
+  const t = audio.currentTime;
+  fill.style.width = (t/DUR*100) + '%';
+  timeEl.textContent = `${Math.floor(t/60)}:${String(Math.floor(t%60)).padStart(2,'0')}.${String(Math.floor((t%1)*100)).padStart(2,'0')} / 4:23.34`;
+
+  let idx = -1;
+  for (let i = 0; i < LINES.length; i++){
+    if (t >= LINES[i].s && t < LINES[i].e) { idx = i; break; }
+  }
+  if (idx !== activeIdx){
+    if (activeIdx >= 0) nodes[activeIdx].el.classList.remove('active');
+    if (idx >= 0){
+      nodes[idx].el.classList.add('active');
+      const el = nodes[idx].el;
+      const target = el.offsetTop - box.clientHeight/2 + el.clientHeight/2;
+      box.scrollTo({top: target, behavior:'smooth'});
+    }
+    activeIdx = idx;
+  }
+  nodes.forEach((n, i) => {
+    n.el.classList.toggle('done', t >= n.line.e);
+    if (i === idx){
+      n.spans.forEach((sp, k) => {
+        sp.classList.toggle('filled', t >= n.line.c[k][1]);
+      });
+    } else {
+      n.spans.forEach(sp => sp.classList.remove('filled'));
+    }
+  });
+
+  if (idx >= 0){
+    curEl.textContent = `第 ${idx+1} 句 · ${LINES[idx].t}`;
+    codeEl.textContent = `${srt(LINES[idx].s)} → ${srt(LINES[idx].e)}`;
+  } else {
+    curEl.textContent = t < 22.3 ? '前奏' : (t > 101 && t < 123.5) ? '间奏' : (t >= 244.5 ? '尾奏' : '——');
+    codeEl.textContent = 'SRT 时间码';
+  }
+  requestAnimationFrame(tick);
+}
+
+playBtn.onclick = () => audio.paused ? audio.play() : audio.pause();
+audio.onplay = () => playBtn.textContent = '❚❚';
+audio.onpause = () => playBtn.textContent = '▶';
+document.getElementById('bar').onclick = e => {
+  const r = e.currentTarget.getBoundingClientRect();
+  audio.currentTime = (e.clientX - r.left)/r.width * DUR;
+};
+document.addEventListener('keydown', e => {
+  if (e.code === 'Space'){ e.preventDefault(); playBtn.onclick(); }
+  if (e.code === 'ArrowLeft'){ audio.currentTime = Math.max(0, audio.currentTime-2); }
+  if (e.code === 'ArrowRight'){ audio.currentTime = Math.min(DUR, audio.currentTime+2); }
+});
+requestAnimationFrame(tick);
+</script>
+</body>
+</html>

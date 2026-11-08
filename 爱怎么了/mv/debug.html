@@ -1,0 +1,25 @@
+<!doctype html><html><head><meta charset="utf-8">
+<style>html,body{margin:0;background:#111;}canvas{display:block}</style>
+<script type="importmap">{ "imports": { "three": "/node_modules/three/build/three.module.js", "three/addons/": "/node_modules/three/examples/jsm/" } }</script>
+</head><body><canvas id="c" width="1080" height="1920"></canvas>
+<script type="module">
+import { figureSil, figureSilW, torso, torsoW, legs, arm, MOOD } from './src/figures.js';
+const c = document.getElementById('c'), x = c.getContext('2d');
+x.fillStyle = '#1a1a22'; x.fillRect(0, 0, 1080, 1920);
+// 1 m = 1200 px；地面 y=1500
+const PX = 1200, G = 1500;
+const draw = (fx, kind, pose, mood, facing, col, label) => {
+  x.save(); x.translate(fx, G); x.scale(1, -1);
+  x.fillStyle = col; x.strokeStyle = col;
+  x.beginPath(); x.arc(0, 0, .004 * PX, 0, 6.284); x.fill();
+  if (kind === 'm') figureSil(x, .8, { pose, mood, facing }); else figureSilW(x, .8, { pose, mood, facing });
+  x.restore();
+  x.fillStyle = '#889'; x.font = '26px monospace'; x.fillText(label, fx - 60, G + 40);
+};
+draw(180, 'm', 'stand', 'neutral', 1, '#c86b4a', 'man stand');
+draw(460, 'm', 'kneel', 'sad', 1, '#c86b4a', 'man kneel sad');
+draw(760, 'w', 'stand', 'neutral', 1, '#F79AC0', 'woman stand');
+x.strokeStyle = '#334'; x.lineWidth = 2;
+for (let i = 0; i <= 2; i++) { x.beginPath(); x.moveTo(0, G - i * .4 * PX); x.lineTo(1080, G - i * .4 * PX); x.stroke(); }
+window.READY = true;
+</script></body></html>

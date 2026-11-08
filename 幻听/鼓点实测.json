@@ -1,0 +1,1079 @@
+{
+ "source": "11月7日.MP3",
+ "duration": 30.642,
+ "sample_rate": 22050,
+ "method": "22050Hz 单声道解码 -> 35-150Hz 带通包络 + 谱通量 + 自相关定速；逐拍 ±0.12s 窗口峰值 + ±0.09s 反拍窗口",
+ "autocorr_bpm": 127.6,
+ "grid_bpm": 127.7,
+ "beat_sec": 0.4699,
+ "anchor": 0.04,
+ "beat_count": 65,
+ "peak_match_count": 60,
+ "peak_match_missing": [
+  3,
+  4,
+  7,
+  15,
+  19
+ ],
+ "mean_delta": 0.0658,
+ "lyrics": [
+  {
+   "start": 0.7,
+   "end": 4.6,
+   "text": "A1 如今一个人听歌 总是会觉得失落"
+  },
+  {
+   "start": 5.36,
+   "end": 8.35,
+   "text": "A2 幻听你在我的耳边 轻轻诉说"
+  },
+  {
+   "start": 8.92,
+   "end": 10.28,
+   "text": "A3 夜色多温柔"
+  },
+  {
+   "start": 11.12,
+   "end": 12.92,
+   "text": "A4 你有多爱我"
+  },
+  {
+   "start": 15.68,
+   "end": 19.58,
+   "text": "B1 如今一个人听歌 总是会觉得难过"
+  },
+  {
+   "start": 20.34,
+   "end": 23.45,
+   "text": "B2 爱已不在这里 我却还没走脱"
+  },
+  {
+   "start": 23.92,
+   "end": 26.85,
+   "text": "B3 列表里的歌 随过往流动"
+  }
+ ],
+ "beats": [
+  {
+   "k": 0,
+   "grid": 0.04,
+   "bar": 1,
+   "beatInBar": 1,
+   "hit": {
+    "t": 0.093,
+    "strength": 0.751,
+    "delta": 0.053
+   },
+   "low_strength": 0.819,
+   "offbeat_strength": 0.754,
+   "onset": 0.697,
+   "rms": 0.5325,
+   "segment": "间奏"
+  },
+  {
+   "k": 1,
+   "grid": 0.51,
+   "bar": 1,
+   "beatInBar": 2,
+   "hit": {
+    "t": 0.6,
+    "strength": 0.05,
+    "delta": 0.09
+   },
+   "low_strength": 0.217,
+   "offbeat_strength": 0.897,
+   "onset": 0.342,
+   "rms": 0.1956,
+   "segment": "间奏"
+  },
+  {
+   "k": 2,
+   "grid": 0.98,
+   "bar": 1,
+   "beatInBar": 3,
+   "hit": {
+    "t": 0.868,
+    "strength": 0.832,
+    "delta": -0.111
+   },
+   "low_strength": 0.907,
+   "offbeat_strength": 0.878,
+   "onset": 0.547,
+   "rms": 0.582,
+   "segment": "L1"
+  },
+  {
+   "k": 3,
+   "grid": 1.45,
+   "bar": 1,
+   "beatInBar": 4,
+   "hit": null,
+   "low_strength": 0.771,
+   "offbeat_strength": 0.751,
+   "onset": 0.749,
+   "rms": 0.4562,
+   "segment": "L1"
+  },
+  {
+   "k": 4,
+   "grid": 1.919,
+   "bar": 2,
+   "beatInBar": 1,
+   "hit": null,
+   "low_strength": 0.909,
+   "offbeat_strength": 0.966,
+   "onset": 0.921,
+   "rms": 0.4737,
+   "segment": "L1"
+  },
+  {
+   "k": 5,
+   "grid": 2.389,
+   "bar": 2,
+   "beatInBar": 2,
+   "hit": {
+    "t": 2.509,
+    "strength": 0.846,
+    "delta": 0.119
+   },
+   "low_strength": 0.922,
+   "offbeat_strength": 0.84,
+   "onset": 0.649,
+   "rms": 0.4886,
+   "segment": "L1"
+  },
+  {
+   "k": 6,
+   "grid": 2.859,
+   "bar": 2,
+   "beatInBar": 3,
+   "hit": {
+    "t": 2.906,
+    "strength": 0.972,
+    "delta": 0.047
+   },
+   "low_strength": 1.0,
+   "offbeat_strength": 0.857,
+   "onset": 0.727,
+   "rms": 0.5386,
+   "segment": "L1"
+  },
+  {
+   "k": 7,
+   "grid": 3.329,
+   "bar": 2,
+   "beatInBar": 4,
+   "hit": null,
+   "low_strength": 0.884,
+   "offbeat_strength": 0.845,
+   "onset": 0.605,
+   "rms": 0.4909,
+   "segment": "L1"
+  },
+  {
+   "k": 8,
+   "grid": 3.799,
+   "bar": 3,
+   "beatInBar": 1,
+   "hit": {
+    "t": 3.915,
+    "strength": 0.843,
+    "delta": 0.117
+   },
+   "low_strength": 0.919,
+   "offbeat_strength": 0.867,
+   "onset": 0.806,
+   "rms": 0.4984,
+   "segment": "L1"
+  },
+  {
+   "k": 9,
+   "grid": 4.269,
+   "bar": 3,
+   "beatInBar": 2,
+   "hit": {
+    "t": 4.384,
+    "strength": 0.813,
+    "delta": 0.115
+   },
+   "low_strength": 0.886,
+   "offbeat_strength": 0.842,
+   "onset": 0.707,
+   "rms": 0.5059,
+   "segment": "L1"
+  },
+  {
+   "k": 10,
+   "grid": 4.739,
+   "bar": 3,
+   "beatInBar": 3,
+   "hit": {
+    "t": 4.852,
+    "strength": 0.822,
+    "delta": 0.114
+   },
+   "low_strength": 0.896,
+   "offbeat_strength": 0.787,
+   "onset": 0.789,
+   "rms": 0.5003,
+   "segment": "间奏"
+  },
+  {
+   "k": 11,
+   "grid": 5.208,
+   "bar": 3,
+   "beatInBar": 4,
+   "hit": {
+    "t": 5.322,
+    "strength": 0.878,
+    "delta": 0.113
+   },
+   "low_strength": 0.957,
+   "offbeat_strength": 0.954,
+   "onset": 0.848,
+   "rms": 0.4729,
+   "segment": "间奏"
+  },
+  {
+   "k": 12,
+   "grid": 5.678,
+   "bar": 4,
+   "beatInBar": 1,
+   "hit": {
+    "t": 5.768,
+    "strength": 0.941,
+    "delta": 0.09
+   },
+   "low_strength": 1.0,
+   "offbeat_strength": 0.908,
+   "onset": 0.896,
+   "rms": 0.4956,
+   "segment": "L2"
+  },
+  {
+   "k": 13,
+   "grid": 6.148,
+   "bar": 4,
+   "beatInBar": 2,
+   "hit": {
+    "t": 6.259,
+    "strength": 0.852,
+    "delta": 0.111
+   },
+   "low_strength": 0.929,
+   "offbeat_strength": 0.811,
+   "onset": 0.903,
+   "rms": 0.4878,
+   "segment": "L2"
+  },
+  {
+   "k": 14,
+   "grid": 6.618,
+   "bar": 4,
+   "beatInBar": 3,
+   "hit": {
+    "t": 6.656,
+    "strength": 0.902,
+    "delta": 0.038
+   },
+   "low_strength": 0.983,
+   "offbeat_strength": 0.825,
+   "onset": 0.712,
+   "rms": 0.5514,
+   "segment": "L2"
+  },
+  {
+   "k": 15,
+   "grid": 7.088,
+   "bar": 4,
+   "beatInBar": 4,
+   "hit": null,
+   "low_strength": 0.911,
+   "offbeat_strength": 0.815,
+   "onset": 0.658,
+   "rms": 0.5184,
+   "segment": "L2"
+  },
+  {
+   "k": 16,
+   "grid": 7.558,
+   "bar": 5,
+   "beatInBar": 1,
+   "hit": {
+    "t": 7.643,
+    "strength": 0.971,
+    "delta": 0.086
+   },
+   "low_strength": 1.0,
+   "offbeat_strength": 0.845,
+   "onset": 0.718,
+   "rms": 0.5377,
+   "segment": "L2"
+  },
+  {
+   "k": 17,
+   "grid": 8.027,
+   "bar": 5,
+   "beatInBar": 2,
+   "hit": {
+    "t": 8.112,
+    "strength": 0.843,
+    "delta": 0.084
+   },
+   "low_strength": 0.919,
+   "offbeat_strength": 0.829,
+   "onset": 0.702,
+   "rms": 0.5086,
+   "segment": "L2"
+  },
+  {
+   "k": 18,
+   "grid": 8.497,
+   "bar": 5,
+   "beatInBar": 3,
+   "hit": {
+    "t": 8.531,
+    "strength": 0.883,
+    "delta": 0.033
+   },
+   "low_strength": 0.962,
+   "offbeat_strength": 0.837,
+   "onset": 0.845,
+   "rms": 0.5076,
+   "segment": "间奏"
+  },
+  {
+   "k": 19,
+   "grid": 8.967,
+   "bar": 5,
+   "beatInBar": 4,
+   "hit": null,
+   "low_strength": 0.931,
+   "offbeat_strength": 0.787,
+   "onset": 0.802,
+   "rms": 0.4905,
+   "segment": "L3"
+  },
+  {
+   "k": 20,
+   "grid": 9.437,
+   "bar": 6,
+   "beatInBar": 1,
+   "hit": {
+    "t": 9.54,
+    "strength": 0.881,
+    "delta": 0.103
+   },
+   "low_strength": 0.961,
+   "offbeat_strength": 0.781,
+   "onset": 0.96,
+   "rms": 0.5177,
+   "segment": "L3"
+  },
+  {
+   "k": 21,
+   "grid": 9.907,
+   "bar": 6,
+   "beatInBar": 2,
+   "hit": {
+    "t": 10.009,
+    "strength": 0.828,
+    "delta": 0.102
+   },
+   "low_strength": 0.903,
+   "offbeat_strength": 0.812,
+   "onset": 0.918,
+   "rms": 0.5326,
+   "segment": "L3"
+  },
+  {
+   "k": 22,
+   "grid": 10.377,
+   "bar": 6,
+   "beatInBar": 3,
+   "hit": {
+    "t": 10.406,
+    "strength": 0.83,
+    "delta": 0.029
+   },
+   "low_strength": 0.905,
+   "offbeat_strength": 0.795,
+   "onset": 0.738,
+   "rms": 0.5244,
+   "segment": "间奏"
+  },
+  {
+   "k": 23,
+   "grid": 10.847,
+   "bar": 6,
+   "beatInBar": 4,
+   "hit": {
+    "t": 10.946,
+    "strength": 0.872,
+    "delta": 0.1
+   },
+   "low_strength": 0.951,
+   "offbeat_strength": 0.788,
+   "onset": 0.73,
+   "rms": 0.5311,
+   "segment": "间奏"
+  },
+  {
+   "k": 24,
+   "grid": 11.316,
+   "bar": 7,
+   "beatInBar": 1,
+   "hit": {
+    "t": 11.436,
+    "strength": 0.926,
+    "delta": 0.12
+   },
+   "low_strength": 1.0,
+   "offbeat_strength": 0.998,
+   "onset": 0.828,
+   "rms": 0.5304,
+   "segment": "L4"
+  },
+  {
+   "k": 25,
+   "grid": 11.786,
+   "bar": 7,
+   "beatInBar": 2,
+   "hit": {
+    "t": 11.884,
+    "strength": 0.878,
+    "delta": 0.097
+   },
+   "low_strength": 0.957,
+   "offbeat_strength": 0.801,
+   "onset": 0.731,
+   "rms": 0.54,
+   "segment": "L4"
+  },
+  {
+   "k": 26,
+   "grid": 12.256,
+   "bar": 7,
+   "beatInBar": 3,
+   "hit": {
+    "t": 12.281,
+    "strength": 0.902,
+    "delta": 0.025
+   },
+   "low_strength": 0.983,
+   "offbeat_strength": 0.785,
+   "onset": 0.831,
+   "rms": 0.5633,
+   "segment": "L4"
+  },
+  {
+   "k": 27,
+   "grid": 12.726,
+   "bar": 7,
+   "beatInBar": 4,
+   "hit": {
+    "t": 12.822,
+    "strength": 0.884,
+    "delta": 0.096
+   },
+   "low_strength": 0.964,
+   "offbeat_strength": 0.852,
+   "onset": 0.748,
+   "rms": 0.4891,
+   "segment": "L4"
+  },
+  {
+   "k": 28,
+   "grid": 13.196,
+   "bar": 8,
+   "beatInBar": 1,
+   "hit": {
+    "t": 13.218,
+    "strength": 0.935,
+    "delta": 0.022
+   },
+   "low_strength": 1.0,
+   "offbeat_strength": 0.826,
+   "onset": 0.942,
+   "rms": 0.5298,
+   "segment": "间奏"
+  },
+  {
+   "k": 29,
+   "grid": 13.666,
+   "bar": 8,
+   "beatInBar": 2,
+   "hit": {
+    "t": 13.759,
+    "strength": 0.84,
+    "delta": 0.093
+   },
+   "low_strength": 0.916,
+   "offbeat_strength": 0.797,
+   "onset": 0.837,
+   "rms": 0.5201,
+   "segment": "间奏"
+  },
+  {
+   "k": 30,
+   "grid": 14.136,
+   "bar": 8,
+   "beatInBar": 3,
+   "hit": {
+    "t": 14.156,
+    "strength": 0.894,
+    "delta": 0.02
+   },
+   "low_strength": 0.975,
+   "offbeat_strength": 0.805,
+   "onset": 0.775,
+   "rms": 0.5674,
+   "segment": "间奏"
+  },
+  {
+   "k": 31,
+   "grid": 14.605,
+   "bar": 8,
+   "beatInBar": 4,
+   "hit": {
+    "t": 14.696,
+    "strength": 0.844,
+    "delta": 0.091
+   },
+   "low_strength": 0.919,
+   "offbeat_strength": 0.771,
+   "onset": 0.7,
+   "rms": 0.5264,
+   "segment": "间奏"
+  },
+  {
+   "k": 32,
+   "grid": 15.075,
+   "bar": 9,
+   "beatInBar": 1,
+   "hit": {
+    "t": 15.093,
+    "strength": 1.0,
+    "delta": 0.018
+   },
+   "low_strength": 1.0,
+   "offbeat_strength": 0.879,
+   "onset": 0.873,
+   "rms": 0.5463,
+   "segment": "间奏"
+  },
+  {
+   "k": 33,
+   "grid": 15.545,
+   "bar": 9,
+   "beatInBar": 2,
+   "hit": {
+    "t": 15.634,
+    "strength": 0.896,
+    "delta": 0.089
+   },
+   "low_strength": 0.977,
+   "offbeat_strength": 0.749,
+   "onset": 0.806,
+   "rms": 0.5407,
+   "segment": "间奏"
+  },
+  {
+   "k": 34,
+   "grid": 16.015,
+   "bar": 9,
+   "beatInBar": 3,
+   "hit": {
+    "t": 16.102,
+    "strength": 0.898,
+    "delta": 0.088
+   },
+   "low_strength": 0.978,
+   "offbeat_strength": 0.729,
+   "onset": 0.799,
+   "rms": 0.555,
+   "segment": "L5"
+  },
+  {
+   "k": 35,
+   "grid": 16.485,
+   "bar": 9,
+   "beatInBar": 4,
+   "hit": {
+    "t": 16.474,
+    "strength": 0.259,
+    "delta": -0.011
+   },
+   "low_strength": 0.357,
+   "offbeat_strength": 1.0,
+   "onset": 0.878,
+   "rms": 0.2992,
+   "segment": "L5"
+  },
+  {
+   "k": 36,
+   "grid": 16.955,
+   "bar": 10,
+   "beatInBar": 1,
+   "hit": {
+    "t": 17.051,
+    "strength": 0.924,
+    "delta": 0.097
+   },
+   "low_strength": 1.0,
+   "offbeat_strength": 0.832,
+   "onset": 0.874,
+   "rms": 0.5618,
+   "segment": "L5"
+  },
+  {
+   "k": 37,
+   "grid": 17.424,
+   "bar": 10,
+   "beatInBar": 2,
+   "hit": {
+    "t": 17.509,
+    "strength": 0.859,
+    "delta": 0.084
+   },
+   "low_strength": 0.936,
+   "offbeat_strength": 0.729,
+   "onset": 0.728,
+   "rms": 0.5196,
+   "segment": "L5"
+  },
+  {
+   "k": 38,
+   "grid": 17.894,
+   "bar": 10,
+   "beatInBar": 3,
+   "hit": {
+    "t": 17.906,
+    "strength": 0.913,
+    "delta": 0.012
+   },
+   "low_strength": 0.996,
+   "offbeat_strength": 0.73,
+   "onset": 0.753,
+   "rms": 0.5491,
+   "segment": "L5"
+  },
+  {
+   "k": 39,
+   "grid": 18.364,
+   "bar": 10,
+   "beatInBar": 4,
+   "hit": {
+    "t": 18.375,
+    "strength": 0.818,
+    "delta": 0.011
+   },
+   "low_strength": 0.891,
+   "offbeat_strength": 0.701,
+   "onset": 0.667,
+   "rms": 0.512,
+   "segment": "L5"
+  },
+  {
+   "k": 40,
+   "grid": 18.834,
+   "bar": 11,
+   "beatInBar": 1,
+   "hit": {
+    "t": 18.937,
+    "strength": 0.836,
+    "delta": 0.103
+   },
+   "low_strength": 0.912,
+   "offbeat_strength": 0.65,
+   "onset": 0.722,
+   "rms": 0.5237,
+   "segment": "L5"
+  },
+  {
+   "k": 41,
+   "grid": 19.304,
+   "bar": 11,
+   "beatInBar": 2,
+   "hit": {
+    "t": 19.384,
+    "strength": 0.855,
+    "delta": 0.08
+   },
+   "low_strength": 0.932,
+   "offbeat_strength": 0.724,
+   "onset": 0.743,
+   "rms": 0.5355,
+   "segment": "L5"
+  },
+  {
+   "k": 42,
+   "grid": 19.774,
+   "bar": 11,
+   "beatInBar": 3,
+   "hit": {
+    "t": 19.781,
+    "strength": 0.911,
+    "delta": 0.007
+   },
+   "low_strength": 0.993,
+   "offbeat_strength": 0.708,
+   "onset": 0.855,
+   "rms": 0.565,
+   "segment": "间奏"
+  },
+  {
+   "k": 43,
+   "grid": 20.244,
+   "bar": 11,
+   "beatInBar": 4,
+   "hit": {
+    "t": 20.321,
+    "strength": 0.875,
+    "delta": 0.078
+   },
+   "low_strength": 0.954,
+   "offbeat_strength": 0.741,
+   "onset": 0.842,
+   "rms": 0.5014,
+   "segment": "间奏"
+  },
+  {
+   "k": 44,
+   "grid": 20.713,
+   "bar": 12,
+   "beatInBar": 1,
+   "hit": {
+    "t": 20.791,
+    "strength": 0.902,
+    "delta": 0.077
+   },
+   "low_strength": 0.983,
+   "offbeat_strength": 0.635,
+   "onset": 0.847,
+   "rms": 0.509,
+   "segment": "L6"
+  },
+  {
+   "k": 45,
+   "grid": 21.183,
+   "bar": 12,
+   "beatInBar": 2,
+   "hit": {
+    "t": 21.259,
+    "strength": 0.853,
+    "delta": 0.075
+   },
+   "low_strength": 0.929,
+   "offbeat_strength": 0.649,
+   "onset": 0.871,
+   "rms": 0.5252,
+   "segment": "L6"
+  },
+  {
+   "k": 46,
+   "grid": 21.653,
+   "bar": 12,
+   "beatInBar": 3,
+   "hit": {
+    "t": 21.656,
+    "strength": 0.905,
+    "delta": 0.003
+   },
+   "low_strength": 0.987,
+   "offbeat_strength": 0.629,
+   "onset": 0.707,
+   "rms": 0.5585,
+   "segment": "L6"
+  },
+  {
+   "k": 47,
+   "grid": 22.123,
+   "bar": 12,
+   "beatInBar": 4,
+   "hit": {
+    "t": 22.196,
+    "strength": 0.9,
+    "delta": 0.073
+   },
+   "low_strength": 0.981,
+   "offbeat_strength": 0.632,
+   "onset": 0.68,
+   "rms": 0.5402,
+   "segment": "L6"
+  },
+  {
+   "k": 48,
+   "grid": 22.593,
+   "bar": 13,
+   "beatInBar": 1,
+   "hit": {
+    "t": 22.643,
+    "strength": 0.911,
+    "delta": 0.05
+   },
+   "low_strength": 0.993,
+   "offbeat_strength": 0.755,
+   "onset": 0.752,
+   "rms": 0.5345,
+   "segment": "L6"
+  },
+  {
+   "k": 49,
+   "grid": 23.063,
+   "bar": 13,
+   "beatInBar": 2,
+   "hit": {
+    "t": 23.134,
+    "strength": 0.852,
+    "delta": 0.071
+   },
+   "low_strength": 0.929,
+   "offbeat_strength": 0.63,
+   "onset": 0.777,
+   "rms": 0.5293,
+   "segment": "L6"
+  },
+  {
+   "k": 50,
+   "grid": 23.533,
+   "bar": 13,
+   "beatInBar": 3,
+   "hit": {
+    "t": 23.531,
+    "strength": 0.896,
+    "delta": -0.002
+   },
+   "low_strength": 0.977,
+   "offbeat_strength": 0.647,
+   "onset": 0.767,
+   "rms": 0.5358,
+   "segment": "间奏"
+  },
+  {
+   "k": 51,
+   "grid": 24.002,
+   "bar": 13,
+   "beatInBar": 4,
+   "hit": {
+    "t": 24.093,
+    "strength": 0.829,
+    "delta": 0.09
+   },
+   "low_strength": 0.904,
+   "offbeat_strength": 0.71,
+   "onset": 0.644,
+   "rms": 0.4956,
+   "segment": "L7"
+  },
+  {
+   "k": 52,
+   "grid": 24.472,
+   "bar": 14,
+   "beatInBar": 1,
+   "hit": {
+    "t": 24.468,
+    "strength": 0.894,
+    "delta": -0.004
+   },
+   "low_strength": 0.974,
+   "offbeat_strength": 0.659,
+   "onset": 0.909,
+   "rms": 0.553,
+   "segment": "L7"
+  },
+  {
+   "k": 53,
+   "grid": 24.942,
+   "bar": 14,
+   "beatInBar": 2,
+   "hit": {
+    "t": 25.009,
+    "strength": 0.89,
+    "delta": 0.067
+   },
+   "low_strength": 0.97,
+   "offbeat_strength": 0.566,
+   "onset": 0.694,
+   "rms": 0.5201,
+   "segment": "L7"
+  },
+  {
+   "k": 54,
+   "grid": 25.412,
+   "bar": 14,
+   "beatInBar": 3,
+   "hit": {
+    "t": 25.406,
+    "strength": 0.881,
+    "delta": -0.006
+   },
+   "low_strength": 0.961,
+   "offbeat_strength": 0.547,
+   "onset": 0.698,
+   "rms": 0.5478,
+   "segment": "L7"
+  },
+  {
+   "k": 55,
+   "grid": 25.882,
+   "bar": 14,
+   "beatInBar": 4,
+   "hit": {
+    "t": 25.946,
+    "strength": 0.861,
+    "delta": 0.064
+   },
+   "low_strength": 0.939,
+   "offbeat_strength": 0.544,
+   "onset": 0.622,
+   "rms": 0.528,
+   "segment": "L7"
+  },
+  {
+   "k": 56,
+   "grid": 26.352,
+   "bar": 15,
+   "beatInBar": 1,
+   "hit": {
+    "t": 26.415,
+    "strength": 0.903,
+    "delta": 0.064
+   },
+   "low_strength": 0.985,
+   "offbeat_strength": 0.626,
+   "onset": 0.819,
+   "rms": 0.5546,
+   "segment": "L7"
+  },
+  {
+   "k": 57,
+   "grid": 26.822,
+   "bar": 15,
+   "beatInBar": 2,
+   "hit": {
+    "t": 26.884,
+    "strength": 0.818,
+    "delta": 0.062
+   },
+   "low_strength": 0.891,
+   "offbeat_strength": 0.512,
+   "onset": 0.562,
+   "rms": 0.5045,
+   "segment": "L7"
+  },
+  {
+   "k": 58,
+   "grid": 27.291,
+   "bar": 15,
+   "beatInBar": 3,
+   "hit": {
+    "t": 27.331,
+    "strength": 0.901,
+    "delta": 0.039
+   },
+   "low_strength": 0.982,
+   "offbeat_strength": 0.561,
+   "onset": 0.855,
+   "rms": 0.5604,
+   "segment": "间奏"
+  },
+  {
+   "k": 59,
+   "grid": 27.761,
+   "bar": 15,
+   "beatInBar": 4,
+   "hit": {
+    "t": 27.855,
+    "strength": 0.864,
+    "delta": 0.094
+   },
+   "low_strength": 0.942,
+   "offbeat_strength": 0.652,
+   "onset": 0.652,
+   "rms": 0.502,
+   "segment": "间奏"
+  },
+  {
+   "k": 60,
+   "grid": 28.231,
+   "bar": 16,
+   "beatInBar": 1,
+   "hit": {
+    "t": 28.218,
+    "strength": 0.803,
+    "delta": -0.013
+   },
+   "low_strength": 0.875,
+   "offbeat_strength": 0.564,
+   "onset": 0.833,
+   "rms": 0.5188,
+   "segment": "间奏"
+  },
+  {
+   "k": 61,
+   "grid": 28.701,
+   "bar": 16,
+   "beatInBar": 2,
+   "hit": {
+    "t": 28.637,
+    "strength": 0.156,
+    "delta": -0.064
+   },
+   "low_strength": 0.17,
+   "offbeat_strength": 0.158,
+   "onset": 0.349,
+   "rms": 0.2334,
+   "segment": "间奏"
+  },
+  {
+   "k": 62,
+   "grid": 29.171,
+   "bar": 16,
+   "beatInBar": 3,
+   "hit": {
+    "t": 29.092,
+    "strength": 0.073,
+    "delta": -0.079
+   },
+   "low_strength": 0.145,
+   "offbeat_strength": 0.821,
+   "onset": 0.259,
+   "rms": 0.183,
+   "segment": "间奏"
+  },
+  {
+   "k": 63,
+   "grid": 29.641,
+   "bar": 16,
+   "beatInBar": 4,
+   "hit": {
+    "t": 29.605,
+    "strength": 0.116,
+    "delta": -0.036
+   },
+   "low_strength": 0.54,
+   "offbeat_strength": 0.619,
+   "onset": 0.253,
+   "rms": 0.2563,
+   "segment": "间奏"
+  },
+  {
+   "k": 64,
+   "grid": 30.11,
+   "bar": 17,
+   "beatInBar": 1,
+   "hit": {
+    "t": 30.093,
+    "strength": 0.403,
+    "delta": -0.017
+   },
+   "low_strength": 0.439,
+   "offbeat_strength": 0.178,
+   "onset": 0.3,
+   "rms": 0.2528,
+   "segment": "间奏"
+  }
+ ]
+}

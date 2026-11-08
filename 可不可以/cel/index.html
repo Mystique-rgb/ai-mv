@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="zh"><head><meta charset="utf-8">
+<title>可不可以 · 返航之夜 · 80s cel</title>
+<style>
+  html,body{margin:0;background:#000;overflow:hidden}
+  canvas{display:block}
+</style></head>
+<body>
+<canvas id="c" width="1920" height="1080"></canvas>
+<script src="src/util.js"></script>
+<script src="src/cel.js"></script>
+<script src="src/people.js"></script>
+<script src="src/city.js"></script>
+<script src="src/post.js"></script>
+<script src="src/scene.js"></script>
+<script>
+  const cv = document.getElementById('c');
+  const ctx = cv.getContext('2d');
+  window.drawAt = t => { const r = MV.drawFrame(ctx, t); return r; };
+  window.__ready = true;
+</script>
+</body></html>

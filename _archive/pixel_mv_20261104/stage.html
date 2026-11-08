@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>pixel stage v2</title>
+<style>
+  @font-face { font-family:'XK'; src:url('assets/fonts/Xingkai.ttf') format('truetype'); font-display:block; }
+  @font-face { font-family:'KT'; src:url('assets/fonts/Kaiti.ttf') format('truetype'); font-display:block; }
+  html,body { margin:0; padding:0; background:#000; overflow:hidden; }
+  canvas { display:block; }
+</style>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<script src="src/rig.js"></script>
+<script src="src/scene.js"></script>
+<script src="src/events.js"></script>
+<script src="src/subtitle.js"></script>
+<script src="src/fx.js"></script>
+<script src="assets/fonts/px16.js"></script>
+<script>
+  const SPEC_FILE = new URLSearchParams(location.search).get('spec') || 'current';
+  // 先把统一色板与复用模块注入（顺序 _pal → _fig → _cam），spec 里才能用 P / FIG / CAM
+  ['_pal', '_fig', '_cam', '_fx', '_hero'].forEach(f => {
+    if (f !== SPEC_FILE) document.write('<script src="specs/' + f + '.js"><\/script>');
+  });
+  document.write('<script src="specs/' + SPEC_FILE + '.js"><\/script>');
+</script>
+<script>
+// ============================================================
+//  stage.html v2 — 渲染舞台
+//  320×180 场景层 → 取景（运镜）→ 整数放大 → 色调 → 叙事/歌词/MG → 转场
+// ============================================================
+const Q = new URLSearchParams(location.search);
+const CW = Number(Q.get('w') || 1920), CH = Number(Q.get('h') || 1080);
+const cv = document.getElementById('cv');
+cv.width = CW; cv.height = CH;
+const c = cv.getContext('2d');
+c.imageSmoothingEnabled = false;
+
+const PW = 320, PH = 180;
+function mk32() {
+  const el = document.createElement('canvas');
+  el.width = PW; el.height = PH;
+  const ctx = el.getContext('2d', { willReadFrequently: true });
+  ctx.imageSmoothingEnabled = false;
+  return [el, ctx];
+}
+const [pix, pc] = mk32();          // 当前镜头
+const [pixB, pcB] = mk32();        // 上一个镜头（转场用）
+const [maskCv, maskCtx] = mk32();  // 转场遮罩
+
+const ocCv = document.createElement('canvas');
+ocCv.width = CW; ocCv.height = CH;
+const ocCtx = ocCv.getContext('2d');
+ocCtx.imageSmoothingEnabled = false;
+
+const S = window.SPEC;
+if (!S) throw new Error('SPEC missing');
+
+function subAt(t) {
+  for (const s of (S.subs || [])) if (t >= s.t0 && t < s.t1) return s;
+  return null;
+}
+function narAt(t) {
+  for (const s of (S.nar || [])) if (t >= s.t0 && t < s.t1) return s;
+  return null;
+}
+function kaoAt(t) {
+  const out = [];
+  for (const k of (S.kao || [])) if (t >= k.t0 && t < k.t1) out.push(k);
+  return out;
+}
+
+// ---------- 取景 ----------
+const clamp = (v, a, b) => Math.min(Math.max(v, a), b);
+function rectOf(z, cx, cy) {
+  const w = PW / z, h = PH / z;
+  return [clamp(cx - w / 2, 0, PW - w), clamp(cy - h / 2, 0, PH - h), w, h];
+}
+function camRect(shot, lt) {
+  let r;
+  const zs = shot.zs ?? .5;                     // 全局收敛：站立人物不做过度特写
+  if (shot.cam === false) r = [0, 0, PW, PH];
+  else if (typeof shot.cam === 'function') {
+    r = shot.cam(lt);
+    const z = PW / r[2], z2 = 1 + (z - 1) * zs;
+    if (z2 !== z) {
+      const w = PW / z2, h = PH / z2;
+      const cx = r[0] + r[2] / 2, cy = r[1] + r[3] / 2;
+      r = [clamp(cx - w / 2, 0, PW - w), clamp(cy - h / 2, 0, PH - h), w, h];
+    }
+  } else {
+    // 默认：极缓推近 + 轻微横移（"呼吸"），保证没有一镜是钉死的
+    const d = Math.max(.5, shot.t1 - shot.t0), p = Math.min(1, lt / d);
+    r = rectOf(1 + .045 * p, 160 + Math.sin(p * 2.6) * 4, 88 + p * 3);
+  }
+  if (shot.hit != null) {
+    const p = lt - (shot.hit - shot.t0);
+    if (p >= 0 && p < .5) {
+      const k = 1 - p / .5;
+      const mag = (shot.hitMag || 8) * k * k;
+      r = [r[0] + mag * .6, r[1] + mag * .35, r[2] - mag * 1.2, r[3] - mag * .7];
+    }
+  }
+  return r;
+}
+
+// ---------- 转场遮罩 ----------
+const BAY = [[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]];
+function buildMask(p, type) {
+  const img = maskCtx.createImageData(PW, PH), d = img.data;
+  if (type === 'dither') {
+    for (let y = 0; y < PH; y++) for (let x = 0; x < PW; x++) {
+      const on = BAY[y & 3][x & 3] / 16 < p;
+      const i = (y * PW + x) * 4;
+      d[i] = d[i + 1] = d[i + 2] = 255; d[i + 3] = on ? 255 : 0;
+    }
+  } else {
+    const bs = 8;
+    for (let by = 0; by < PH; by += bs) for (let bx = 0; bx < PW; bx += bs) {
+      const h = Math.abs(Math.sin(bx * 12.9898 + by * 78.233) * 43758.5453) % 1;
+      const on = h < p;
+      for (let y = by; y < Math.min(PH, by + bs); y++) for (let x = bx; x < Math.min(PW, bx + bs); x++) {
+        const i = (y * PW + x) * 4;
+        d[i] = d[i + 1] = d[i + 2] = 255; d[i + 3] = on ? 255 : 0;
+      }
+    }
+  }
+  maskCtx.putImageData(img, 0, 0);
+}
+
+// 全片统一 grade：只作用在 320 场景层，字幕/文字层不受影响
+// spec 里给 `grade:` 就用 spec 的，否则用默认（v3 的暖调）
+const GRADE = (S && S.grade) || 'brightness(1.16) saturate(1.22) contrast(1.02)';
+function blit(cctx, src, r) {
+  cctx.save();
+  if (GRADE && 'filter' in cctx) cctx.filter = GRADE;
+  cctx.drawImage(src, r[0], r[1], r[2], r[3], 0, 0, CW, CH);
+  cctx.restore();
+}
+
+// ---------- 主绘制 ----------
+window.renderFrame = function (t) {
+  window.__T = t;
+  const shots = S.shots;
+  let idx = 0;
+  for (let i = 0; i < shots.length; i++) if (t >= shots[i].t0 && t < shots[i].t1) { idx = i; break; }
+  const shot = shots[idx];
+  const lt = t - shot.t0;
+
+  pc.clearRect(0, 0, PW, PH);
+  if (typeof setStage === 'function') setStage(shot.stage || 1);
+  shot.draw(pc, lt, shot, t);
+  const rB = camRect(shot, lt);
+
+  const tr = shot.in && idx > 0 ? shot.in : null;
+  const tp = tr ? lt / tr.dur : 9;
+  c.clearRect(0, 0, CW, CH);
+
+  if (tr && tp < 1) {
+    const prev = shots[idx - 1];
+    const plt = Math.max(0, prev.t1 - prev.t0 - 0.002);
+    pcB.clearRect(0, 0, PW, PH);
+    if (typeof setStage === 'function') setStage(prev.stage || 1);
+    prev.draw(pcB, plt, prev, prev.t1 - 0.002);
+    const rA = camRect(prev, plt);
+    const type = tr.type, dir = tr.dir || 1;
+    const e = tp < .5 ? 4 * tp * tp * tp : 1 - Math.pow(-2 * tp + 2, 3) / 2;
+
+    if (type === 'flash') {
+      blit(c, pix, rB);
+      c.save(); c.globalAlpha = (1 - tp) * (tr.amt ?? .85); c.fillStyle = '#F6E9D2';
+      c.fillRect(0, 0, CW, CH); c.restore();
+    } else if (type === 'blk') {
+      if (tp < (tr.hold ?? .35)) { c.fillStyle = '#120C0E'; c.fillRect(0, 0, CW, CH); }
+      else blit(c, pix, rB);
+    } else if (type === 'whip') {
+      const dx = Math.round((1 - e) * CW * dir);
+      c.save();
+      // 旧画面被甩出去
+      c.drawImage(pixB, rA[0], rA[1], rA[2], rA[3], dx - dir * CW, 0, CW, CH);
+      // 新画面带三层残影冲进来
+      c.globalAlpha = .26; c.drawImage(pix, rB[0], rB[1], rB[2], rB[3], dx - dir * 240, 0, CW, CH);
+      c.globalAlpha = .50; c.drawImage(pix, rB[0], rB[1], rB[2], rB[3], dx - dir * 120, 0, CW, CH);
+      c.globalAlpha = 1; c.drawImage(pix, rB[0], rB[1], rB[2], rB[3], dx, 0, CW, CH);
+      c.restore();
+    } else if (type === 'scan') {
+      blit(c, pixB, rA);
+      const y = e * CH;
+      c.save(); c.beginPath(); c.rect(0, 0, CW, y); c.clip();
+      blit(c, pix, rB); c.restore();
+      c.save(); c.globalAlpha = .45; c.fillStyle = '#F6E9D2';
+      c.fillRect(0, Math.max(0, y - 8), CW, 9); c.restore();
+    } else if (type === 'glitch') {
+      blit(c, pixB, rA);
+      const n = 10, sh = CH / n;
+      for (let s = 0; s < n; s++) {
+        if (s % 3 === 0) continue;
+        const off = Math.round(Math.sin(s * 12.9 + tp * 30) * 90 * (1 - tp));
+        c.save(); c.beginPath(); c.rect(0, Math.floor(s * sh), CW, Math.ceil(sh) + 2); c.clip();
+        c.drawImage(pix, rB[0], rB[1], rB[2], rB[3], off, 0, CW, CH);
+        c.restore();
+      }
+      c.save(); c.globalAlpha = .20 * (1 - tp); c.fillStyle = '#E8556D'; c.fillRect(0, 0, CW, CH); c.restore();
+    } else if (type === 'dither' || type === 'dissolve') {
+      blit(c, pixB, rA);
+      ocCtx.clearRect(0, 0, CW, CH);
+      blit(ocCtx, pix, rB);
+      buildMask(Math.min(1, tp * 1.15), type);
+      ocCtx.globalCompositeOperation = 'destination-in';
+      ocCtx.drawImage(maskCv, 0, 0, PW, PH, 0, 0, CW, CH);
+      ocCtx.globalCompositeOperation = 'source-over';
+      c.drawImage(ocCv, 0, 0);
+    } else if (type === 'fade') {
+      blit(c, pixB, rA);
+      const a = tp < .5 ? tp * 2 : (1 - tp) * 2;
+      // 进纯黑镜头用黑场过渡，其余（进回忆/换季）用白场
+      const fadeCol = tr.col || (shot.scene === 'black' ? '#120C0E' : '#F6E9D2');
+      c.save();
+      c.globalAlpha = Math.min(1, a); c.fillStyle = fadeCol; c.fillRect(0, 0, CW, CH);
+      c.restore();
+      if (tp > .5) { c.save(); c.globalAlpha = (tp - .5) * 2; blit(c, pix, rB); c.restore(); }
+    } else {
+      blit(c, pix, rB);
+    }
+  } else {
+    blit(c, pix, rB);
+  }
+
+  if (shot.led) drawLED(c, CW, CH, lt, shot.led);
+
+  // 场景色调：把暗部推向冷色，暖灯保持不变（"冷影暖灯"）
+  if (shot.cast) {
+    c.save(); c.globalCompositeOperation = 'screen';
+    c.globalAlpha = shot.castA ?? .25; c.fillStyle = shot.cast;
+    c.fillRect(0, 0, CW, CH); c.restore();
+  }
+
+  if (shot.tint) {
+    c.save(); c.globalAlpha = shot.tintA ?? .13; c.fillStyle = shot.tint;
+    c.fillRect(0, 0, CW, CH); c.restore();
+  }
+
+  if (shot.leak != null) fxLeak(c, CW, CH, (lt - shot.leak) / 1.4);
+
+  if (typeof S.hud === 'function') S.hud(c, CW, CH, t);
+
+  drawNar(c, CW, CH, narAt(t), t);
+  for (const k of kaoAt(t)) drawKao(c, CW, CH, k, t);
+
+  const narNow = narAt(t);
+  const cardOn = narNow && narNow.style === 'card';
+  const sub = cardOn ? null : subAt(t);
+  if (sub) {
+    const k0 = Math.max(0, Math.min(1, (t - sub.t0) / (sub.t1 - sub.t0)));
+    // 冲击大字（SLAM）整句同帧到位，不做逐字；普通歌词按演唱进度逐字
+    const k = sub.hit ? 1 : Math.min(1, k0 / (sub.kScale ?? .5));
+    const exit = sub.t1 - t < .18 ? 1 - (sub.t1 - t) / .18 : 0;
+    const opt = { ...sub, exit };
+
+    if (sub.hit) {
+      const p = (t - sub.t0) / .20;
+      const gs = p < 1 ? 1.42 - .42 * (1 - Math.pow(1 - p, 3)) : 1;
+      const cx = CW / 2, cy = (sub.y || 352) - (sub.size || 175) * .42;
+      if (sub.lines) fxLines(c, CW, CH, cx, cy, sub.lines, Math.min(1, (t - sub.t0) / .38), sub.color || '#FFC35C');
+      if (sub.ghost) {
+        for (let i = sub.ghost; i >= 1; i--) {
+          drawSub(c, CW, CH, sub.text, k, { ...opt, gs, dx: i * 16, ga: .34 / i, band: false });
+        }
+      }
+      drawSub(c, CW, CH, sub.text, k, { ...opt, gs });
+    } else {
+      drawSub(c, CW, CH, sub.text, k, opt);
+    }
+  }
+
+  fxScan(c, CW, CH, .05);
+  fxVignette(c, CW, CH, shot.vig ?? .5);
+  if (shot.pulse) fxPulse(c, CW, CH, t, shot.pulse);
+
+  if (S.fadeIn && t < S.fadeIn) { c.save(); c.globalAlpha = 1 - t / S.fadeIn; c.fillStyle = '#120C0E'; c.fillRect(0, 0, CW, CH); c.restore(); }
+  if (S.fadeOut && t > S.duration - S.fadeOut) {
+    c.save(); c.globalAlpha = (t - (S.duration - S.fadeOut)) / S.fadeOut; c.fillStyle = '#120C0E';
+    c.fillRect(0, 0, CW, CH); c.restore();
+  }
+};
+
+(async () => {
+  await document.fonts.load('400 100px XK');
+  await document.fonts.load('400 100px KT');
+  await document.fonts.ready;
+  window.renderFrame(0);
+  window.__ready = true;
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><style>
+@font-face{font-family:'K';src:url('file:///D:/ai%E9%9F%B3%E4%B9%90mv/%E5%8F%AF%E4%B8%8D%E5%8F%AF%E4%BB%A5/mv/assets/fonts/STKAITI.TTF') format('truetype');}
+html,body{margin:0;background:#000}canvas{display:block}
+</style></head><body><canvas id="cv" width="64" height="32"></canvas>
+<script>
+window.__ready=false;
+document.fonts.load('400 16px K').then(()=>document.fonts.ready).then(()=>{window.__ready=true});
+window.glyphCN = function(ch){
+  const cv=document.getElementById('cv'), c=cv.getContext('2d');
+  c.clearRect(0,0,64,32);
+  c.fillStyle='#000'; c.textBaseline='alphabetic'; c.textAlign='left';
+  c.font='16px K';
+  c.fillStyle='#fff'; c.fillText(ch,0,15);
+  const d=c.getImageData(0,0,16,16).data, rows=[];
+  for(let y=0;y<16;y++){let s='';for(let x=0;x<16;x++){const a=d[(y*16+x)*4+3];s+=a>110?'1':'0';}rows.push(s);}
+  return rows;
+};
+window.glyphEN = function(ch){
+  const cv=document.getElementById('cv'), c=cv.getContext('2d');
+  c.clearRect(0,0,64,32);
+  c.textBaseline='alphabetic'; c.textAlign='left';
+  c.fillStyle='#000'; c.fillRect(0,0,64,32);
+  c.font='bold 13px monospace';
+  c.fillStyle='#fff'; c.fillText(ch,1,12);
+  const d=c.getImageData(0,0,8,16).data, rows=[];
+  for(let y=0;y<16;y++){let s='';for(let x=0;x<8;x++){const a=d[(y*8+x)*4];s+=a>100?'1':'0';}rows.push(s);}
+  return rows;
+};
+</script></body></html>

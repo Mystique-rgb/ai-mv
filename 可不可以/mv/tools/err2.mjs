@@ -1,0 +1,11 @@
+import puppeteer from 'puppeteer-core';
+import { existsSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
+const CHROME = ['C:/Program Files/Google/Chrome/Application/chrome.exe','C:/Program Files (x86)/Google/Chrome/Application/chrome.exe'].find(p=>existsSync(p));
+const b = await puppeteer.launch({executablePath:CHROME,headless:'new',args:['--no-sandbox','--allow-file-access-from-files']});
+const p = await b.newPage();
+p.on('pageerror', e => console.log('PAGEERROR:', e.message));
+await p.goto(pathToFileURL(resolve('stage.html')).href + '?spec=main', {waitUntil:'load'});
+console.log(await p.evaluate(()=>[...document.scripts].map(s=>s.src||('inline:'+s.textContent.slice(0,40).replace(/\n/g,' ')))));
+await b.close();

@@ -1,0 +1,68 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>幻听 · 1人在听</title>
+<style>
+@font-face{font-family:XK;src:url(fonts/STXINGKA.TTF)}
+@font-face{font-family:YH;src:url(fonts/msyh.ttc)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;overflow:hidden;background:#0d1020}
+body{font-family:YH,"Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased}
+#stage{position:absolute;inset:0;overflow:hidden}
+.layer{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0}
+#mbw{position:absolute;inset:0;width:1920px;height:1080px;z-index:1}
+#veil{z-index:3;pointer-events:none}
+#lyr{z-index:5}
+#spr{z-index:8}
+#hud{z-index:9}
+#mbf{position:absolute;width:0;height:0}
+
+/* ---------- palette: 暮色 (light) ---------- */
+.th{
+  --wall1:#F3E7EF; --wall2:#FBF2E4; --wall3:#E9E2F3; --wall0:#F6EEE6;
+  --win:#FFFCF6; --win2:#F7F1E7; --side:#FBF6EE; --line:#EBE2D4; --line2:#DCD2C0;
+  --ink:#2A241E; --ink2:#4A4238; --mute:#8D8478; --faint:#BDB3A3;
+  --glass:rgba(255,252,246,.72); --shadow:rgba(90,60,30,.16);
+  --row:rgba(255,255,255,.55); --rowA:#FFFFFF;
+  --chip:#EFE7DA;
+  --dock:rgba(255,250,242,.55);
+  --rain:rgba(120,110,130,.16); --star:#FFFFFF;
+}
+/* ---------- palette: 夜 (dark) ---------- */
+.th.dark{
+  --wall1:#1A2044; --wall2:#0C1024; --wall3:#25203F; --wall0:#0A0D1C;
+  --win:#1B2138; --win2:#161B2E; --side:#171C30; --line:#2B3352; --line2:#3A4468;
+  --ink:#F2EFE8; --ink2:#CFC9BE; --mute:#8E8A83; --faint:#5A5763;
+  --glass:rgba(22,27,48,.72); --shadow:rgba(0,0,0,.55);
+  --row:rgba(255,255,255,.045); --rowA:rgba(255,255,255,.10);
+  --chip:#232B45;
+  --dock:rgba(28,34,58,.55);
+  --rain:rgba(150,170,220,.20); --star:#E8ECFF;
+}
+.win{position:absolute;background:var(--win);border-radius:16px;overflow:hidden;
+  box-shadow:0 0 0 1px rgba(0,0,0,.07),0 34px 80px var(--shadow),0 6px 18px var(--shadow)}
+.tbar{height:46px;display:flex;align-items:center;padding:0 16px;background:var(--side);border-bottom:1px solid var(--line);position:relative}
+.lights{display:flex;gap:8px}.lights i{width:12px;height:12px;border-radius:50%;background:#EC6A5E;display:block}
+.lights i:nth-child(2){background:#F4BF4F}.lights i:nth-child(3){background:#61C554}
+.ttl{position:absolute;left:50%;transform:translateX(-50%);font-size:13.5px;color:var(--mute);letter-spacing:.3px}
+.xbtn{position:absolute;right:14px;top:13px;width:20px;height:20px;border-radius:5px;color:var(--mute);font-size:15px;line-height:20px;text-align:center}
+.mb{height:30px;background:var(--glass);display:flex;align-items:center;padding:0 26px;font-size:13px;color:var(--ink2);gap:20px;backdrop-filter:blur(8px)}
+.mb b{color:var(--ink);font-weight:700;letter-spacing:.5px}
+.mb .r{margin-left:auto;display:flex;gap:16px;align-items:center;font-variant-numeric:tabular-nums}
+.clock{font-weight:700;color:var(--ink)}
+.dock{position:absolute;background:var(--dock);border-radius:22px;display:flex;align-items:center;gap:14px;padding:0 18px;
+  box-shadow:0 0 0 1px rgba(0,0,0,.06),0 18px 40px var(--shadow);backdrop-filter:blur(10px)}
+.dock i{width:52px;height:52px;border-radius:13px;display:block;position:relative;overflow:hidden}
+</style></head>
+<body>
+<div id="stage">
+  <svg id="mbf"><filter id="mb"><feGaussianBlur id="mbg" stdDeviation="0 0"/></filter></svg>
+  <div id="mbw">
+    <div class="layer th" id="wL"></div>
+    <div class="layer th dark" id="wD"></div>
+  </div>
+  <div class="layer" id="spr"></div>
+  <div class="layer" id="veil"></div>
+  <div class="layer" id="lyr"></div>
+  <div class="layer" id="hud"></div>
+</div>
+<script type="module" src="main.js"></script>
+</body></html>

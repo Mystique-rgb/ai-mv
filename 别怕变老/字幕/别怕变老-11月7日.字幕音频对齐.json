@@ -1,0 +1,1817 @@
+{
+ "name": "别怕变老 · 11月7日 · 50.6s 片段",
+ "audio": {
+  "file": "D:\\ai音乐mv\\别怕变老\\11月7日.MP3",
+  "duration": 50.599125,
+  "sample_rate": 44100,
+  "channels": 2,
+  "codec": "mp3",
+  "bit_rate": 128007
+ },
+ "fps": 60,
+ "method": {
+  "vocals": "htdemucs (demucs 4.1.0) two-stems",
+  "asr_check": "faster-whisper medium (int8, CPU)",
+  "word_align": "Qwen3-ForcedAligner-0.6B-hf (CPU)",
+  "lyrics_source": "艾热AIR / 王以太《别怕变老》，按 clip 实际演唱内容截取",
+  "precision_note": "行级误差 < 0.1s；逐字在长音拖腔处（第13句「优雅」、第14句「Baby」）误差可达 ±0.3s"
+ },
+ "lines": [
+  {
+   "i": 1,
+   "text": "让我的爱人勇敢别怕变老",
+   "start": 0.16,
+   "end": 2.88,
+   "dur": 2.72,
+   "frame_in": 10,
+   "frame_out": 173,
+   "chars": [
+    {
+     "c": "让",
+     "start": 0.16,
+     "end": 0.32,
+     "frame_in": 10,
+     "frame_out": 19
+    },
+    {
+     "c": "我",
+     "start": 0.32,
+     "end": 0.48,
+     "frame_in": 19,
+     "frame_out": 29
+    },
+    {
+     "c": "的",
+     "start": 0.56,
+     "end": 0.64,
+     "frame_in": 34,
+     "frame_out": 38
+    },
+    {
+     "c": "爱",
+     "start": 0.72,
+     "end": 0.96,
+     "frame_in": 43,
+     "frame_out": 58
+    },
+    {
+     "c": "人",
+     "start": 0.96,
+     "end": 1.12,
+     "frame_in": 58,
+     "frame_out": 67
+    },
+    {
+     "c": "勇",
+     "start": 1.12,
+     "end": 1.2,
+     "frame_in": 67,
+     "frame_out": 72
+    },
+    {
+     "c": "敢",
+     "start": 1.36,
+     "end": 1.52,
+     "frame_in": 82,
+     "frame_out": 91
+    },
+    {
+     "c": "别",
+     "start": 1.52,
+     "end": 1.76,
+     "frame_in": 91,
+     "frame_out": 106
+    },
+    {
+     "c": "怕",
+     "start": 1.84,
+     "end": 1.92,
+     "frame_in": 110,
+     "frame_out": 115
+    },
+    {
+     "c": "变",
+     "start": 1.92,
+     "end": 2.08,
+     "frame_in": 115,
+     "frame_out": 125
+    },
+    {
+     "c": "老",
+     "start": 2.08,
+     "end": 2.88,
+     "frame_in": 125,
+     "frame_out": 173
+    }
+   ]
+  },
+  {
+   "i": 2,
+   "text": "对面的女孩看过来看着我别再盯着镜子盯着自己手机摄像头",
+   "start": 2.88,
+   "end": 8.48,
+   "dur": 5.6,
+   "frame_in": 173,
+   "frame_out": 509,
+   "chars": [
+    {
+     "c": "对",
+     "start": 2.88,
+     "end": 2.93,
+     "frame_in": 173,
+     "frame_out": 176
+    },
+    {
+     "c": "面",
+     "start": 2.88,
+     "end": 3.04,
+     "frame_in": 173,
+     "frame_out": 182
+    },
+    {
+     "c": "的",
+     "start": 3.04,
+     "end": 3.2,
+     "frame_in": 182,
+     "frame_out": 192
+    },
+    {
+     "c": "女",
+     "start": 3.2,
+     "end": 3.25,
+     "frame_in": 192,
+     "frame_out": 195
+    },
+    {
+     "c": "孩",
+     "start": 3.2,
+     "end": 3.52,
+     "frame_in": 192,
+     "frame_out": 211
+    },
+    {
+     "c": "看",
+     "start": 3.68,
+     "end": 3.92,
+     "frame_in": 221,
+     "frame_out": 235
+    },
+    {
+     "c": "过",
+     "start": 3.92,
+     "end": 4.0,
+     "frame_in": 235,
+     "frame_out": 240
+    },
+    {
+     "c": "来",
+     "start": 4.0,
+     "end": 4.32,
+     "frame_in": 240,
+     "frame_out": 259
+    },
+    {
+     "c": "看",
+     "start": 4.56,
+     "end": 4.8,
+     "frame_in": 274,
+     "frame_out": 288
+    },
+    {
+     "c": "着",
+     "start": 4.8,
+     "end": 4.88,
+     "frame_in": 288,
+     "frame_out": 293
+    },
+    {
+     "c": "我",
+     "start": 4.88,
+     "end": 5.36,
+     "frame_in": 293,
+     "frame_out": 322
+    },
+    {
+     "c": "别",
+     "start": 5.36,
+     "end": 5.52,
+     "frame_in": 322,
+     "frame_out": 331
+    },
+    {
+     "c": "再",
+     "start": 5.6,
+     "end": 5.68,
+     "frame_in": 336,
+     "frame_out": 341
+    },
+    {
+     "c": "盯",
+     "start": 5.76,
+     "end": 6.0,
+     "frame_in": 346,
+     "frame_out": 360
+    },
+    {
+     "c": "着",
+     "start": 6.0,
+     "end": 6.08,
+     "frame_in": 360,
+     "frame_out": 365
+    },
+    {
+     "c": "镜",
+     "start": 6.08,
+     "end": 6.4,
+     "frame_in": 365,
+     "frame_out": 384
+    },
+    {
+     "c": "子",
+     "start": 6.4,
+     "end": 6.48,
+     "frame_in": 384,
+     "frame_out": 389
+    },
+    {
+     "c": "盯",
+     "start": 6.48,
+     "end": 6.8,
+     "frame_in": 389,
+     "frame_out": 408
+    },
+    {
+     "c": "着",
+     "start": 6.8,
+     "end": 6.88,
+     "frame_in": 408,
+     "frame_out": 413
+    },
+    {
+     "c": "自",
+     "start": 6.88,
+     "end": 7.12,
+     "frame_in": 413,
+     "frame_out": 427
+    },
+    {
+     "c": "己",
+     "start": 7.12,
+     "end": 7.28,
+     "frame_in": 427,
+     "frame_out": 437
+    },
+    {
+     "c": "手",
+     "start": 7.28,
+     "end": 7.6,
+     "frame_in": 437,
+     "frame_out": 456
+    },
+    {
+     "c": "机",
+     "start": 7.6,
+     "end": 7.76,
+     "frame_in": 456,
+     "frame_out": 466
+    },
+    {
+     "c": "摄",
+     "start": 7.76,
+     "end": 7.92,
+     "frame_in": 466,
+     "frame_out": 475
+    },
+    {
+     "c": "像",
+     "start": 7.92,
+     "end": 8.24,
+     "frame_in": 475,
+     "frame_out": 494
+    },
+    {
+     "c": "头",
+     "start": 8.24,
+     "end": 8.48,
+     "frame_in": 494,
+     "frame_out": 509
+    }
+   ]
+  },
+  {
+   "i": 3,
+   "text": "我总说可能问题源于你的视力太好",
+   "start": 8.64,
+   "end": 12.16,
+   "dur": 3.52,
+   "frame_in": 518,
+   "frame_out": 730,
+   "chars": [
+    {
+     "c": "我",
+     "start": 8.64,
+     "end": 8.8,
+     "frame_in": 518,
+     "frame_out": 528
+    },
+    {
+     "c": "总",
+     "start": 8.8,
+     "end": 9.04,
+     "frame_in": 528,
+     "frame_out": 542
+    },
+    {
+     "c": "说",
+     "start": 9.04,
+     "end": 9.36,
+     "frame_in": 542,
+     "frame_out": 562
+    },
+    {
+     "c": "可",
+     "start": 9.52,
+     "end": 9.68,
+     "frame_in": 571,
+     "frame_out": 581
+    },
+    {
+     "c": "能",
+     "start": 9.68,
+     "end": 9.92,
+     "frame_in": 581,
+     "frame_out": 595
+    },
+    {
+     "c": "问",
+     "start": 9.92,
+     "end": 10.08,
+     "frame_in": 595,
+     "frame_out": 605
+    },
+    {
+     "c": "题",
+     "start": 10.08,
+     "end": 10.32,
+     "frame_in": 605,
+     "frame_out": 619
+    },
+    {
+     "c": "源",
+     "start": 10.32,
+     "end": 10.48,
+     "frame_in": 619,
+     "frame_out": 629
+    },
+    {
+     "c": "于",
+     "start": 10.48,
+     "end": 10.64,
+     "frame_in": 629,
+     "frame_out": 638
+    },
+    {
+     "c": "你",
+     "start": 10.64,
+     "end": 10.88,
+     "frame_in": 638,
+     "frame_out": 653
+    },
+    {
+     "c": "的",
+     "start": 10.88,
+     "end": 11.04,
+     "frame_in": 653,
+     "frame_out": 662
+    },
+    {
+     "c": "视",
+     "start": 11.04,
+     "end": 11.28,
+     "frame_in": 662,
+     "frame_out": 677
+    },
+    {
+     "c": "力",
+     "start": 11.28,
+     "end": 11.44,
+     "frame_in": 677,
+     "frame_out": 686
+    },
+    {
+     "c": "太",
+     "start": 11.44,
+     "end": 11.76,
+     "frame_in": 686,
+     "frame_out": 706
+    },
+    {
+     "c": "好",
+     "start": 11.76,
+     "end": 12.16,
+     "frame_in": 706,
+     "frame_out": 730
+    }
+   ]
+  },
+  {
+   "i": 4,
+   "text": "总说你正在衰老害怕我会被拐跑baby",
+   "start": 12.24,
+   "end": 16.08,
+   "dur": 3.84,
+   "frame_in": 734,
+   "frame_out": 965,
+   "chars": [
+    {
+     "c": "总",
+     "start": 12.24,
+     "end": 12.32,
+     "frame_in": 734,
+     "frame_out": 739
+    },
+    {
+     "c": "说",
+     "start": 12.48,
+     "end": 12.64,
+     "frame_in": 749,
+     "frame_out": 758
+    },
+    {
+     "c": "你",
+     "start": 12.64,
+     "end": 12.8,
+     "frame_in": 758,
+     "frame_out": 768
+    },
+    {
+     "c": "正",
+     "start": 12.8,
+     "end": 12.96,
+     "frame_in": 768,
+     "frame_out": 778
+    },
+    {
+     "c": "在",
+     "start": 12.96,
+     "end": 13.12,
+     "frame_in": 778,
+     "frame_out": 787
+    },
+    {
+     "c": "衰",
+     "start": 13.12,
+     "end": 13.44,
+     "frame_in": 787,
+     "frame_out": 806
+    },
+    {
+     "c": "老",
+     "start": 13.44,
+     "end": 13.76,
+     "frame_in": 806,
+     "frame_out": 826
+    },
+    {
+     "c": "害",
+     "start": 13.92,
+     "end": 14.0,
+     "frame_in": 835,
+     "frame_out": 840
+    },
+    {
+     "c": "怕",
+     "start": 14.0,
+     "end": 14.24,
+     "frame_in": 840,
+     "frame_out": 854
+    },
+    {
+     "c": "我",
+     "start": 14.32,
+     "end": 14.4,
+     "frame_in": 859,
+     "frame_out": 864
+    },
+    {
+     "c": "会",
+     "start": 14.4,
+     "end": 14.64,
+     "frame_in": 864,
+     "frame_out": 878
+    },
+    {
+     "c": "被",
+     "start": 14.64,
+     "end": 14.8,
+     "frame_in": 878,
+     "frame_out": 888
+    },
+    {
+     "c": "拐",
+     "start": 14.8,
+     "end": 15.12,
+     "frame_in": 888,
+     "frame_out": 907
+    },
+    {
+     "c": "跑",
+     "start": 15.12,
+     "end": 15.52,
+     "frame_in": 907,
+     "frame_out": 931
+    },
+    {
+     "c": "b",
+     "start": 15.6,
+     "end": 15.72,
+     "frame_in": 936,
+     "frame_out": 943
+    },
+    {
+     "c": "a",
+     "start": 15.72,
+     "end": 15.84,
+     "frame_in": 943,
+     "frame_out": 950
+    },
+    {
+     "c": "b",
+     "start": 15.84,
+     "end": 15.96,
+     "frame_in": 950,
+     "frame_out": 958
+    },
+    {
+     "c": "y",
+     "start": 15.96,
+     "end": 16.08,
+     "frame_in": 958,
+     "frame_out": 965
+    }
+   ]
+  },
+  {
+   "i": 5,
+   "text": "我从没忘记爱慕你的初衷",
+   "start": 16.32,
+   "end": 18.72,
+   "dur": 2.4,
+   "frame_in": 979,
+   "frame_out": 1123,
+   "chars": [
+    {
+     "c": "我",
+     "start": 16.32,
+     "end": 16.48,
+     "frame_in": 979,
+     "frame_out": 989
+    },
+    {
+     "c": "从",
+     "start": 16.48,
+     "end": 16.8,
+     "frame_in": 989,
+     "frame_out": 1008
+    },
+    {
+     "c": "没",
+     "start": 16.8,
+     "end": 16.96,
+     "frame_in": 1008,
+     "frame_out": 1018
+    },
+    {
+     "c": "忘",
+     "start": 16.96,
+     "end": 17.2,
+     "frame_in": 1018,
+     "frame_out": 1032
+    },
+    {
+     "c": "记",
+     "start": 17.2,
+     "end": 17.44,
+     "frame_in": 1032,
+     "frame_out": 1046
+    },
+    {
+     "c": "爱",
+     "start": 17.44,
+     "end": 17.6,
+     "frame_in": 1046,
+     "frame_out": 1056
+    },
+    {
+     "c": "慕",
+     "start": 17.6,
+     "end": 17.76,
+     "frame_in": 1056,
+     "frame_out": 1066
+    },
+    {
+     "c": "你",
+     "start": 17.76,
+     "end": 18.0,
+     "frame_in": 1066,
+     "frame_out": 1080
+    },
+    {
+     "c": "的",
+     "start": 18.0,
+     "end": 18.16,
+     "frame_in": 1080,
+     "frame_out": 1090
+    },
+    {
+     "c": "初",
+     "start": 18.16,
+     "end": 18.48,
+     "frame_in": 1090,
+     "frame_out": 1109
+    },
+    {
+     "c": "衷",
+     "start": 18.48,
+     "end": 18.72,
+     "frame_in": 1109,
+     "frame_out": 1123
+    }
+   ]
+  },
+  {
+   "i": 6,
+   "text": "迷恋你的特别尽管我们都很普通",
+   "start": 19.12,
+   "end": 22.0,
+   "dur": 2.88,
+   "frame_in": 1147,
+   "frame_out": 1320,
+   "chars": [
+    {
+     "c": "迷",
+     "start": 19.12,
+     "end": 19.28,
+     "frame_in": 1147,
+     "frame_out": 1157
+    },
+    {
+     "c": "恋",
+     "start": 19.36,
+     "end": 19.52,
+     "frame_in": 1162,
+     "frame_out": 1171
+    },
+    {
+     "c": "你",
+     "start": 19.52,
+     "end": 19.68,
+     "frame_in": 1171,
+     "frame_out": 1181
+    },
+    {
+     "c": "的",
+     "start": 19.68,
+     "end": 19.84,
+     "frame_in": 1181,
+     "frame_out": 1190
+    },
+    {
+     "c": "特",
+     "start": 19.84,
+     "end": 20.16,
+     "frame_in": 1190,
+     "frame_out": 1210
+    },
+    {
+     "c": "别",
+     "start": 20.16,
+     "end": 20.24,
+     "frame_in": 1210,
+     "frame_out": 1214
+    },
+    {
+     "c": "尽",
+     "start": 20.24,
+     "end": 20.56,
+     "frame_in": 1214,
+     "frame_out": 1234
+    },
+    {
+     "c": "管",
+     "start": 20.56,
+     "end": 20.64,
+     "frame_in": 1234,
+     "frame_out": 1238
+    },
+    {
+     "c": "我",
+     "start": 20.64,
+     "end": 20.88,
+     "frame_in": 1238,
+     "frame_out": 1253
+    },
+    {
+     "c": "们",
+     "start": 20.88,
+     "end": 21.12,
+     "frame_in": 1253,
+     "frame_out": 1267
+    },
+    {
+     "c": "都",
+     "start": 21.12,
+     "end": 21.36,
+     "frame_in": 1267,
+     "frame_out": 1282
+    },
+    {
+     "c": "很",
+     "start": 21.36,
+     "end": 21.52,
+     "frame_in": 1282,
+     "frame_out": 1291
+    },
+    {
+     "c": "普",
+     "start": 21.6,
+     "end": 21.76,
+     "frame_in": 1296,
+     "frame_out": 1306
+    },
+    {
+     "c": "通",
+     "start": 21.76,
+     "end": 22.0,
+     "frame_in": 1306,
+     "frame_out": 1320
+    }
+   ]
+  },
+  {
+   "i": 7,
+   "text": "光阴的故事说实话没经历也不懂",
+   "start": 22.4,
+   "end": 25.36,
+   "dur": 2.96,
+   "frame_in": 1344,
+   "frame_out": 1522,
+   "chars": [
+    {
+     "c": "光",
+     "start": 22.4,
+     "end": 22.64,
+     "frame_in": 1344,
+     "frame_out": 1358
+    },
+    {
+     "c": "阴",
+     "start": 22.64,
+     "end": 22.8,
+     "frame_in": 1358,
+     "frame_out": 1368
+    },
+    {
+     "c": "的",
+     "start": 22.8,
+     "end": 22.96,
+     "frame_in": 1368,
+     "frame_out": 1378
+    },
+    {
+     "c": "故",
+     "start": 22.96,
+     "end": 23.12,
+     "frame_in": 1378,
+     "frame_out": 1387
+    },
+    {
+     "c": "事",
+     "start": 23.12,
+     "end": 23.44,
+     "frame_in": 1387,
+     "frame_out": 1406
+    },
+    {
+     "c": "说",
+     "start": 23.44,
+     "end": 23.6,
+     "frame_in": 1406,
+     "frame_out": 1416
+    },
+    {
+     "c": "实",
+     "start": 23.6,
+     "end": 23.84,
+     "frame_in": 1416,
+     "frame_out": 1430
+    },
+    {
+     "c": "话",
+     "start": 23.84,
+     "end": 24.08,
+     "frame_in": 1430,
+     "frame_out": 1445
+    },
+    {
+     "c": "没",
+     "start": 24.08,
+     "end": 24.24,
+     "frame_in": 1445,
+     "frame_out": 1454
+    },
+    {
+     "c": "经",
+     "start": 24.24,
+     "end": 24.48,
+     "frame_in": 1454,
+     "frame_out": 1469
+    },
+    {
+     "c": "历",
+     "start": 24.48,
+     "end": 24.72,
+     "frame_in": 1469,
+     "frame_out": 1483
+    },
+    {
+     "c": "也",
+     "start": 24.72,
+     "end": 24.8,
+     "frame_in": 1483,
+     "frame_out": 1488
+    },
+    {
+     "c": "不",
+     "start": 24.8,
+     "end": 25.04,
+     "frame_in": 1488,
+     "frame_out": 1502
+    },
+    {
+     "c": "懂",
+     "start": 25.04,
+     "end": 25.36,
+     "frame_in": 1502,
+     "frame_out": 1522
+    }
+   ]
+  },
+  {
+   "i": 8,
+   "text": "也只能珍惜眼前为了不成为它的附庸babe",
+   "start": 25.6,
+   "end": 29.36,
+   "dur": 3.76,
+   "frame_in": 1536,
+   "frame_out": 1762,
+   "chars": [
+    {
+     "c": "也",
+     "start": 25.6,
+     "end": 25.68,
+     "frame_in": 1536,
+     "frame_out": 1541
+    },
+    {
+     "c": "只",
+     "start": 25.68,
+     "end": 25.92,
+     "frame_in": 1541,
+     "frame_out": 1555
+    },
+    {
+     "c": "能",
+     "start": 25.92,
+     "end": 26.08,
+     "frame_in": 1555,
+     "frame_out": 1565
+    },
+    {
+     "c": "珍",
+     "start": 26.08,
+     "end": 26.32,
+     "frame_in": 1565,
+     "frame_out": 1579
+    },
+    {
+     "c": "惜",
+     "start": 26.32,
+     "end": 26.56,
+     "frame_in": 1579,
+     "frame_out": 1594
+    },
+    {
+     "c": "眼",
+     "start": 26.56,
+     "end": 26.72,
+     "frame_in": 1594,
+     "frame_out": 1603
+    },
+    {
+     "c": "前",
+     "start": 26.8,
+     "end": 26.96,
+     "frame_in": 1608,
+     "frame_out": 1618
+    },
+    {
+     "c": "为",
+     "start": 26.96,
+     "end": 27.12,
+     "frame_in": 1618,
+     "frame_out": 1627
+    },
+    {
+     "c": "了",
+     "start": 27.12,
+     "end": 27.2,
+     "frame_in": 1627,
+     "frame_out": 1632
+    },
+    {
+     "c": "不",
+     "start": 27.2,
+     "end": 27.36,
+     "frame_in": 1632,
+     "frame_out": 1642
+    },
+    {
+     "c": "成",
+     "start": 27.36,
+     "end": 27.68,
+     "frame_in": 1642,
+     "frame_out": 1661
+    },
+    {
+     "c": "为",
+     "start": 27.68,
+     "end": 27.76,
+     "frame_in": 1661,
+     "frame_out": 1666
+    },
+    {
+     "c": "它",
+     "start": 27.76,
+     "end": 28.0,
+     "frame_in": 1666,
+     "frame_out": 1680
+    },
+    {
+     "c": "的",
+     "start": 28.0,
+     "end": 28.08,
+     "frame_in": 1680,
+     "frame_out": 1685
+    },
+    {
+     "c": "附",
+     "start": 28.08,
+     "end": 28.4,
+     "frame_in": 1685,
+     "frame_out": 1704
+    },
+    {
+     "c": "庸",
+     "start": 28.4,
+     "end": 28.64,
+     "frame_in": 1704,
+     "frame_out": 1718
+    },
+    {
+     "c": "b",
+     "start": 29.04,
+     "end": 29.12,
+     "frame_in": 1742,
+     "frame_out": 1747
+    },
+    {
+     "c": "a",
+     "start": 29.12,
+     "end": 29.2,
+     "frame_in": 1747,
+     "frame_out": 1752
+    },
+    {
+     "c": "b",
+     "start": 29.2,
+     "end": 29.28,
+     "frame_in": 1752,
+     "frame_out": 1757
+    },
+    {
+     "c": "e",
+     "start": 29.28,
+     "end": 29.36,
+     "frame_in": 1757,
+     "frame_out": 1762
+    }
+   ]
+  },
+  {
+   "i": 9,
+   "text": "岁月划过指尖一切像梦境实现",
+   "start": 29.92,
+   "end": 32.88,
+   "dur": 2.96,
+   "frame_in": 1795,
+   "frame_out": 1973,
+   "chars": [
+    {
+     "c": "岁",
+     "start": 29.92,
+     "end": 30.08,
+     "frame_in": 1795,
+     "frame_out": 1805
+    },
+    {
+     "c": "月",
+     "start": 30.08,
+     "end": 30.16,
+     "frame_in": 1805,
+     "frame_out": 1810
+    },
+    {
+     "c": "划",
+     "start": 30.16,
+     "end": 30.48,
+     "frame_in": 1810,
+     "frame_out": 1829
+    },
+    {
+     "c": "过",
+     "start": 30.48,
+     "end": 30.64,
+     "frame_in": 1829,
+     "frame_out": 1838
+    },
+    {
+     "c": "指",
+     "start": 30.64,
+     "end": 30.88,
+     "frame_in": 1838,
+     "frame_out": 1853
+    },
+    {
+     "c": "尖",
+     "start": 30.88,
+     "end": 31.2,
+     "frame_in": 1853,
+     "frame_out": 1872
+    },
+    {
+     "c": "一",
+     "start": 31.44,
+     "end": 31.52,
+     "frame_in": 1886,
+     "frame_out": 1891
+    },
+    {
+     "c": "切",
+     "start": 31.52,
+     "end": 31.76,
+     "frame_in": 1891,
+     "frame_out": 1906
+    },
+    {
+     "c": "像",
+     "start": 31.76,
+     "end": 32.0,
+     "frame_in": 1906,
+     "frame_out": 1920
+    },
+    {
+     "c": "梦",
+     "start": 32.0,
+     "end": 32.16,
+     "frame_in": 1920,
+     "frame_out": 1930
+    },
+    {
+     "c": "境",
+     "start": 32.16,
+     "end": 32.32,
+     "frame_in": 1930,
+     "frame_out": 1939
+    },
+    {
+     "c": "实",
+     "start": 32.32,
+     "end": 32.64,
+     "frame_in": 1939,
+     "frame_out": 1958
+    },
+    {
+     "c": "现",
+     "start": 32.64,
+     "end": 32.88,
+     "frame_in": 1958,
+     "frame_out": 1973
+    }
+   ]
+  },
+  {
+   "i": 10,
+   "text": "就算被苦痛肆虐那也是很久之前",
+   "start": 33.12,
+   "end": 36.24,
+   "dur": 3.12,
+   "frame_in": 1987,
+   "frame_out": 2174,
+   "chars": [
+    {
+     "c": "就",
+     "start": 33.12,
+     "end": 33.2,
+     "frame_in": 1987,
+     "frame_out": 1992
+    },
+    {
+     "c": "算",
+     "start": 33.2,
+     "end": 33.44,
+     "frame_in": 1992,
+     "frame_out": 2006
+    },
+    {
+     "c": "被",
+     "start": 33.52,
+     "end": 33.68,
+     "frame_in": 2011,
+     "frame_out": 2021
+    },
+    {
+     "c": "苦",
+     "start": 33.68,
+     "end": 33.84,
+     "frame_in": 2021,
+     "frame_out": 2030
+    },
+    {
+     "c": "痛",
+     "start": 33.84,
+     "end": 34.0,
+     "frame_in": 2030,
+     "frame_out": 2040
+    },
+    {
+     "c": "肆",
+     "start": 34.0,
+     "end": 34.32,
+     "frame_in": 2040,
+     "frame_out": 2059
+    },
+    {
+     "c": "虐",
+     "start": 34.32,
+     "end": 34.56,
+     "frame_in": 2059,
+     "frame_out": 2074
+    },
+    {
+     "c": "那",
+     "start": 34.8,
+     "end": 34.88,
+     "frame_in": 2088,
+     "frame_out": 2093
+    },
+    {
+     "c": "也",
+     "start": 34.96,
+     "end": 35.12,
+     "frame_in": 2098,
+     "frame_out": 2107
+    },
+    {
+     "c": "是",
+     "start": 35.12,
+     "end": 35.28,
+     "frame_in": 2107,
+     "frame_out": 2117
+    },
+    {
+     "c": "很",
+     "start": 35.28,
+     "end": 35.52,
+     "frame_in": 2117,
+     "frame_out": 2131
+    },
+    {
+     "c": "久",
+     "start": 35.52,
+     "end": 35.68,
+     "frame_in": 2131,
+     "frame_out": 2141
+    },
+    {
+     "c": "之",
+     "start": 35.68,
+     "end": 35.92,
+     "frame_in": 2141,
+     "frame_out": 2155
+    },
+    {
+     "c": "前",
+     "start": 35.92,
+     "end": 36.24,
+     "frame_in": 2155,
+     "frame_out": 2174
+    }
+   ]
+  },
+  {
+   "i": 11,
+   "text": "我们现在拥有所有就像埋下了火种",
+   "start": 36.32,
+   "end": 39.68,
+   "dur": 3.36,
+   "frame_in": 2179,
+   "frame_out": 2381,
+   "chars": [
+    {
+     "c": "我",
+     "start": 36.32,
+     "end": 36.4,
+     "frame_in": 2179,
+     "frame_out": 2184
+    },
+    {
+     "c": "们",
+     "start": 36.4,
+     "end": 36.48,
+     "frame_in": 2184,
+     "frame_out": 2189
+    },
+    {
+     "c": "现",
+     "start": 36.48,
+     "end": 36.72,
+     "frame_in": 2189,
+     "frame_out": 2203
+    },
+    {
+     "c": "在",
+     "start": 36.72,
+     "end": 36.96,
+     "frame_in": 2203,
+     "frame_out": 2218
+    },
+    {
+     "c": "拥",
+     "start": 36.96,
+     "end": 37.2,
+     "frame_in": 2218,
+     "frame_out": 2232
+    },
+    {
+     "c": "有",
+     "start": 37.2,
+     "end": 37.28,
+     "frame_in": 2232,
+     "frame_out": 2237
+    },
+    {
+     "c": "所",
+     "start": 37.28,
+     "end": 37.6,
+     "frame_in": 2237,
+     "frame_out": 2256
+    },
+    {
+     "c": "有",
+     "start": 37.68,
+     "end": 38.0,
+     "frame_in": 2261,
+     "frame_out": 2280
+    },
+    {
+     "c": "就",
+     "start": 38.08,
+     "end": 38.16,
+     "frame_in": 2285,
+     "frame_out": 2290
+    },
+    {
+     "c": "像",
+     "start": 38.16,
+     "end": 38.48,
+     "frame_in": 2290,
+     "frame_out": 2309
+    },
+    {
+     "c": "埋",
+     "start": 38.48,
+     "end": 38.64,
+     "frame_in": 2309,
+     "frame_out": 2318
+    },
+    {
+     "c": "下",
+     "start": 38.64,
+     "end": 38.96,
+     "frame_in": 2318,
+     "frame_out": 2338
+    },
+    {
+     "c": "了",
+     "start": 38.96,
+     "end": 39.04,
+     "frame_in": 2338,
+     "frame_out": 2342
+    },
+    {
+     "c": "火",
+     "start": 39.04,
+     "end": 39.28,
+     "frame_in": 2342,
+     "frame_out": 2357
+    },
+    {
+     "c": "种",
+     "start": 39.36,
+     "end": 39.68,
+     "frame_in": 2362,
+     "frame_out": 2381
+    }
+   ]
+  },
+  {
+   "i": 12,
+   "text": "现在我为你歌颂就只管牵着我走",
+   "start": 39.76,
+   "end": 42.88,
+   "dur": 3.12,
+   "frame_in": 2386,
+   "frame_out": 2573,
+   "chars": [
+    {
+     "c": "现",
+     "start": 39.76,
+     "end": 39.84,
+     "frame_in": 2386,
+     "frame_out": 2390
+    },
+    {
+     "c": "在",
+     "start": 39.84,
+     "end": 40.16,
+     "frame_in": 2390,
+     "frame_out": 2410
+    },
+    {
+     "c": "我",
+     "start": 40.16,
+     "end": 40.32,
+     "frame_in": 2410,
+     "frame_out": 2419
+    },
+    {
+     "c": "为",
+     "start": 40.4,
+     "end": 40.56,
+     "frame_in": 2424,
+     "frame_out": 2434
+    },
+    {
+     "c": "你",
+     "start": 40.56,
+     "end": 40.72,
+     "frame_in": 2434,
+     "frame_out": 2443
+    },
+    {
+     "c": "歌",
+     "start": 40.72,
+     "end": 40.96,
+     "frame_in": 2443,
+     "frame_out": 2458
+    },
+    {
+     "c": "颂",
+     "start": 40.96,
+     "end": 41.36,
+     "frame_in": 2458,
+     "frame_out": 2482
+    },
+    {
+     "c": "就",
+     "start": 41.44,
+     "end": 41.52,
+     "frame_in": 2486,
+     "frame_out": 2491
+    },
+    {
+     "c": "只",
+     "start": 41.52,
+     "end": 41.76,
+     "frame_in": 2491,
+     "frame_out": 2506
+    },
+    {
+     "c": "管",
+     "start": 41.76,
+     "end": 42.0,
+     "frame_in": 2506,
+     "frame_out": 2520
+    },
+    {
+     "c": "牵",
+     "start": 42.0,
+     "end": 42.24,
+     "frame_in": 2520,
+     "frame_out": 2534
+    },
+    {
+     "c": "着",
+     "start": 42.24,
+     "end": 42.4,
+     "frame_in": 2534,
+     "frame_out": 2544
+    },
+    {
+     "c": "我",
+     "start": 42.4,
+     "end": 42.64,
+     "frame_in": 2544,
+     "frame_out": 2558
+    },
+    {
+     "c": "走",
+     "start": 42.72,
+     "end": 42.88,
+     "frame_in": 2563,
+     "frame_out": 2573
+    }
+   ]
+  },
+  {
+   "i": 13,
+   "text": "Baby我仰慕你的自然你的优雅",
+   "start": 43.28,
+   "end": 47.2,
+   "dur": 3.92,
+   "frame_in": 2597,
+   "frame_out": 2832,
+   "chars": [
+    {
+     "c": "B",
+     "start": 43.28,
+     "end": 43.48,
+     "frame_in": 2597,
+     "frame_out": 2609
+    },
+    {
+     "c": "a",
+     "start": 43.48,
+     "end": 43.68,
+     "frame_in": 2609,
+     "frame_out": 2621
+    },
+    {
+     "c": "b",
+     "start": 43.68,
+     "end": 43.88,
+     "frame_in": 2621,
+     "frame_out": 2633
+    },
+    {
+     "c": "y",
+     "start": 43.88,
+     "end": 44.08,
+     "frame_in": 2633,
+     "frame_out": 2645
+    },
+    {
+     "c": "我",
+     "start": 44.08,
+     "end": 44.13,
+     "frame_in": 2645,
+     "frame_out": 2648
+    },
+    {
+     "c": "仰",
+     "start": 44.08,
+     "end": 44.24,
+     "frame_in": 2645,
+     "frame_out": 2654
+    },
+    {
+     "c": "慕",
+     "start": 44.24,
+     "end": 44.4,
+     "frame_in": 2654,
+     "frame_out": 2664
+    },
+    {
+     "c": "你",
+     "start": 44.4,
+     "end": 44.64,
+     "frame_in": 2664,
+     "frame_out": 2678
+    },
+    {
+     "c": "的",
+     "start": 44.64,
+     "end": 44.8,
+     "frame_in": 2678,
+     "frame_out": 2688
+    },
+    {
+     "c": "自",
+     "start": 44.8,
+     "end": 45.12,
+     "frame_in": 2688,
+     "frame_out": 2707
+    },
+    {
+     "c": "然",
+     "start": 45.12,
+     "end": 45.28,
+     "frame_in": 2707,
+     "frame_out": 2717
+    },
+    {
+     "c": "你",
+     "start": 45.28,
+     "end": 45.52,
+     "frame_in": 2717,
+     "frame_out": 2731
+    },
+    {
+     "c": "的",
+     "start": 45.52,
+     "end": 45.6,
+     "frame_in": 2731,
+     "frame_out": 2736
+    },
+    {
+     "c": "优",
+     "start": 45.6,
+     "end": 46.4,
+     "frame_in": 2736,
+     "frame_out": 2784
+    },
+    {
+     "c": "雅",
+     "start": 46.4,
+     "end": 47.2,
+     "frame_in": 2784,
+     "frame_out": 2832
+    }
+   ]
+  },
+  {
+   "i": 14,
+   "text": "Baby我会大声向你表白虽然肉麻",
+   "start": 47.2,
+   "end": 49.52,
+   "dur": 2.32,
+   "frame_in": 2832,
+   "frame_out": 2971,
+   "chars": [
+    {
+     "c": "B",
+     "start": 47.2,
+     "end": 47.25,
+     "frame_in": 2832,
+     "frame_out": 2835
+    },
+    {
+     "c": "a",
+     "start": 47.2,
+     "end": 47.25,
+     "frame_in": 2832,
+     "frame_out": 2835
+    },
+    {
+     "c": "b",
+     "start": 47.2,
+     "end": 47.25,
+     "frame_in": 2832,
+     "frame_out": 2835
+    },
+    {
+     "c": "y",
+     "start": 47.2,
+     "end": 47.25,
+     "frame_in": 2832,
+     "frame_out": 2835
+    },
+    {
+     "c": "我",
+     "start": 47.2,
+     "end": 47.28,
+     "frame_in": 2832,
+     "frame_out": 2837
+    },
+    {
+     "c": "会",
+     "start": 47.28,
+     "end": 47.44,
+     "frame_in": 2837,
+     "frame_out": 2846
+    },
+    {
+     "c": "大",
+     "start": 47.44,
+     "end": 47.6,
+     "frame_in": 2846,
+     "frame_out": 2856
+    },
+    {
+     "c": "声",
+     "start": 47.6,
+     "end": 47.76,
+     "frame_in": 2856,
+     "frame_out": 2866
+    },
+    {
+     "c": "向",
+     "start": 47.84,
+     "end": 48.0,
+     "frame_in": 2870,
+     "frame_out": 2880
+    },
+    {
+     "c": "你",
+     "start": 48.0,
+     "end": 48.16,
+     "frame_in": 2880,
+     "frame_out": 2890
+    },
+    {
+     "c": "表",
+     "start": 48.16,
+     "end": 48.4,
+     "frame_in": 2890,
+     "frame_out": 2904
+    },
+    {
+     "c": "白",
+     "start": 48.4,
+     "end": 48.56,
+     "frame_in": 2904,
+     "frame_out": 2914
+    },
+    {
+     "c": "虽",
+     "start": 48.56,
+     "end": 48.8,
+     "frame_in": 2914,
+     "frame_out": 2928
+    },
+    {
+     "c": "然",
+     "start": 48.8,
+     "end": 49.04,
+     "frame_in": 2928,
+     "frame_out": 2942
+    },
+    {
+     "c": "肉",
+     "start": 49.12,
+     "end": 49.2,
+     "frame_in": 2947,
+     "frame_out": 2952
+    },
+    {
+     "c": "麻",
+     "start": 49.44,
+     "end": 49.52,
+     "frame_in": 2966,
+     "frame_out": 2971
+    }
+   ]
+  }
+ ],
+ "cues": [
+  {
+   "n": 1,
+   "text": "让我的爱人勇敢别怕变老",
+   "in": 0.16,
+   "out": 2.85,
+   "frame_in": 10,
+   "frame_out": 171
+  },
+  {
+   "n": 2,
+   "text": "对面的女孩看过来",
+   "in": 2.88,
+   "out": 4.53,
+   "frame_in": 173,
+   "frame_out": 272
+  },
+  {
+   "n": 3,
+   "text": "看着我别再盯着镜子",
+   "in": 4.56,
+   "out": 6.45,
+   "frame_in": 274,
+   "frame_out": 387
+  },
+  {
+   "n": 4,
+   "text": "盯着自己手机摄像头",
+   "in": 6.48,
+   "out": 8.61,
+   "frame_in": 389,
+   "frame_out": 517
+  },
+  {
+   "n": 5,
+   "text": "我总说可能问题源于你的视力太好",
+   "in": 8.64,
+   "out": 12.21,
+   "frame_in": 518,
+   "frame_out": 733
+  },
+  {
+   "n": 6,
+   "text": "总说你正在衰老害怕我会被拐跑baby",
+   "in": 12.24,
+   "out": 16.29,
+   "frame_in": 734,
+   "frame_out": 977
+  },
+  {
+   "n": 7,
+   "text": "我从没忘记爱慕你的初衷",
+   "in": 16.32,
+   "out": 19.09,
+   "frame_in": 979,
+   "frame_out": 1145
+  },
+  {
+   "n": 8,
+   "text": "迷恋你的特别尽管我们都很普通",
+   "in": 19.12,
+   "out": 22.37,
+   "frame_in": 1147,
+   "frame_out": 1342
+  },
+  {
+   "n": 9,
+   "text": "光阴的故事说实话没经历也不懂",
+   "in": 22.4,
+   "out": 25.57,
+   "frame_in": 1344,
+   "frame_out": 1534
+  },
+  {
+   "n": 10,
+   "text": "也只能珍惜眼前为了不成为它的附庸babe",
+   "in": 25.6,
+   "out": 29.86,
+   "frame_in": 1536,
+   "frame_out": 1792
+  },
+  {
+   "n": 11,
+   "text": "岁月划过指尖一切像梦境实现",
+   "in": 29.92,
+   "out": 33.09,
+   "frame_in": 1795,
+   "frame_out": 1985
+  },
+  {
+   "n": 12,
+   "text": "就算被苦痛肆虐那也是很久之前",
+   "in": 33.12,
+   "out": 36.29,
+   "frame_in": 1987,
+   "frame_out": 2177
+  },
+  {
+   "n": 13,
+   "text": "我们现在拥有所有就像埋下了火种",
+   "in": 36.32,
+   "out": 39.73,
+   "frame_in": 2179,
+   "frame_out": 2384
+  },
+  {
+   "n": 14,
+   "text": "现在我为你歌颂就只管牵着我走",
+   "in": 39.76,
+   "out": 43.25,
+   "frame_in": 2386,
+   "frame_out": 2595
+  },
+  {
+   "n": 15,
+   "text": "Baby我仰慕你的自然你的优雅",
+   "in": 43.28,
+   "out": 47.17,
+   "frame_in": 2597,
+   "frame_out": 2830
+  },
+  {
+   "n": 16,
+   "text": "Baby我会大声向你表白虽然肉麻",
+   "in": 47.2,
+   "out": 50.02,
+   "frame_in": 2832,
+   "frame_out": 3001
+  }
+ ]
+}

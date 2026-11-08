@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>hero stage</title>
+<style>html,body{margin:0;padding:0;background:transparent;overflow:hidden}canvas{display:block}</style>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<script src="../../specs/_hero.js"></script>
+<script src="../../assets/fonts/px16.js"></script>
+<script>
+// 模式：girl / boy / duo / card   （?mode=card&k=6）
+const Q = new URLSearchParams(location.search);
+const MODE = Q.get('mode') || 'girl';
+const K = Number(Q.get('k') || 7);
+let LW, LH;
+if (MODE === 'card') { LW = 320; LH = 180; }
+else if (MODE === 'duo') { LW = 200; LH = 160; }
+else { LW = 160; LH = 160; }
+
+const cv = document.getElementById('cv');
+cv.width = LW * K; cv.height = LH * K;
+const g = cv.getContext('2d');
+g.imageSmoothingEnabled = false;
+
+const lg = document.createElement('canvas');
+lg.width = LW; lg.height = LH;
+const p = lg.getContext('2d');
+p.imageSmoothingEnabled = false;
+
+const R = (x, y, w, h, col) => { p.fillStyle = col; p.fillRect(x | 0, y | 0, w | 0, h | 0); };
+
+// ── 点阵字（16px 中文字模 / 8px ASCII），与 MV 招牌同一套字库 ──
+function glyph(ch) {
+  const cn = window.PXF && PXF.cn[ch], as = window.PXF && PXF.as[ch];
+  if (cn) return { rows: cn, w: 16 };
+  if (as) return { rows: as, w: 8 };
+  return null;
+}
+function PXT(s, x, y, col, sc) {
+  sc = sc || 1;
+  let cx = x;
+  p.fillStyle = col;
+  for (const ch of s) {
+    const gl = glyph(ch);
+    if (!gl) { cx += 8 * sc; continue; }
+    for (let r = 0; r < 16; r++) {
+      const bits = parseInt(gl.rows[r], 16);
+      if (!bits) continue;
+      for (let b = 0; b < gl.w; b++) {
+        if (bits & (1 << (gl.w - 1 - b))) p.fillRect(cx + b * sc, y + r * sc, sc, sc);
+      }
+    }
+    cx += gl.w * sc;
+  }
+  return cx - x;
+}
+function PXW(s, sc) {
+  sc = sc || 1; let w = 0;
+  for (const ch of s) { const gl = glyph(ch); w += (gl ? gl.w : 8) * sc; }
+  return w;
+}
+
+// ── 3×5 微型数字（相纸日期戳，16px 字会撑爆版面） ──
+const MINI = {
+  '0': ['111', '101', '101', '101', '111'], '1': ['010', '110', '010', '010', '111'],
+  '2': ['111', '001', '111', '100', '111'], '3': ['111', '001', '111', '001', '111'],
+  '4': ['101', '101', '111', '001', '001'], '5': ['111', '100', '111', '001', '111'],
+  '6': ['111', '100', '111', '101', '111'], '7': ['111', '001', '001', '001', '001'],
+  '8': ['111', '101', '111', '101', '111'], '9': ['111', '101', '111', '001', '111'],
+  '.': ['000', '000', '000', '000', '010'], ' ': ['000', '000', '000', '000', '000'],
+};
+function MINT(s, x, y, col) {
+  p.fillStyle = col;
+  let cx = x;
+  for (const ch of s) {
+    const g5 = MINI[ch];
+    if (g5) {
+      for (let r = 0; r < 5; r++) for (let q = 0; q < 3; q++) {
+        if (g5[r][q] === '1') p.fillRect(cx + q, y + r, 1, 1);
+      }
+    }
+    cx += 4;
+  }
+  return cx - x;
+}
+
+// ── 拍立得背景（内景：海 + 木栈道） ──
+function photoScene() {
+  // 海（三段青绿）
+  R(14, 16, 292, 42, '#6FBDB4');
+  R(14, 58, 292, 20, '#4FA79F');
+  R(14, 78, 292, 18, '#3E8F89');
+  // 海面白色小点反光
+  const dots = [[40, 32], [58, 28], [86, 38], [120, 26], [150, 36], [182, 30],
+                [212, 40], [244, 28], [268, 34], [96, 50], [144, 60], [200, 52], [250, 56]];
+  for (const [dx, dy] of dots) R(dx, dy, 3, 1, '#DCF2EC');
+  for (const [dx, dy] of dots) R(dx + 1, dy + 1, 1, 1, '#AADCD3');
+  // 远处地平线亮带
+  R(14, 90, 292, 2, '#8FD0C6');
+  // 木栈道（竖长木板：板缝 + 板边受光 + 木纹）
+  R(14, 92, 292, 56, '#C79A62');
+  R(14, 92, 292, 2, '#DDB37C');
+  for (let x = 14; x <= 306; x += 7) {
+    R(x, 94, 1, 54, '#A8794A');
+    R(x + 1, 94, 1, 54, '#D2A670');
+  }
+  const grain = [[24, 104], [38, 122], [52, 112], [66, 134], [80, 100], [94, 118],
+                 [108, 108], [122, 130], [136, 102], [150, 120], [164, 110], [178, 132],
+                 [192, 104], [206, 122], [220, 112], [234, 134], [248, 100], [262, 118],
+                 [276, 108], [290, 128]];
+  for (const [gx, gy] of grain) R(gx, gy, 5, 1, '#B98A55');
+  // 栈道下段压暗
+  R(14, 138, 292, 10, '#B0834F');
+  // 木纹亮点
+  const wk = [[30, 100], [74, 106], [118, 98], [162, 108], [206, 102], [250, 110], [284, 104]];
+  for (const [dx, dy] of wk) R(dx, dy, 6, 1, '#D8AE76');
+}
+
+function drawCard() {
+  // 卡纸（米白）+ 硬边投影
+  p.globalAlpha = 0.20; R(6, 10, 312, 172, '#2A1E16'); p.globalAlpha = 1;
+  R(2, 4, 316, 172, '#F7E8C8');
+  R(2, 4, 316, 1, '#FFF7E2');
+  R(2, 174, 316, 2, '#E3CFA4');
+  R(2, 4, 1, 172, '#E9D6AE');
+  R(317, 4, 1, 172, '#E9D6AE');
+  // 内白框（双线）
+  R(10, 12, 300, 140, '#FDF6E4');
+  R(11, 13, 298, 1, '#E6D2A8');
+  R(11, 150, 298, 1, '#E6D2A8');
+  R(11, 13, 1, 138, '#E6D2A8');
+  R(308, 13, 1, 138, '#E6D2A8');
+  // 照片
+  R(14, 16, 292, 132, '#3E8F89');
+  photoScene();
+  R(14, 16, 292, 1, '#C9B78E');
+  R(14, 147, 292, 1, '#C9B78E');
+  // 脚下投影（先画，压在人下面）
+  p.globalAlpha = 0.20;
+  R(128 - 18, 144, 37, 4, '#5A3E22');
+  R(190 - 18, 144, 37, 4, '#5A3E22');
+  p.globalAlpha = 1;
+  // 人物（男左女右，脚底落在栈道上）
+  HERO.person(p, 128, 145, 'boy');
+  HERO.person(p, 190, 145, 'girl');
+  // 顶部红色标题条
+  R(96, 6, 128, 20, '#C4504A');
+  R(96, 6, 128, 1, '#D9685F');
+  R(96, 25, 128, 1, '#9C3A36');
+  R(96, 6, 1, 20, '#9C3A36');
+  R(223, 6, 1, 20, '#9C3A36');
+  // 标题文字（点阵）
+  const t1 = '回忆', t2 = '那年夏天';
+  const w1 = PXW(t1), w2 = PXW(t2);
+  const sx = Math.round(160 - (w1 + 8 + w2) / 2);
+  PXT(t1, sx, 8, '#FFF3DC');
+  R(160 - 1, 15, 2, 2, '#FFF3DC');
+  PXT(t2, sx + w1 + 8, 8, '#FFF3DC');
+  // 相纸日期戳（右下角，3×5 微型数字）
+  const dt = '7.14';
+  MINT(dt, 296 - dt.length * 4, 160, '#A89B7E');
+}
+
+// ── 绘制 ──
+if (MODE === 'girl') {
+  HERO.person(p, LW / 2, LH - 10, 'girl');
+} else if (MODE === 'boy') {
+  HERO.person(p, LW / 2, LH - 10, 'boy');
+} else if (MODE === 'duo') {
+  HERO.person(p, LW / 2 - 28, LH - 10, 'boy');
+  HERO.person(p, LW / 2 + 28, LH - 10, 'girl');
+} else if (MODE === 'card') {
+  drawCard();
+}
+
+g.drawImage(lg, 0, 0, LW * K, LH * K);
+window.__done = true;
+</script>
+</body>
+</html>

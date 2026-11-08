@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>像素封面模板</title>
+<style>
+  @font-face { font-family: 'XK'; src: url('assets/fonts/Xingkai.ttf') format('truetype'); font-display: block; }
+  @font-face { font-family: 'KT'; src: url('assets/fonts/Kaiti.ttf') format('truetype'); font-display: block; }
+  html, body { margin:0; padding:0; background:#0F0E1A; overflow:hidden; }
+  canvas { display:block; }
+</style>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<script src="src/rig.js"></script>
+<script src="src/scene.js"></script>
+<script>
+// ============================================================
+//  像素封面模板（参数化）
+//  用法：给 buildCover({...}) 传一份配置就出图，换歌不用改版式代码。
+//  三层：像素场景（320×180 放大）→ 暗色分区遮罩 → 矢量书法字
+//  「景要糙，字要清」是像素封面成立的关键：背景是像素块，字是高清楷体。
+// ============================================================
+const Q = new URLSearchParams(location.search);
+const PRESET = Q.get('v') || 'A';
+const CW = Number(Q.get('w') || 1920), CH = Number(Q.get('h') || 1080);
+const cv = document.getElementById('cv');
+cv.width = CW; cv.height = CH;
+const c = cv.getContext('2d');
+const W = CW, H = CH;
+
+const PW = 320, PH = 180;
+const pix = document.createElement('canvas');
+pix.width = PW; pix.height = PH;
+const pc = pix.getContext('2d');
+pc.imageSmoothingEnabled = false;
+
+const INK = {
+  paper: '#F2EFE5', night: '#1B1B2E', navy: '#2C2A4A', gold: '#FFD166',
+  rose: '#E8556D', pale: '#C9C6DD', haze: '#8B86B0', dusk: '#5A5480', mint: '#7FD6C8',
+};
+
+// ---------- 文字工具 ----------
+function measureSpaced(ctx, txt, size, sp, font) {
+  ctx.font = `${size}px ${font || 'XK, KT, serif'}`;
+  let w = 0;
+  for (const ch of [...txt]) w += ctx.measureText(ch).width;
+  return w + sp * ([...txt].length - 1);
+}
+function drawSpaced(ctx, txt, x, baseY, size, sp, fill, opt = {}) {
+  ctx.save();
+  ctx.font = `${size}px ${opt.font || 'XK, KT, serif'}`;
+  ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+  ctx.fillStyle = fill; ctx.globalAlpha = opt.alpha ?? 1;
+  const chars = [...txt];
+  const total = measureSpaced(ctx, txt, size, sp, opt.font);
+  let px = opt.align === 'left' ? x : (opt.align === 'right' ? x - total : x - total / 2);
+  px += opt.dx || 0;
+  for (const ch of chars) { ctx.fillText(ch, px, baseY + (opt.dy || 0)); px += ctx.measureText(ch).width + sp; }
+  ctx.restore();
+  return total;
+}
+// 描边 + 外发光（像素背景上保证可读）
+function drawGlow(ctx, txt, x, baseY, size, sp, fill, glowCol, opt = {}) {
+  for (const [dx, dy] of [[-2,0],[2,0],[0,-2],[0,2],[-1,-1],[1,1],[-1,1],[1,-1],[-2,-1],[2,1]]) {
+    drawSpaced(ctx, txt, x, baseY, size, sp, opt.outlineCol || INK.night,
+      { ...opt, dx: (opt.dx || 0) + dx, dy: (opt.dy || 0) + dy });
+  }
+  if (glowCol) {
+    for (const k of [.16, .1]) {
+      ctx.save(); ctx.shadowColor = glowCol; ctx.shadowBlur = size * k * 2;
+      drawSpaced(ctx, txt, x, baseY, size, sp, fill, opt);
+      ctx.restore();
+    }
+  }
+  return drawSpaced(ctx, txt, x, baseY, size, sp, fill, opt);
+}
+function fitSize(ctx, txt, spRatio, targetW, font) {
+  let a = 10, b = 900;
+  for (let i = 0; i < 30; i++) {
+    const mid = (a + b) / 2;
+    if (measureSpaced(ctx, txt, mid, mid * spRatio, font) < targetW) a = mid; else b = mid;
+  }
+  return Math.floor(a);
+}
+
+// ---------- 核心：一份配置出一张封面 ----------
+// cfg = {
+//   scene, t,          // 场景名 + 时间
+//   figures: [{x, sex, opt}],
+//   title, sub,        // 主标 / 副标
+//   titleY,            // 主标基线（0..1）
+//   glow,              // 歌名发光色
+//   dimTop, dimBot,    // 上下遮罩强度（0..1，可 undefined）
+//   tagL, tagR,        // 左上 / 右下角标
+//   titleW,            // 主标目标宽度占比
+// }
+function buildCover(cfg) {
+  const sc = SCENES[cfg.scene];
+  sc.draw(pc, cfg.t ?? 1.2);
+  for (const f of (cfg.figures || [])) {
+    figure(pc, f.x, f.gy ?? sc.gy, f.S ?? 2, { sex: f.sex, ...(f.opt || {}) });
+  }
+  if (sc.fg) sc.fg(pc, cfg.t ?? 1.2);
+
+  c.imageSmoothingEnabled = false;
+  c.drawImage(pix, 0, 0, PW, PH, 0, 0, W, H);
+
+  // 分区遮罩：保证字区对比
+  if (cfg.dimTop) { c.fillStyle = `rgba(11,10,18,${cfg.dimTop})`; c.fillRect(0, 0, W, H * .24); }
+  if (cfg.dimBot) {
+    const y0 = cfg.dimBotY ?? .46;
+    c.fillStyle = `rgba(11,10,18,${cfg.dimBot})`; c.fillRect(0, H * y0, W, H * (1 - y0));
+  }
+
+  // 主标
+  const size = fitSize(c, cfg.title, .10, W * (cfg.titleW ?? .84), 'XK, serif');
+  drawGlow(c, cfg.title, W / 2, H * cfg.titleY, size, size * .10, INK.paper, cfg.glow, { alpha: 1 });
+
+  // 副标
+  if (cfg.sub) drawSpaced(c, cfg.sub, W / 2, H * (cfg.subY ?? (cfg.titleY + .092)), Math.round(W * .019), 10, INK.pale, { alpha: .92, font: 'KT, serif' });
+  // 角标
+  if (cfg.tagL) drawSpaced(c, cfg.tagL, 62, 74, Math.round(W * .0125), 8, INK.pale, { alpha: .62, font: 'KT, serif', align: 'left' });
+  if (cfg.tagR) drawSpaced(c, cfg.tagR, W - 62, H - 40, Math.round(W * .0125), 7, INK.pale, { alpha: .72, font: 'KT, serif', align: 'right' });
+}
+
+// ---------- 预设（改歌名只需换 title / 场景 / 角色） ----------
+const PRESETS = {
+  // A：雨街，两人分立左右，歌名压下方（最通用）
+  A: {
+    scene: 'street',
+    figures: [
+      { x: 62, sex: 'm', opt: { pose: 'walk', walk: 1.3, aL: .3, aR: .3, eyes: 'narrow', mouth: 'frown' } },
+      { x: 268, sex: 'f', opt: { pose: 'walk', walk: 1.3, aL: .3, aR: .3, view: 'back' } },
+    ],
+    title: '我好想你', titleY: .745, glow: '#FFD166',
+    dimTop: .5, dimBot: .70, dimBotY: .56,
+    sub: '苏打绿  ·  像素 RPG', tagL: 'PIXEL RPG MUSIC VIDEO', tagR: '5:29',
+  },
+  // B：路灯，单人背影，极简，歌名压底
+  B: {
+    scene: 'lamp',
+    figures: [{ x: 150, sex: 'm', opt: { view: 'back' } }],
+    title: '我好想你', titleY: .845, glow: '#FFD166',
+    dimBot: .72, dimBotY: .70,
+    sub: '— 像素 RPG MV —', tagL: 'PIXEL RPG MV', tagR: '5:29',
+  },
+  // C：海边，两人远景背影（S=1 小人），歌名在上——"渺小真实存在"的构图
+  C: {
+    scene: 'sea',
+    figures: [
+      { x: 146, sex: 'm', gy: 148, S: 1, opt: { view: 'back' } },
+      { x: 172, sex: 'f', gy: 148, S: 1, opt: { view: 'back' } },
+    ],
+    title: '我好想你', titleY: .285, glow: '#FFD166',
+    dimTop: .66, sub: 'PIXEL RPG MV', subY: .375, tagL: 'PIXEL RPG MV', tagR: '5:29',
+  },
+  // D：走廊，单人背影走向尽头的光（纵深最强的一张）
+  D: {
+    scene: 'corridor',
+    figures: [{ x: 176, sex: 'm', gy: 152, S: 2, opt: { view: 'back' } }],
+    title: '我好想你', titleY: .305, glow: '#FFD166',
+    dimTop: .70, sub: 'PIXEL RPG MV', subY: .93, tagL: 'PIXEL RPG MV', tagR: '5:29',
+  },
+  // E：空房，不放人物（"空房"就该是空的），纯场景 + 大字，最克制
+  E: {
+    scene: 'emptyroom',
+    figures: [],
+    title: '我好想你', titleY: .815, glow: '#E8556D',
+    dimBot: .78, dimBotY: .68,
+    sub: 'PIXEL RPG MV', tagL: 'PIXEL RPG MV', tagR: '5:29',
+  },
+};
+
+async function main() {
+  await document.fonts.load('400 100px XK');
+  await document.fonts.load('400 100px KT');
+  await document.fonts.ready;
+  const cfg = PRESETS[PRESET] || PRESETS.A;
+  buildCover(cfg);
+  window.__ready = true;
+}
+main();
+</script>
+</body>
+</html>

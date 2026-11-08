@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>pixel stage</title>
+<style>
+  @font-face { font-family:'XK'; src:url('assets/fonts/Xingkai.ttf') format('truetype'); font-display:block; }
+  @font-face { font-family:'KT'; src:url('assets/fonts/Kaiti.ttf') format('truetype'); font-display:block; }
+  html,body { margin:0; padding:0; background:#000; overflow:hidden; }
+  canvas { display:block; }
+</style>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<script src="src/rig.js"></script>
+<script src="src/scene.js"></script>
+<script src="src/events.js"></script>
+<script src="src/subtitle.js"></script>
+<script src="specs/current.js"></script>
+<script>
+// ============================================================
+//  stage.html — 通用渲染舞台
+//  架构：场景画在 320×180 离屏画布 → 整数放大到主画布 → 字幕在高分辨率主画布上用矢量画
+//  （字幕必须在高分辨率层，320 层画中文放大 6 倍会糊）
+// ============================================================
+const Q = new URLSearchParams(location.search);
+const CW = Number(Q.get('w') || 1920), CH = Number(Q.get('h') || 1080);
+const cv = document.getElementById('cv');
+cv.width = CW; cv.height = CH;
+const c = cv.getContext('2d');
+c.imageSmoothingEnabled = false;
+
+const PW = 320, PH = 180;
+const pix = document.createElement('canvas');
+pix.width = PW; pix.height = PH;
+const pc = pix.getContext('2d', { willReadFrequently: true });
+pc.imageSmoothingEnabled = false;
+
+const S = window.SPEC;
+if (!S) throw new Error('SPEC missing');
+
+// 找当前镜头
+function shotAt(t) {
+  for (const s of S.shots) if (t >= s.t0 && t < s.t1) return s;
+  return S.shots[S.shots.length - 1];
+}
+function subAt(t) {
+  for (const s of (S.subs || [])) if (t >= s.t0 && t < s.t1) return s;
+  return null;
+}
+
+// 镜头取景框：[x,y,w,h]（320×180 坐标系）
+// 默认给每个镜头一个极缓的推近 + 轻微横移，保证画面"一直在动"，
+// 想要不动就写 crop:false，想要特写就写 crop:[x,y,w,h] 或函数。
+function camRect(shot, lt) {
+  const d = Math.max(.5, shot.t1 - shot.t0);
+  let r;
+  if (shot.crop === false) return [0, 0, PW, PH];
+  if (typeof shot.crop === 'function') r = shot.crop(lt);
+  else if (Array.isArray(shot.crop)) r = shot.crop.slice();
+  else {
+    const p = Math.min(1, lt / d);
+    const z = 0.055 * p;                                  // 全镜推 5.5%
+    const w = PW * (1 - z), h = PH * (1 - z);
+    const cx = 160 + Math.sin(p * 2.6) * 5;               // 极缓横移
+    const cy = 86 + p * 4;
+    r = [Math.min(Math.max(0, cx - w / 2), PW - w), Math.min(Math.max(0, cy - h / 2), PH - h), w, h];
+  }
+  if (shot.hit != null) {
+    const p = lt - (shot.hit - shot.t0);
+    if (p >= 0 && p < .46) {
+      const k = 1 - p / .46;
+      const mag = (shot.hitMag || 7) * k * k;
+      r = [r[0] + mag * .7, r[1] + mag * .4, r[2] - mag * 1.4, r[3] - mag * .8];
+    }
+  }
+  return r;
+}
+
+// 主绘制
+window.renderFrame = function (t) {
+  window.__T = t;                     // 给 rig.js 做眨眼相位
+  const shot = shotAt(t);
+  const lt = t - shot.t0;
+
+  // ---- 场景层（320×180）----
+  pc.clearRect(0, 0, PW, PH);
+  shot.draw(pc, lt, shot, t);
+
+  // ---- 取景 + 大字冲击的闪白 ----
+  const [sx, sy, sw, sh] = camRect(shot, lt);
+  let flash = 0;
+  if (shot.hit != null) {
+    const p = t - shot.hit;
+    if (p >= 0) flash = Math.max(0, 1 - p / .13) * (shot.hitFlash ?? .5);
+  }
+
+  // ---- 放大到主画布 ----
+  c.imageSmoothingEnabled = false;
+  c.clearRect(0, 0, CW, CH);
+  c.drawImage(pix, sx, sy, sw, sh, 0, 0, CW, CH);
+  if (flash > 0) { c.fillStyle = '#F2EFE5'; c.globalAlpha = flash; c.fillRect(0, 0, CW, CH); c.globalAlpha = 1; }
+
+  // ---- 全屏色调/氛围（可选）----
+  if (shot.tint) {
+    c.fillStyle = shot.tint;
+    c.globalAlpha = shot.tintA ?? 0.2;
+    c.fillRect(0, 0, CW, CH);
+    c.globalAlpha = 1;
+  }
+
+  // ---- 字幕层（高分辨率，矢量）----
+  const sub = subAt(t);
+  if (sub) {
+    const k0 = Math.max(0, Math.min(1, (t - sub.t0) / (sub.t1 - sub.t0)));
+    const k = Math.min(1, k0 / (sub.kScale ?? .5));      // 逐字弹入在句子前半段就完成
+    const exit = sub.t1 - t < 0.18 ? 1 - (sub.t1 - t) / 0.18 : 0;
+    drawSub(c, CW, CH, sub.text, k, { ...sub, exit });
+  }
+
+  // ---- 转场 ----
+  if (S.fadeIn && t < S.fadeIn) { c.fillStyle = '#0B0A12'; c.globalAlpha = 1 - t / S.fadeIn; c.fillRect(0, 0, CW, CH); c.globalAlpha = 1; }
+  if (S.fadeOut && t > S.duration - S.fadeOut) {
+    c.fillStyle = '#0B0A12';
+    c.globalAlpha = (t - (S.duration - S.fadeOut)) / S.fadeOut;
+    c.fillRect(0, 0, CW, CH); c.globalAlpha = 1;
+  }
+};
+
+(async () => {
+  await document.fonts.load('400 100px XK');
+  await document.fonts.load('400 100px KT');
+  await document.fonts.ready;
+  window.renderFrame(0);
+  window.__ready = true;
+})();
+</script>
+</body>
+</html>
